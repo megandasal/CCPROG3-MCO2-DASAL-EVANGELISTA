@@ -7,8 +7,8 @@ SPECIFICATIONS CHECKLIST:
   
   1. Create Hotel
   
-    [_] Initialize New Hotel - Hotel Count must start at 0 and name must be UNIQUE.
-    [X] Create Rooms - 0...50 rooms, each room has a unique name. 
+    [/] Initialize New Hotel - Hotel Count must start at 0 and name must be UNIQUE.
+    [_] Create Rooms - 0...50 rooms, each room has a unique name. 
     [X] Set Room Base Price to default price of 1,299.0 (this will be set in Room class constructor) (note: this is effective for all rooms in the hotel)
     [X] Reserve a Room 
         a. BASIC INFORMATION: guest name, check-in date, check-out date, and link too room information.    
@@ -61,7 +61,8 @@ public class Main {
     private static void printMenu() {
         System.out.println("\n.------------------------------------------------------.");
         System.out.println("|\t\t\t\t\t   MAIN MENU  \t\t\t\t\t   |");
-        System.out.println("|\t\t\t\tcurrent hotel count: "+ hotelCount +"\t\t\t\t   |"); //WILL REMOVE, THIS IS JUST FOR CHECKING
+        System.out.println("|\t\t\t\tcurrent hotel count: " + hotelCount + "\t\t\t\t   |"); // WILL REMOVE, THIS IS JUST
+                                                                                            // FOR CHECKING
         System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
         System.out.println("|\t [Create Hotel]\t\t\t\t\t\t[View Hotel]   |");
         System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
@@ -88,9 +89,9 @@ public class Main {
         ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
 
         while (true) {
-            
+
             printMenu();
-            
+
             System.out.print("> Enter your choice: ");
 
             String choice = scanner.nextLine();
@@ -103,22 +104,54 @@ public class Main {
                     String hotelName = scanner.nextLine();
 
                     if (isUniqueName(hotelList, hotelName)) {
-                        Hotel hotel = new Hotel(hotelName);
-                        hotelList.add(hotel);
+                        Hotel Hotel = new Hotel(hotelName);
+                        hotelList.add(Hotel);
                         hotelCount++;
                         System.out.println(hotelName + " was created!");
 
                         // add code for room creation here (note: MIN OF 1 ROOM AND MAX OF 50 ROOMS)
-                        
+                        System.out.print("Enter number of rooms for this hotel: ");
+                        int nRooms = scanner.nextInt();
+                        if (nRooms >= 1 && nRooms <= 50) {
+                            Hotel.setNRooms(nRooms);
+                        } else {
+                            System.out.println("Invalid number of rooms. Please enter a number between 1 and 50.");
+                        }
+
+                        System.out.println("Number of rooms: " + Hotel.getNRooms());
+
                     } else
-                        System.out.println("This hotel name is already taken."); // loop asking for hotel name 
-                        // revise so that it only repeats from asking for a new hotel name rather than going back to menu
-                        
+                        System.out.println("This hotel name is already taken."); // loop asking for hotel name
+                    // revise so that it only repeats from asking for a new hotel name rather than
+                    // going back to menu
 
                     break;
                 case "View Hotel":
                     // view hotel
-                    System.out.println("View Hotel has been chosen"); // will delete
+
+                    for (int i = 0; i < hotelCount; i++) {
+                        System.out.println(i + 1 + ". " + hotelList.get(i).getHotelName());
+                    }
+
+                    System.out.println("Which Hotel do you wish to view?");
+                    String name = scanner.nextLine();
+
+                    boolean found = false;
+
+                    for (Hotel Hotel : hotelList) {
+                        if (Hotel.getHotelName().equals(name)) {
+                            System.out.println("Hotel Name: " + Hotel.getHotelName());
+                            System.out.println("Number of Rooms: " + Hotel.getNRooms());
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        System.out.println("Hotel not found");
+                    }
+
+                    // will delete
                     break;
                 case "Manage Hotel":
                     // manage hotel
@@ -128,7 +161,7 @@ public class Main {
                     // simulate hotel
                     System.out.println("Simulate Booking has been chosen"); // will delete
                     break;
-                default: 
+                default:
                     System.out.println("Invalid choice. Please try again.");
                     break;
 
