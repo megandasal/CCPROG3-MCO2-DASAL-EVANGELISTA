@@ -15,18 +15,18 @@ SPECIFICATIONS CHECKLIST:
             - reminder: check logic for reserving room from days n to n
         b. PRICE: total price and breakdown of cost per night
     
-  2. View Hotel
+  2. View Hotel ***NOTE: FIX AESTHETICS + ERROR PROOFING***
   
     [/] HIGH LEVEL INFORMATION
         [/] hotel name
         [/] total number of rooms
         [FOR CHECKING] estimate earnings per month (i.e. sum of total price across all reservations)
         
-    [X] LOW LEVEL INFORMATION
+    [/] LOW LEVEL INFORMATION
         [/] number of available and booked rooms for a selected date
         [FOR CHECKING] information about selected room (name, cost per night, and availabilty across the whole month)
         note: REVISE COMPUTATION 
-        [_] information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night) (note: this just                  displays the same information as the one in the 'reservation ticket")
+        [/] information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night) (note: this just                  displays the same information as the one in the 'reservation ticket")
         
   3. Manage Hotel - User must be prompted to confirm modification before it is made or else it will be discarded
         [X] Change name of hotel
@@ -41,10 +41,10 @@ SPECIFICATIONS CHECKLIST:
             
   
   4. Simulate Booking
-      [_] Select hotel and specify information (note: specify information hasnt been incorporated yet)
+      [/] Select hotel and specify information 
       [/] Select room 
         note: just display a list of the rooms available and user can select from those
-      [X] Validation of Check in and Check out dates
+      [_] Validation of Check in and Check out dates
       [/] Update status of room
 
 */
@@ -56,11 +56,11 @@ public class Main {
 
     public static int hotelCount = 0;
 
-    private static void printMenu() {
+       private static void printMenu() {
         System.out.println("\n.------------------------------------------------------.");
         System.out.println("|\t\t\t\t\t   MAIN MENU  \t\t\t\t\t   |");
         System.out.println("|\t\t\t\tcurrent hotel count: " + hotelCount + "\t\t\t\t   |"); // WILL REMOVE, THIS IS JUST
-        // FOR CHECKING
+                                                                                            // FOR CHECKING
         System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
         System.out.println("|\t [Create Hotel]\t\t\t\t\t\t[View Hotel]   |");
         System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
@@ -84,7 +84,7 @@ public class Main {
     private static void createHotel(ArrayList<Hotel> hotelList){
 
         Scanner scanner = new Scanner(System.in);
-
+        
         System.out.print("Hotel Name: ");
         String hotelName = scanner.nextLine();
 
@@ -110,7 +110,7 @@ public class Main {
     private static void viewHotel(ArrayList<Hotel> hotelList){
 
         Scanner scanner = new Scanner(System.in);
-
+        
         for (int i = 0; i < hotelCount; i++) {
             System.out.println(i + 1 + ". " + hotelList.get(i).getHotelName());
         }
@@ -123,37 +123,36 @@ public class Main {
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(name)) {
                 /*DETAILS CAN BE PRINTED IN HOTEL CLASS*/
-                System.out.println("Hotel Name: " + hotel.getHotelName());
-                System.out.println("Number of Rooms: " + hotel.getNRooms());
-                System.out.println("Room Price: " + hotel.getRoomPrice());
-                System.out.println("Estimate Earnings: " + hotel.getEstimateEarnings());
+                hotel.printHotelInformation();
 
                 /*FIX THIS PART, CLEAN UP*/
-                System.out.println(".-----------------------------------------.");
-                System.out.println("|\t\t\t\tSELECT\t\t\t\t|");
-                System.out.println("|\t [DATE]     [ROOM]     [RESERVATION]\t |");
-                System.out.println(".-----------------------------------------.");
-
-                System.out.println("Choice: ");
+                System.out.println(".-----------------------------------------."); 
+                System.out.println("|\t\t\t\t   SELECT\t\t\t\t   |"); 
+                System.out.println("|\t [DATE]   [ROOM]   [RESERVATION]\t |");
+                System.out.println(".-----------------------------------------."); 
+                
+                System.out.print("Choice: ");
                 String choice = scanner.nextLine();
 
                 switch (choice){
                     case "DATE":
-                        System.out.print("Date: ");
+                        System.out.print("Date: "); 
                         int date = scanner.nextInt();
                         System.out.print("Number of rooms available on " + date + ": " + hotel.roomsAvailableOnDate(date));
-                        break;
-                    case "ROOM":
+                    break;
+                    case "ROOM": 
                         hotel.viewRooms();
                         hotel.viewRoomInfo();
-                        //information about selected room (name, cost per night, and availabilty across the whole month) just iterate through rooms and print out the information of the selected room
-                        break;
+                           //information about selected room (name, cost per night, and availabilty across the whole month) just iterate through rooms and print out the information of the selected room
+                    break;
 
                     case "RESERVATION":
-                        //information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night)
-                        break;
+                        hotel.printAllReservations();
+                        hotel.viewReservationInfo();
+                         //information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night)
+                    break;
                 }
-
+                
                 found = true;
                 break;
             }
@@ -162,7 +161,7 @@ public class Main {
         if (!found) {
             System.out.println("Hotel not found");
         }
-    }
+    }    
 
     private static void simulateBooking(ArrayList<Hotel> hotelList){
         /*
@@ -183,54 +182,13 @@ public class Main {
         System.out.print("In which hotel do you wish to book a room? ");
         String hotelChoice = scanner.nextLine();
 
-        System.out.print("Input Name: "); //help idk fix the prompt
-        String guestName = scanner.nextLine(); // call reservation class setter
-
         boolean hotelFound = false;
         for(Hotel hotel : hotelList){
             if(hotel.getHotelName().equals(hotelChoice)){
                 System.out.println(
-                        "You have selected the " + hotel.getHotelName() + " Hotel!\n");
+                "You have selected the " + hotel.getHotelName() + " Hotel!\n");
 
-                System.out.print("> Check In Date: ");
-                int checkInDay = scanner.nextInt(); // call reservation/hotel class setter
-
-                System.out.print("> Check Out Date: ");
-                int checkOutDay = scanner.nextInt(); // call reservation/hotel class setter
-
-                if(checkInDay > checkOutDay){
-                    System.out.println("Invalid Dates.");
-                    break; // shouldnt print hotel is not available
-                }
-
-                ArrayList<Room> availableRooms = hotel.checkRoomAvailability(checkInDay, checkOutDay);
-
-                for(int i = 0; i < availableRooms.size(); i++){
-                    System.out.println(i + 1 + ". " + availableRooms.get(i).getRoomNum());
-                }
-
-                if(availableRooms.size() > 0){
-                    System.out.print("Choose a room to book: ");
-                    int roomIndex = scanner.nextInt();
-                    scanner.nextLine();
-
-
-                    if (roomIndex >= 1 && roomIndex <= availableRooms.size()){
-
-                        Room selectedRoom = availableRooms.get(roomIndex - 1);
-
-                        hotel.bookRoom(selectedRoom,checkInDay,checkOutDay);
-
-                        hotel.printReceipt(selectedRoom,checkInDay,checkOutDay, guestName);
-
-                    }
-                    else
-                        System.out.println("Invalid"); // turn into loop so that the user chooses a valid room index
-                }
-
-                else{
-                    System.out.println("\nThere are not rooms available on the given dates.");
-                }
+                hotel.bookRoom();
 
                 hotelFound = true;
                 break;
@@ -241,7 +199,7 @@ public class Main {
             System.out.println("Hotel not found.");
         }
     }
-
+    
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -263,7 +221,7 @@ public class Main {
 
                     break;
                 case "View Hotel":
-                    viewHotel(hotelList);
+                        viewHotel(hotelList);
                     break;
                 case "Manage Hotel":
                     // manage hotel
@@ -271,7 +229,7 @@ public class Main {
 
                     break;
                 case "Simulate Booking":
-                    simulateBooking(hotelList);
+                        simulateBooking(hotelList);
                     break;
 
                 default:
