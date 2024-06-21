@@ -29,15 +29,15 @@ SPECIFICATIONS CHECKLIST:
         [/] information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night) (note: this just                  displays the same information as the one in the 'reservation ticket")
         
   3. Manage Hotel - User must be prompted to confirm modification before it is made or else it will be discarded
-        [X] Change name of hotel
-        [X] Add room(s)
-        [X] Remove room(s)
+        [FOR CHECKING] Change name of hotel
+        [FOR CHECKING] Add room(s)
+        [FOR CHECKING] Remove room(s)\
             note: can only remove rooms that do not have active reservations 
-        [X] Update base price for rooms 
+        [FOR CHECKING] Update base price for rooms 
             - can only update room price if there are no reservations
             - new price must be >= 100.0
         [X] Remove reservation
-        [X] Remove hotel
+        [FOR CHECKING] Remove hotel
             
   
   4. Simulate Booking
@@ -51,12 +51,16 @@ SPECIFICATIONS CHECKLIST:
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class Main {
 
+    Scanner scanner = new Scanner(System.in);
+
     public static int hotelCount = 0;
 
-       private static void printMenu() {
+    private static void printMenu() {
         System.out.println("\n.------------------------------------------------------.");
         System.out.println("|\t\t\t\t\t   MAIN MENU  \t\t\t\t\t   |");
         System.out.println("|\t\t\t\tcurrent hotel count: " + hotelCount + "\t\t\t\t   |"); // WILL REMOVE, THIS IS JUST
@@ -161,9 +165,131 @@ public class Main {
         if (!found) {
             System.out.println("Hotel not found");
         }
-    }    
+    }   
 
-    private static void simulateBooking(ArrayList<Hotel> hotelList){
+    // meg correct error handling ASAP
+    private static void manageHotel(ArrayList<Hotel> hotelList) {
+        /*
+        [FOR CHECKING] Change name of hotel
+        [FOR CHECKING] Add room(s)
+        [FOR CHECKING] Remove room(s)
+            note: can only remove rooms that do not have active reservations 
+        [FOR CHECKING] Update base price for rooms 
+            - can only update room price if there are no reservations
+            - new price must be >= 100.0
+        [X] Remove reservation
+            .... how 2 make random ID.....
+        [FOR CHECKING] Remove hotel
+        */
+
+        // meg: still fixing my code sa local vsc pero will update here when done HUHU SORRY
+        System.out.println("+------------------------------------------------------+");
+        System.out.println("|\t\t\t\t\t       SELECT \t\t\t\t\t   |");
+        System.out.println("|\t\t\t\t\t\t       \t\t\t\t\t\t   |");
+        System.out.println("|\t\t [Change Hotel Name] \t     [Add Rooms]       |");
+        System.out.println("|\t\t\t\t\t\t        \t\t\t\t\t|");
+        System.out.println("|\t\t [Remove Rooms]\t[Update Room Base Price]\t   |");
+        System.out.println("|\t\t\t\t\t\t          \t\t\t\t\t \t|");
+        System.out.println("|\t\t [Remove Reservation] \t     [Remove Hotel]\t|");
+        System.out.println("|\t\t\t\t\t\t         \t\t\t\t\t \t|");
+        System.out.println("+------------------------------------------------------+");
+
+        System.out.print("> Enter your choice: ");
+        Scanner scanner = new Scanner(System.in);
+        String manageChoice = scanner.nextLine();
+        switch (manageChoice){
+                
+            case "Change Hotel Name":
+                System.out.println("Please select a hotel name from the following: ");
+                for (Hotel hotel : hotelList) {
+                    System.out.println("- " + hotel.getHotelName());
+                    hotel.changeHotelName();
+                }
+                break;
+
+            /*
+                meg note: i added a prompt for confirmation sa addRooms() kasi required siya for manage hotel, pero its the                  same method used sa create rooms .. in other words may confirmation prompt din when you add rooms sa hotel                   creation pero i can make a separate method na lang sa addRooms() in manage hotel
+            */
+            case "Add Rooms": 
+                System.out.println("Please select a hotel from the following: ");
+                for (Hotel hotel : hotelList) {
+                    System.out.println("- " + hotel.getHotelName());
+                    System.out.print("\n> Enter the hotel name you wish to add rooms to: ");
+                    String hotelName = scanner.nextLine();
+
+                    if (hotelName.equals(hotel.getHotelName())){
+                        hotel.addRooms();
+                    }
+                    else {
+                        System.out.println("Hotel not found.");
+                    }
+                }
+                break;
+            case "Remove Rooms": 
+                System.out.println("Please select a hotel from the following: ");
+                for (Hotel hotel : hotelList) {
+                    System.out.println("- " + hotel.getHotelName());
+                    System.out.print("\n> Enter hotel name to remove rooms from: ");
+                    String hotelChoice = scanner.nextLine();
+                    if (hotelChoice.equals(hotel.getHotelName()))
+                        hotel.removeRooms();
+                    else
+                        System.out.println("Hotel not found.");
+                }
+                break;
+                
+            case "Update Room Base Price":
+                System.out.println("Please select a hotel from the following: ");
+                for (Hotel hotel : hotelList) {
+                    System.out.println("- " + hotel.getHotelName());
+                }
+                System.out.print("> Enter hotel name to update base price: ");
+                // code 'if' condition to guard against entering hotel name with active reservations
+                String hotelName = scanner.nextLine();
+                for (Hotel hotel : hotelList){
+                    if (hotel.getHotelName().equals(hotelName)){
+                        hotel.updateRoomPrice();
+                        break;
+                    }
+                    else
+                        System.out.println("Hotel not found.");
+                }
+                break;
+
+                case "Remove Hotel":
+                System.out.println("Please select a hotel from the following: ");
+                for (Hotel hotel : hotelList) {
+                    System.out.println("- " + hotel.getHotelName());
+                }
+                System.out.print("> Enter hotel name to remove: ");
+                String removeHotelName = scanner.nextLine();
+
+                Iterator<Hotel> iterator = hotelList.iterator();
+                while (iterator.hasNext()) {
+                    Hotel hotel = iterator.next();
+                    if (hotel.getHotelName().equals(removeHotelName)) {
+                        System.out.print("Would you like to proceed with this modification? [Y/N]: ");
+                        char confirm = scanner.nextLine().charAt(0);
+
+                        if (confirm == 'Y' || confirm == 'y') {
+                            iterator.remove();
+                            hotelCount--;
+                            System.out.println(removeHotelName + " removed successfully.");
+                        } else {
+                            System.out.println("Modification cancelled.");
+                        }
+                        break;
+                    }
+                }                                                
+                break;
+
+            default:
+                System.out.println("Invalid choice.");
+                break;
+    }
+}
+
+private static void simulateBooking(ArrayList<Hotel> hotelList){
         /*
          * [/] 1. ask for check in and check out dates
          * [/] 2. print which rooms are available on those given days
@@ -225,7 +351,8 @@ public class Main {
                     break;
                 case "Manage Hotel":
                     // manage hotel
-                    System.out.println("Manage Hotel has been chosen"); // will delete
+                    // if hotelcount = 0, print "no hotels to manage"
+                    manageHotel(hotelList);
 
                     break;
                 case "Simulate Booking":
