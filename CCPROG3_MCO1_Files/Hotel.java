@@ -1,5 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class Hotel {
 
@@ -58,14 +60,22 @@ public class Hotel {
     }
 
     if (rooms.size() + newRooms < 50) {
-      for (int i = 0; i < newRooms; i++) {
-        nRooms++;
-        rooms.add(new Room(nRooms, this));
+      System.out.print("Would you like to proceed with this modification? [Y/N]: ");
+      char confirm = scanner.next().charAt(0);
+      if (confirm == 'Y' || confirm == 'y'){
+        for (int i = 0; i < newRooms; i++) {
+          nRooms++;
+          rooms.add(new Room(nRooms, this)); 
+        }
+        System.out.println(newRooms + " rooms have been added to the hotel.");
+      }   
+      else if (confirm == 'N' || confirm == 'n'){
+        System.out.println("Modification cancelled.");
       }
-    } else {
-      System.out.println("Invalid.");
-    }
-
+      else {
+        System.out.println("Invalid input.");
+      }
+    } 
   }
   
   public ArrayList<Room> checkRoomAvailability(int checkInDate, int checkOutDate) { 
@@ -97,6 +107,23 @@ public class Hotel {
     return availableRooms; //returns the list of rooms available
   }
 
+  public int totalReservations(){
+    return allReservations.size();
+  }
+
+  public String generateBookingID(){
+    int length = 4; // length of randomly generated integer
+    Random random = new Random();
+    StringBuilder sb = new StringBuilder(length); // for string concatenation
+
+    for (int i = 0; i < length; i++) {
+        sb.append(random.nextInt(10)); // append a random digit (0-9) to the string
+    }
+
+    String randomInt = sb.toString();
+    return randomInt;
+  }
+
   public boolean bookRoom() {
 
     boolean bookingIsSuccessful = false;
@@ -105,7 +132,7 @@ public class Hotel {
     System.out.print("Enter name to book reservation: ");
     String guestName = scanner.nextLine();
 
-    System.out.print("Enter day of reservation: "); //NO VALIDATION
+    System.out.print("Enter Check In reservation: "); //NO VALIDATION
     int checkInDate = scanner.nextInt();
 
     System.out.print("Enter Check Out Date: "); //NO VALIDATION
@@ -147,6 +174,8 @@ public class Hotel {
                 room.addReservation(reservation);
                 updateEstimateEarnings(checkOutDate-checkInDate);
                 this.printReceipt(room,checkInDate,checkOutDate, guestName);
+                String bookingID = generateBookingID() + room.getRoomNum();
+                System.out.println("Your booking ID is " + bookingID + ".");
               }
   
               else{
@@ -158,7 +187,7 @@ public class Hotel {
           System.out.println("Room not found.");
           return bookingIsSuccessful;
         }// turn into loop so that the user chooses a valid room index
-    ;//update the hotel's estimate earnings per month based on newly made reservation
+    //update the hotel's estimate earnings per month based on newly made reservation
       //NOTE: ASK FOR HOW TO COMPUTE, DOES IT COUNT DAYS OR THE NIGHTS
     return bookingIsSuccessful;
   } 
@@ -194,19 +223,19 @@ public class Hotel {
 
   public int getRoomAvailability(int date, int roomName){
 
-    int roomsAvaialble = 0;
+    int roomsAvailable = 0;
     
     for(Room rooms : rooms){
 
       if(rooms.getRoomNum() == roomName){
         if(rooms.isAvailable(date)){
-          roomsAvaialble++;
+          roomsAvailable++;
         }
       }
       
     }
 
-    return roomsAvaialble;
+    return roomsAvailable;
     
   }
 
@@ -256,7 +285,7 @@ public class Hotel {
   }
   
   public void printAllReservations(){     //prints all reservations made across the hotel
-
+    
     allHotelReservations();
     System.out.println("All Reservations:");
     for(int i = 0; i < allReservations.size();i++){
@@ -271,4 +300,136 @@ public class Hotel {
      //view information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night)
   }
   
+  public void changeHotelName(){
+        System.out.print("> Enter the hotel name you wish to change: ");
+        String oldHotelName = scanner.nextLine();
+        if (oldHotelName.isEmpty()) {
+            oldHotelName = scanner.nextLine();
+        }
+        if (oldHotelName.equals(getHotelName())) {
+            System.out.print("> Enter the new hotel name: ");
+            String newHotelName = scanner.nextLine();
+
+            System.out.print("\nWould you like to proceed with this modification? [Y/N]: ");
+            char confirm = scanner.next().charAt(0);
+            if (confirm == 'Y' || confirm == 'y') {
+                setHotelName(newHotelName);
+                System.out.println("Hotel " + oldHotelName + " was successfully changed to " + newHotelName + "!");
+            }
+            else if (confirm == 'N' || confirm == 'n') {
+                System.out.println("Modification cancelled.");
+            }
+            else {
+                System.out.println("Invalid input.");
+            }
+        }
+        else {
+            System.out.println("Hotel not found.");
+        }
+    }
+
+  public void removeRooms() {
+    boolean roomRemoved = false;
+
+    System.out.print("\n> Enter the room number to remove: ");
+    int roomNum = scanner.nextInt();
+
+    Iterator<Room> iterator = rooms.iterator();
+
+    while (iterator.hasNext()) {
+        Room room = iterator.next();
+        if (room.getRoomNum() == roomNum && room.getNDaysAvailable() == 31) {
+          System.out.print("Would you like to proceed with this modification? [Y/N]: ");
+          char confirm = scanner.next().charAt(0);
+          if (confirm == 'Y' || confirm == 'y'){
+            iterator.remove();  // safely remove elements
+            roomRemoved = true;
+          }   
+        }
+    }
+    if (roomRemoved) {
+        System.out.println("\nRoom " + roomNum + " has been removed.");
+    } else {
+        System.out.println("\nUnable to remove room.");
+    }
+  }
+
+  public void updateRoomPrice(){
+    for (Room room : rooms){
+      if (room.getNDaysAvailable() == 31){
+        System.out.println("The current base price for a room is: " + this.roomPrice);
+        System.out.print("\n> Enter the new price for a room: ");
+
+        double newPrice = scanner.nextDouble();
+        if (newPrice >= 100.00){
+          System.out.print("Would you like to proceed with this modification? [Y/N]: ");
+          char confirm = scanner.next().charAt(0);
+          if (confirm == 'Y' || confirm == 'y'){
+            System.out.println("Successfully updated the room price to: " + newPrice);
+            setRoomPrice(newPrice);
+            break;
+          }
+          else if (confirm == 'N' || confirm == 'n'){
+            System.out.println("Modification cancelled.");
+          }
+          else {
+            System.out.println("Invalid input.");
+          }
+          
+        }
+        else {
+          System.out.println("Invalid room price. Please enter a value greater than 100.00.");
+        }
+      }
+      else {
+        System.out.println("Unable to update room price due to currently active reservations in this hotel.");
+        break;
+    }
+    
+    }
+  }
+  
+  public void removeReservation(){
+    /* notes for meg:
+      1. prompt user to enter reservation number
+      2. make new arraylist ????????? for booking IDs para macompare against a reservation if valid siya
+      3. ilalagay ata yung booking id sa reservation class
+      */
+  }
+
 }
+  
+  // public boolean removeReservation(){
+  //   //Scanner scanner = new Scanner(System.in);
+  //   boolean successfulRemoval = false;
+
+  //   System.out.println("You have chosen to remove a reservation.");
+  //   System.out.println("Please select a room to remove a reservation from: ");
+  //   //viewRooms();
+
+  //   /*
+
+  //   [ ] 1. print reserved rooms
+  //   [ ] 2. ask user to select a room
+    
+  //   */
+
+  //   for(Room room : rooms){
+  //     // change condition to accommodate reservation ID
+  //     if (room.getRoomNum() == roomNum){
+  //         if (room.getN)
+  //     }
+      
+  //     else {
+  //         System.out.prinlt("Room not found.");
+  //     }
+
+  //     }
+    
+  //   System.out.print("\n> Enter room number: ");
+  //   int roomNum = scanner.nextInt();
+
+    
+    
+  //   return successfulRemoval;
+  // }
