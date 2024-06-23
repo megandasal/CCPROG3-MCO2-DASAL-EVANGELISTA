@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class Room {
@@ -24,6 +23,12 @@ public class Room {
   public int getRoomNum() {
     return this.roomNum; // turn into string
   }
+
+  /*
+  public void setRoomNum(int roomNum){ //updates room number when a room is removed
+    this.roomNum = roomNum;
+  }
+  */
 
   public boolean isAvailable(int day) {
     return availability[day]; //REVISE LOOPS FOR DAY TO BE DAY - 1, RIGHT NOW IT'S CONSIDERING DAY 1 = INDEX 0
@@ -61,29 +66,8 @@ public class Room {
     return roomReservations;
   }
 
-  /*
-  public void addBookingID(String bookingID){ //whats this for
-    bookingIDs.add(bookingID);
-  } 
-
-  public void removeBookingID(String bookingID) { //whats this for
-      bookingIDs.remove(bookingID);
+  public void removeReservation(int i) {
+    roomReservations.remove(i);
   }
-
-  public ArrayList<String> getBookingIDs() {
-    return bookingIDs;
-  }
-  */
-
-  //revise
-  /*
-  public void removeReservationByID(String bookingID) {
-    for (Reservation reservation : roomReservations) {
-          if (getBookingIDs().equals(bookingID)) {
-              roomReservations.remove(reservation);
-          }
-      }
-  }
-  */
 
 }
