@@ -17,9 +17,8 @@ public class Reservation{
     this.guestName = guestName;
     this.checkInDate = checkInDate;
     this.checkOutDate = checkOutDate;
-    this.numNights = checkOutDate - checkInDate; //never used
     this.roomPrice = price;
-    this.totalPrice = this.roomPrice * (numNights);
+    this.totalPrice = this.roomPrice * (checkOutDate - checkInDate);
     this.bookingID = this.generateBookingID(roomNum);
   }
 
@@ -58,6 +57,10 @@ public class Reservation{
 
   public int getNumNights(){
     return numNights;
+  }
+
+  public double getTotalPrice(){
+    return this.totalPrice;
   }
 
   public String getBookingID() {
