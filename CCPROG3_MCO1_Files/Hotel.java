@@ -20,9 +20,16 @@ public class Hotel {
     this.estimateEarnings = 0;
   }
 
-  public void updateEstimateEarnings(int nDays) {
+  public void updateEstimateEarnings(double reservationTotalPrice, boolean newBooking) {
 
-    this.estimateEarnings = nDays * this.roomPrice;
+    /*
+     * update esrimate earnings by adding the total price of the reservation when a
+     * new reservation is made and subtracts when reservation is deleted
+     */
+    if (newBooking == true)
+      this.estimateEarnings = this.estimateEarnings + reservationTotalPrice;
+    else
+      this.estimateEarnings = this.estimateEarnings - reservationTotalPrice;
 
   }
 
@@ -149,14 +156,16 @@ public class Hotel {
       if (room.getRoomNum() == selectedRoom) {
         found = true;
 
-        for (int day = checkInDate; day <= checkOutDate; day++) { // MOVE INTO A SEPARATE METHOD
+        for (int day = checkInDate; day < checkOutDate; day++) { // ex. reservation day 1-6, only until day 5 is
+                                                                 // reserved
           room.roomAvailability(day, false);
         }
 
         Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room.getRoomNum(), roomPrice);
         room.addReservation(reservation);
-        updateEstimateEarnings(checkOutDate - checkInDate);
-        this.printReceipt(room, checkInDate, checkOutDate, guestName);
+        updateEstimateEarnings(reservation.getTotalPrice(), true);
+        this.printReceipt(room, checkInDate, checkOutDate, guestName, reservation.getBookingID());
+        break;
       }
 
       else {
@@ -182,9 +191,11 @@ public class Hotel {
     return roomPrice;
   }
 
-  public void printReceipt(Room room, int checkInDate, int checkOutDate, String guestName) { // move to reservation
-                                                                                             // class + NO LINK TO ROOM
-                                                                                             // YET
+  public void printReceipt(Room room, int checkInDate, int checkOutDate, String guestName, String bookingID) { // move
+                                                                                                               // to
+                                                                                                               // reservation
+    // class + NO LINK TO ROOM
+    // YET
     System.out.println(".-----------------------------------------------.");
     // Print the header
     System.out.printf("│          %7s HOTEL RECEIPT                │\n", this.hotelName); // change to hotel name
@@ -193,6 +204,7 @@ public class Hotel {
 
     // Print hotel and guest information
     System.out.printf("│ Guest Name: %-33s │\n", guestName);
+    System.out.printf("│ Booking ID: %-33s │\n", bookingID);
     System.out.println("|                                               |");
     System.out.printf("│ Check-in:   %-33s │\n", checkInDate);
     System.out.printf("│ Check-out:  %-33s │\n", checkOutDate);
@@ -263,7 +275,7 @@ public class Hotel {
   }
 
   public void allHotelReservations() { // collects all the reservations in all the rooms
-
+    allReservations.clear();
     for (Room room : rooms) {
       allReservations.addAll(room.getReservations());
     }
@@ -271,7 +283,7 @@ public class Hotel {
 
   public void printAllReservations() { // prints all reservations made across the hotel
 
-    allHotelReservations();
+    this.allHotelReservations();
     System.out.println("All Reservations:");
     for (int i = 0; i < allReservations.size(); i++) {
       System.out.println(
@@ -287,39 +299,65 @@ public class Hotel {
     // information, check-in and check-out dates, total price of booking and
     // breakdown of cost per night)
   }
-//let me take the wheel
-  //ASDAJDHAHAHAHHAHAHHA
-  //JESUS TAKE THE WHEEL
-  //HUY BAD YAN
-  //bakit :(
-  //inaantok na ako
-  //Commandment #3: Thou shall not take the name of the Lord thy God in vain.
-  //noted.
-  // *observes u*
 
   public void removeRooms() {
+
+    boolean roomFound = false;
+    boolean roomRemoved = false;
+    int i = 0;
+
+    for (Room room : rooms) {
+      if (room.getNDaysAvailable() == 31)
+        System.out.println("- Room " + room.getRoomNum());
+      else
+        System.out.println("* Room " + room.getRoomNum());
+    }
+
+    System.out.println("\n- no reservation          * has reservation");
+
     System.out.print("\n> Enter the room number to remove: ");
     int roomNum = scanner.nextInt();
 
-    Iterator<Room> iterator = rooms.iterator();
+    for (Room room : rooms) {
+      if (room.getRoomNum() == roomNum) {
 
-    while (iterator.hasNext()) {
-      Room room = iterator.next();
-      if (room.getRoomNum() == roomNum && room.getNDaysAvailable() == 31) {
-        System.out.print("Would you like to proceed with this modification? [Y/N]: ");
-        char confirm = scanner.next().charAt(0);
-        if (confirm == 'Y' || confirm == 'y') {
-          iterator.remove();
-          System.out.println("Room " + roomNum + " was successfully removed!");
-        } else if (confirm == 'N' || confirm == 'n') {
-          System.out.println("Modification cancelled.");
-        } else {
-          System.out.println("Invalid input.");
+        roomFound = true;
+
+        if (room.getNDaysAvailable() == 31) {
+          System.out.print("Would you like to proceed with this modification? [Y/N]: ");
+          char confirm = scanner.next().charAt(0);
+          if (confirm == 'Y' || confirm == 'y') {
+            rooms.remove(i);
+            this.nRooms--;
+            System.out.println("Room " + roomNum + " was successfully removed!");
+            roomRemoved = true;
+            break;
+          } else if (confirm == 'N' || confirm == 'n') {
+            System.out.println("Modification cancelled.");
+          } else {
+            System.out.println("Invalid input.");
+          }
         }
-      } else {
-        System.out.println("Unable to remove room.");
-        break;
       }
+      i++;
+    }
+    if (roomFound) {
+      if (!roomRemoved) {
+        System.out.println("This room currently has a reservation and can't be removed.");
+      }
+      /*
+       * else{//update room nums
+       * 
+       * int roomCount = 1;
+       * for (Room room : rooms) {
+       * room.setRoomNum(100 + roomCount);
+       * roomCount++;
+       * 
+       * }
+       * }
+       */
+    } else {
+      System.out.println("Room does not exist.");
     }
   }
 
@@ -355,46 +393,33 @@ public class Hotel {
   }
 
   /* aiella kung mabasa mo to. nababaliw na ako */
-  /*
+
   public void removeReservation() {
-    boolean found = false;
+    boolean reservationFound = false;
 
     System.out.print("Please enter your unique booking ID to remove your reservation: ");
+    scanner.nextLine(); // buffer
     String bookingID = scanner.nextLine();
-    scanner.nextLine();
 
     for (Room room : rooms) {
-      for (Reservation reservation : room.getReservations()) {
-        if (bookingID.equals(reservation.getBookingID())) {
-          System.out.println("Reservation found!");
-          found = true;
-          System.out.println("Would you like to proceed with this modification? [Y/N]: ");
-          char confirm = scanner.next().charAt(0);
-          scanner.nextLine();
 
-          if (confirm == 'Y' || confirm == 'y') {
-            room.removeReservationByID(bookingID);
-            System.out.println("Reservation under Booking ID #" + bookingID + " has been removed.");
-            break;
-          } else if (confirm == 'N' || confirm == 'n') {
-            System.out.println("Modification cancelled.");
-            break;
-          } else {
-            System.out.println("Invalid input.");
-            break;
-          }
+      for (int i = 0; i < room.getReservations().size(); i++) {
+        if (room.getReservations().get(i).getBookingID().equals(bookingID)) {
+          reservationFound = true;
+          this.updateEstimateEarnings(room.getReservations().get(i).getTotalPrice(), false);
+          room.removeReservation(i);
+          System.out.println("Your reservation has been successfully removed.");
+          break;
         }
       }
-      if (found) {
-        break; // doesnt check next rooms for reservation
-      }
+
+      if (reservationFound)
+        break;
     }
-    if (!found) {
-      System.out.println("No reservation was found under Booking ID #" + bookingID + "."); // prints if no reservation
-                                                                                           // is found after checking
-                                                                                           // all rooms
+
+    if (!reservationFound) {
+      System.out.println("This reservation does not exist.");
     }
   }
-  */
 
 }
