@@ -20,10 +20,12 @@ public class Reservation{
     this.numNights = checkOutDate - checkInDate; //never used
     this.roomPrice = price;
     this.totalPrice = this.roomPrice * (numNights);
+    this.bookingID = this.generateBookingID(roomNum);
   }
 
   public void printReservationInformation(){
     System.out.println("Guest Name: " + this.guestName);
+    System.out.println("Booking ID: " + this.bookingID);
     System.out.println("Room: " + this.roomNum);
     System.out.println("Check In: " + this.checkInDate);
     System.out.println("Check Out: " + this.checkOutDate);
@@ -59,6 +61,22 @@ public class Reservation{
   }
 
   public String getBookingID() {
+    return bookingID;
+  }
+
+  public String generateBookingID(int roomNumber){
+    int length = 4; // length of randomly generated integer
+    Random random = new Random();
+    String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
+    StringBuilder sb = new StringBuilder(length); // for string concatenation
+
+    for (int i = 0; i < length; i++) {
+        sb.append(random.nextInt(10)); // append a random digit (0-9) to the string
+    }
+
+    String randomInt = sb.toString();
+    String bookingID = randomInt + roomNum; 
+
     return bookingID;
   }
 
