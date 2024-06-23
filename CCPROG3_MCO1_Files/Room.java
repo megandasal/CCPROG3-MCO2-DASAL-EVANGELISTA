@@ -61,6 +61,7 @@ public class Room {
     return roomReservations;
   }
 
+  /*
   public void addBookingID(String bookingID){ //whats this for
     bookingIDs.add(bookingID);
   } 
@@ -72,7 +73,10 @@ public class Room {
   public ArrayList<String> getBookingIDs() {
     return bookingIDs;
   }
+  */
 
+  //revise
+  /*
   public void removeReservationByID(String bookingID) {
     for (Reservation reservation : roomReservations) {
           if (getBookingIDs().equals(bookingID)) {
@@ -80,20 +84,6 @@ public class Room {
           }
       }
   }
+  */
 
-  public String generateBookingID(int roomNumber){
-    int length = 4; // length of randomly generated integer
-    Random random = new Random();
-    String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
-    StringBuilder sb = new StringBuilder(length); // for string concatenation
-
-    for (int i = 0; i < length; i++) {
-        sb.append(random.nextInt(10)); // append a random digit (0-9) to the string
-    }
-
-    String randomInt = sb.toString();
-    String bookingID = randomInt + roomNum; 
-
-    return bookingID;
-  }
 }
