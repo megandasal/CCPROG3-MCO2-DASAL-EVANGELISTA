@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Reservation{ 
   private String guestName;
@@ -9,7 +10,7 @@ public class Reservation{
   private int roomNum;
   private double roomPrice;
   private double totalPrice;
-  private String reservationID;
+  private String bookingID;
 
   public Reservation(String guestName, int checkInDate, int checkOutDate, int roomNum, double price){
     this.roomNum = roomNum;
@@ -55,6 +56,10 @@ public class Reservation{
 
   public int getNumNights(){
     return numNights;
+  }
+
+  public String getBookingID() {
+    return bookingID;
   }
 
 }
