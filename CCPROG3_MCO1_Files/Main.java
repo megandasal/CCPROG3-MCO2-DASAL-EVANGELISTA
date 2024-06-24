@@ -55,7 +55,7 @@ import java.util.Iterator;
 
 public class Main {
 
-    Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     public static int hotelCount = 0;
     public static ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
@@ -98,7 +98,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Hotel Name: ");
+        System.out.print("\nHotel Name: ");
         String hotelName = scanner.nextLine();
 
         if (isUniqueName(hotelList, hotelName)) {
@@ -114,11 +114,20 @@ public class Main {
 
             // print rooms made
 
-        } else
-            System.out.println("This hotel name is already taken."); // loop asking for hotel name
-        // revise so that it only repeats from asking for a new hotel name rather than
-        // going back to menu
+        }
     }
+
+    private static int getIntInput() {
+        if (scanner.hasNextInt()) {
+          int input = scanner.nextInt();
+          scanner.nextLine(); // consume the newline character
+          return input;
+        } else {
+          System.out.println("Invalid input. Please enter an integer.");
+          scanner.next(); // clear the invalid input
+          return -1; //signals that the input was invalid
+        }
+      }
 
     private static void viewHotel(ArrayList<Hotel> hotelList) {
 
@@ -150,10 +159,18 @@ public class Main {
 
                     switch (choice) {
                         case "DATE":
-                            System.out.print("Date: ");
-                            int date = scanner.nextInt();
-                            System.out.print(
-                                    "Number of rooms available on " + date + ": " + hotel.roomsAvailableOnDate(date));
+                            while(true){
+                                System.out.print("Date: ");
+                                int date = getIntInput();
+
+                                if((date >= 1 && date <= 31) && date > 0){
+                                    System.out.print("Number of rooms available on " + date + ": " + hotel.roomsAvailableOnDate(date));
+                                    break;
+                            }
+                                else
+                                    System.out.println("Invalid date. Please enter a valid date.");
+                                
+                            }
                             break;
                         case "ROOM":
                             hotel.viewRooms();
@@ -164,8 +181,13 @@ public class Main {
                             break;
 
                         case "RESERVATION":
+                            if(hotel.totalReservations() == 0){
+                                System.out.println("There are no reservations in this hotel.");
+                                return;
+                            }else{
                             hotel.printAllReservations();
                             hotel.viewReservationInfo();
+                            }
                             // information about selected reservation (guest information, room information,
                             // check-in and check-out dates, total price of booking and breakdown of cost
                             // per night)
@@ -273,15 +295,21 @@ public class Main {
                         }
                     break;
 
-                case "Remove Rooms":
+                case "Remove Rooms": 
                         System.out.println("Please select a hotel from the following: ");
                         printHotels();
                         System.out.print("\n> Enter hotel name to remove rooms from: ");
                         String hotelNameToRemoveRooms = scanner.nextLine();
                         for (Hotel hotel : hotelList) {
                             if (hotel.getHotelName().equals(hotelNameToRemoveRooms)) {
-                                hotel.removeRooms();
                                 hotelFound = true;
+                                
+                                if(hotel.getNRooms() == 1){
+                                    System.out.println("There are no rooms to remove.");
+                                    return;
+                                }else{
+                                hotel.removeRooms();
+                                }
                                 break;
                             }
                         }
@@ -291,14 +319,14 @@ public class Main {
                     break;
 
                 case "Update Room Base Price":
-                        System.out.println("Please select a hotel from the following: ");
+                        System.out.println("\nPlease select a hotel from the following: ");
                         for (Hotel hotel : hotelList) {
                             System.out.println("- " + hotel.getHotelName());
                         }
-                        System.out.print("> Enter hotel name to update base price: ");
-                        String hotelNameToUpdatePrice = scanner.nextLine();
+                        System.out.print("\n> Enter hotel name to update base price: ");
+                        String hotelUpdatePrice = scanner.nextLine();
                         for (Hotel hotel : hotelList) {
-                            if (hotel.getHotelName().equals(hotelNameToUpdatePrice)) {
+                            if (hotel.getHotelName().equals(hotelUpdatePrice)) {
                                 hotel.updateRoomPrice();
                                 hotelFound = true;
                                 break;
@@ -310,20 +338,29 @@ public class Main {
                     break;
 
                 case "Remove Reservation":
-                    System.out.println("Please select a hotel from the following: ");
-                    printHotels();
-                    System.out.print("\n> Enter choice: ");
-                    String hotelNameToRemoveReservation = scanner.nextLine();
-                    for (Hotel hotel : hotelList) {
-                        if (hotel.getHotelName().equals(hotelNameToRemoveReservation)) {
-                            hotel.removeReservation();
-                            hotelFound = true;
-                            break;
+
+                        System.out.println("Please select a hotel from the following: ");
+                        printHotels();
+                        System.out.print("\n> Enter choice: ");
+                        String hotelNameToRemoveReservation = scanner.nextLine();
+                        for (Hotel hotel : hotelList) {
+                            if (hotel.getHotelName().equals(hotelNameToRemoveReservation)) {
+                                hotelFound = true;
+                                
+                                if(hotel.totalReservations() == 0){
+                                    System.out.println("There are no reservations in this hotel.");
+                                }
+                                else{
+                                hotel.removeReservation();
+                                }
+                                
+                                break;
+                            }
                         }
-                    }
-                    if (!hotelFound) {
-                        System.out.println("Hotel not found.");
-                    }
+                        if (!hotelFound) {
+                            System.out.println("Hotel not found.");
+                        }
+                    
                     break;
 
                 case "Remove Hotel":
@@ -361,7 +398,7 @@ public class Main {
             }
         }
         else {
-            System.out.println("There are no hotels to manage at the moment.");
+            System.out.println("No hotels available.");
         }
     }
 
@@ -374,32 +411,39 @@ public class Main {
          * [/] 5. reservation details are printed
          */
 
-        Scanner scanner = new Scanner(System.in);
+        if (hotelCount > 0){
+            Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Please select a hotel to make a reservation. Available hotels:");
-        for (int i = 0; i < hotelList.size(); i++) {
-            System.out.println((i + 1) + ". " + hotelList.get(i).getHotelName());
-        }
+            System.out.println("Please select a hotel to make a reservation. Available hotels:");
+            for (int i = 0; i < hotelList.size(); i++) {
+                System.out.println("- " + hotelList.get(i).getHotelName());
+            }
 
-        System.out.print("In which hotel do you wish to book a room? ");
-        String hotelChoice = scanner.nextLine();
+            System.out.println("\nIn which hotel do you wish to book a room? ");
+            System.out.print("> Enter choice: ");
+            String hotelChoice = scanner.nextLine();
 
-        boolean hotelFound = false;
-        for (Hotel hotel : hotelList) {
-            if (hotel.getHotelName().equals(hotelChoice)) {
-                System.out.println(
-                        "You have selected the " + hotel.getHotelName() + " Hotel!\n");
+            boolean hotelFound = false;
+            for (Hotel hotel : hotelList) {
+                if (hotel.getHotelName().equals(hotelChoice)) {
+                    System.out.println(
+                            "You have selected the " + hotel.getHotelName() + " Hotel!\n");
 
-                hotel.bookRoom();
+                    hotel.bookRoom();
 
-                hotelFound = true;
-                break;
+                    hotelFound = true;
+                    break;
+                }
+            }
+
+            if (!hotelFound) {
+                System.out.println("Hotel not found.");
             }
         }
-
-        if (!hotelFound) {
-            System.out.println("Hotel not found.");
+        else {
+            System.out.println("No hotels available.");
         }
+        
     }
 
     public static void main(String[] args) {
