@@ -68,7 +68,7 @@ public class Reservation{
   }
 
   public String generateBookingID(int roomNumber){
-    int length = 4; // length of randomly generated integer
+    int length = 6; // length of randomly generated integer
     Random random = new Random();
     String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
     StringBuilder sb = new StringBuilder(length); // for string concatenation
