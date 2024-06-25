@@ -12,6 +12,24 @@ public class Reservation{
   private String bookingID;
 
   /**
+   * Constructs a Reservation object.
+   * @param guestName name of guest who made a reservation
+   * @param checkInDate date a guest checked in
+   * @param checkOutDate date a guest checked out
+   * @param roomNum room number the reservation is made under
+   * @param price the cost of the reservation
+   */
+  public Reservation(String guestName, int checkInDate, int checkOutDate, int roomNum, double price){
+    this.roomNum = roomNum;
+    this.guestName = guestName;
+    this.checkInDate = checkInDate;
+    this.checkOutDate = checkOutDate;
+    this.roomPrice = price;
+    this.totalPrice = this.roomPrice * (checkOutDate - checkInDate);
+    this.bookingID = this.generateBookingID(roomNum);
+  }
+
+  /**
    * Prints out information about a reservation.
    */
   public void printReservationInformation(){
@@ -37,34 +55,52 @@ public class Reservation{
     int length = 6; // length of randomly generated integer
     Random random = new Random();
     String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
-    StringBuilder sb = new StringBuilder(length); // for string concatenation
+    StringBuilder sb = new StringBuilder(length); // used for string concatenation
 
     for (int i = 0; i < length; i++) {
         sb.append(random.nextInt(10)); // append a random digit (0-9) to the string
     }
 
     String randomInt = sb.toString();
-    String bookingID = randomInt + roomNum; 
+    String bookingID = randomInt + roomNum; // concatenate the random integer and the room number
 
     return bookingID;
   }
-  
+
   /**
-   * Constructs a Reservation object.
-   * @param guestName name of guest who made a reservation
-   * @param checkInDate date a guest checked in
-   * @param checkOutDate date a guest checked out
-   * @param roomNum room number the reservation is made under
-   * @param price the cost of the reservation
+   * Prints the contents of a receipt after a guest makes a booking in a hotel.
+   * Displays all booking information.
+   * @param room Room object associated with the booking
+   * @param checkInDate guest's check-in date
+   * @param checkOutDate guest's check-out date
+   * @param guestName name where reservation is made under
+   * @param bookingID unique string of randomly generated numbers assigned to each booking
    */
-  public Reservation(String guestName, int checkInDate, int checkOutDate, int roomNum, double price){
-    this.roomNum = roomNum;
-    this.guestName = guestName;
-    this.checkInDate = checkInDate;
-    this.checkOutDate = checkOutDate;
-    this.roomPrice = price;
-    this.totalPrice = this.roomPrice * (checkOutDate - checkInDate);
-    this.bookingID = this.generateBookingID(roomNum);
+  public void printReceipt(String hotelName) { // move
+                                                                                                               // to
+                                                                                                               // reservation
+    // class + NO LINK TO ROOM
+    // YET
+    System.out.println(".-----------------------------------------------.");
+    // Print the header
+    System.out.printf("|          %7s HOTEL RECEIPT                |\n", hotelName); // change to hotel name
+    // Print the middle border
+    System.out.println(".-----------------------------------------------.");
+
+    // Print hotel and guest information
+    System.out.printf("| Guest Name: %-33s |\n", this.guestName);
+    System.out.printf("| Booking ID: %-33s |\n", this.bookingID);
+    System.out.println("|                                               |");
+    System.out.printf("| Check-in:   %-33s |\n", this.checkInDate);
+    System.out.printf("| Check-out:  %-33s |\n", this.checkOutDate);
+
+    System.out.println("|                                               |");
+    System.out.printf("| Price/Night: $%-31.2f |\n", this.roomPrice);
+    System.out.println("|---------------------------                    |");
+    System.out.printf("| Total Price: $%-31.2f |\n", this.totalPrice);
+
+    // Print the bottom border
+    System.out.println(".-----------------------------------------------.");
   }
 
   /**
@@ -114,5 +150,4 @@ public class Reservation{
   public String getBookingID() {
     return bookingID;
   }
-
 }
