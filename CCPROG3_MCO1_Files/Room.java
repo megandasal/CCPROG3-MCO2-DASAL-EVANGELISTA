@@ -82,18 +82,16 @@ public class Room {
       return false;
   }
 
-  /**
-   * Increments the number of days a room is available.
-   */
-  public void incrementDaysAvailable() {
-    nDaysAvailable++;
-  }
+  public void updateNDaysAvailable(){
 
-  /**
-   * Decrements the number of days a room is available.
-   */
-  public void decrementDaysAvailable() {
-    nDaysAvailable--;
+    int ctr = 0;
+    
+    for(int i = 0; i < 31; i++){
+      if(this.availability[i] == true)
+        ctr++;
+    }
+
+    this.nDaysAvailable = ctr;
   }
   
   /**
