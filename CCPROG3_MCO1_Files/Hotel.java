@@ -389,8 +389,10 @@ public class Hotel {
       System.out.print("\n> Enter the room number to remove: ");
       roomNum = getIntInput();
 
-      if (roomNum != -1) {
-        break;
+      if (roomNum == -1) {
+        System.out.println("Invalid input. Please enter a valid room number.");
+      }else{
+          break;
       }
     }
 
