@@ -13,6 +13,12 @@ public class Hotel {
   private int roomCtr; // counts how many rooms have been added so far, even those removed. this will
                        // be used for unique naming of rooms
 
+  /**
+   * Constructs a new Hotel object with a given hotel name.
+   * Initializes the hotel object with one room, a room base price of 1299.0,
+   * and estimated earnings of 0.
+   * @param hotelName name of the hotel
+   */
   public Hotel(String hotelName) { // constructor
     this.hotelName = hotelName;
     this.nRooms = 1; // instantiate into roomList
@@ -22,12 +28,14 @@ public class Hotel {
     this.roomCtr = 1;
   }
 
+  /**
+   * Updates the estimated earnings of a hotel by adding the total price
+   * of active reservations when new reservations are made and subtracting from it when
+   * reservations are deleted.
+   * @param reservationTotalPrice total price of all reservations across a hotel
+   * @param newBooking represents a reservation
+   */
   public void updateEstimateEarnings(double reservationTotalPrice, boolean newBooking) {
-
-    /*
-     * update esrimate earnings by adding the total price of the reservation when a
-     * new reservation is made and subtracts when reservation is deleted
-     */
     if (newBooking == true)
       this.estimateEarnings = this.estimateEarnings + reservationTotalPrice;
     else
@@ -35,22 +43,44 @@ public class Hotel {
 
   }
 
+  /**
+   * Retrieves the estimated earnings of a hotel.
+   * @return estimated earnings as a double
+   */
   public double getEstimateEarnings() {
     return this.estimateEarnings;
   }
 
+  /**
+   * Sets the name of a hotel.
+   * @param hotelName name of hotel to be set
+   */
   public void setHotelName(String hotelName) {
     this.hotelName = hotelName;
   }
 
+  /**
+   * Retrieves the name of a hotel.
+   * @return hotel name as a String
+   */
   public String getHotelName() {
     return this.hotelName;
   }
 
+  /**
+   * This method retrieves the number of rooms in a hotel.
+   * @return number of rooms as an int
+   */
   public int getNRooms() {
     return this.nRooms;
   }
 
+  /**
+   * Determines if a user's input is a valid integer.
+   * Returns an integer if the input is valid.
+   * Prints an error message and returns -1 otherwise.
+   * @return user's input if valid, -1 if not
+   */
   private int getIntInput() {
     if (scanner.hasNextInt()) {
       int input = scanner.nextInt();
@@ -63,6 +93,9 @@ public class Hotel {
     }
   }
 
+  /**
+   * Adds 1 to 50 rooms to a hotel.
+   */
   public void addRooms() { // turn into roomlist
 
     if (nRooms == 50) {
@@ -104,6 +137,12 @@ public class Hotel {
 
   }
 
+  /**
+   * Checks the availability of a room for reservation given a check-in and check-out date.
+   * @param checkInDate check-in date
+   * @param checkOutDate check-out date
+   * @return array list of Room objects available for specified date range
+   */
   public ArrayList<Room> checkRoomAvailability(int checkInDate, int checkOutDate) {
 
     /*
@@ -117,26 +156,44 @@ public class Hotel {
     for (Room room : rooms) {
       available = true;
 
-      for (int day = checkInDate; day <= checkOutDate; day++) {
-        if (room.isAvailable(day) == false) {
-          day = checkInDate;
-          available = false;
-          break;
-        }
-      }
+      if((checkInDate + 1 == checkOutDate) && room.isAvailable(checkInDate) == false && room.isAvailable(checkOutDate) == false){ //revise
+            available = false;
+            break;
+      }else{
 
-      if (available) {
-        availableRooms.add(room);
+        for (int day = checkInDate + 1; day < checkOutDate; day++) {
+          if (room.isAvailable(day) == false) {
+            day = checkInDate;
+            available = false;
+            break;
+          }
+        }
+  
+        if (available) {
+          availableRooms.add(room);
+        }
+        
       }
     }
 
     return availableRooms; // returns the list of rooms available
   }
 
+  /**
+   * Retrieves the total number of reservations across a hotel.
+   * @return size of array list representing all reservations 
+   */
   public int totalReservations() {
     return allReservations.size();
   }
-
+  
+  /**
+   * Handles booking process of a room in a given hotel.
+   * User is prompted to enter their name, check-in and check-out dates,
+   * and room number they wish to reserve. Creates a reservation and updates the
+   * hotel's estimated earnings.
+   * @return true if a booking is successful, false otherwise
+   */
   public boolean bookRoom() {
 
     boolean bookingIsSuccessful = false;
@@ -152,7 +209,7 @@ public class Hotel {
       System.out.print("\nEnter Check In Date: "); // NO VALIDATION
       checkInDate = getIntInput();
 
-      if(checkInDate < 1 || checkInDate > 31){
+      if(checkInDate < 1 || checkInDate > 30){
         System.out.println("Invalid input. Please enter a valid check in date.");
       }else{
         break;
@@ -163,26 +220,23 @@ public class Hotel {
       System.out.print("Enter Check Out Date: "); // NO VALIDATION
       checkOutDate = getIntInput();
 
-      if(checkOutDate < 1 || checkOutDate > 31){
+      if(checkOutDate <= checkInDate || checkOutDate > 31)
         System.out.println("Invalid input. Please enter a valid check out date.");
-      }else if(checkOutDate < checkInDate){
-        System.out.println("Invalid input. Please enter a valid check out date.");
-        return bookingIsSuccessful; //returns to main
-      }else{
+      else
         break;
-      }
+      
     }
     
     ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
-    // HELP u can change dis formatting tinry ko lang LOLLLL
-    System.out.println("\n--- Available Rooms ---");
-    for (Room room : availableRooms) {
-      System.out.println("\t      " + room.getRoomNum());
+    if (availableRooms.size() > 0){
+      System.out.println("\n--- Available Rooms ---");
+      for (Room room : availableRooms) {
+        System.out.println("\t      " + room.getRoomNum());
+      }
+      System.out.println("-----------------------");
     }
-    System.out.println("-----------------------");
-
-    if (availableRooms.size() == 0) {
-      System.out.println("There are no rooms available on the given dates.");
+    else if (availableRooms.size() == 0) {
+      System.out.println("\nThere are no rooms available on the given dates.");
       return bookingIsSuccessful; // returns false
     }
 
@@ -203,9 +257,10 @@ public class Hotel {
       if (room.getRoomNum() == selectedRoom) {
         found = true;
 
-        for (int day = checkInDate; day < checkOutDate; day++) { // ex. reservation day 1-6, only until day 5 is
+        for (int day = checkInDate; day <= checkOutDate ; day++) { // ex. reservation day 1-6, only until day 5 is
                                                                  // reserved
-          room.roomAvailability(day, false);
+          room.setRoomAvailability(day, false);
+          room.decrementDaysAvailable();
         }
 
         Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room.getRoomNum(), roomPrice);
@@ -228,14 +283,31 @@ public class Hotel {
     return bookingIsSuccessful;
   }
 
+  /**
+   * Sets the price of a room in a hotel.
+   * @param roomPrice price of a room as a double
+   */
   public void setRoomPrice(double roomPrice) { //is this used?
     this.roomPrice = roomPrice;
   }
 
+  /**
+   * Retrieves the price of a room in a hotel.
+   * @return price of a room as a double
+   */
   public double getRoomPrice() {
     return roomPrice;
   }
 
+  /**
+   * Prints the contents of a receipt after a guest makes a booking in a hotel.
+   * Displays all booking information.
+   * @param room Room object associated with the booking
+   * @param checkInDate guest's check-in date
+   * @param checkOutDate guest's check-out date
+   * @param guestName name where reservation is made under
+   * @param bookingID unique string of randomly generated numbers assigned to each booking
+   */
   public void printReceipt(Room room, int checkInDate, int checkOutDate, String guestName, String bookingID) { // move
                                                                                                                // to
                                                                                                                // reservation
@@ -263,6 +335,14 @@ public class Hotel {
     System.out.println(".-----------------------------------------------.");
   }
 
+  /**
+  * Retrieves the availability of a specific room on a given date.
+  * @param date the date for which the availability of a room must be checked
+  * @param roomName name/number of room to be checked
+  * @return number of rooms with no active reservations
+  */
+
+  // NO USAGE
   public int getRoomAvailability(int date, int roomName) {
 
     int roomsAvailable = 0;
@@ -276,11 +356,14 @@ public class Hotel {
       }
 
     }
-
     return roomsAvailable;
-
   }
 
+  /**
+   * Retrieves the number of rooms available on a given date.
+   * @param date the date for which the availability of a room must be checked
+   * @return number of rooms with no active reservations
+   */
   public int roomsAvailableOnDate(int date) {
 
     int nRoomsAvailable = 0;
@@ -294,21 +377,31 @@ public class Hotel {
     return nRoomsAvailable;
   }
 
+  /**
+   * Displays all rooms in a hotel.
+   */
   public void viewRooms() {
-    System.out.println("ROOMS");
+    System.out.println("\nROOMS");
     for (Room room : rooms) {
       System.out.println("- Room " + room.getRoomNum());
     }
   }
 
+  /**
+   * Displays the information of a hotel: name, number of rooms, price of rooms,
+   * and estimated earnings.
+   */
   public void printHotelInformation() {
     System.out.println("Hotel Name: " + this.getHotelName());
     System.out.println("Number of Rooms: " + this.getNRooms());
     System.out.println("Room Price: " + this.getRoomPrice());
     System.out.println("Estimate Earnings: " + this.getEstimateEarnings());
   }
-
-  /* whats this for idnt remmemerb */
+  
+  /**
+   * Prompts user to enter a room number and displays the corresponding room's
+   * information if it exists. Prints an error message otherwise.
+   */
   public void viewRoomInfo() {
     /*
      * CASES
@@ -340,15 +433,21 @@ public class Hotel {
       System.out.println("Room does not exist.");
     return;
   }
-
-  public void allHotelReservations() { // collects all the reservations in all the rooms
+  
+  /**
+   * Collects and adds all reservations across all rooms in a hotel.
+   */
+  public void allHotelReservations() {
     allReservations.clear();
     for (Room room : rooms) {
       allReservations.addAll(room.getReservations());
     }
   }
 
-  public void printAllReservations() { // prints all reservations made across the hotel
+  /**
+   * Displays all reservations made across a hotel.
+   */
+  public void printAllReservations() {
 
     this.allHotelReservations();
     System.out.println("All Reservations:");
@@ -358,6 +457,10 @@ public class Hotel {
     }
   }
 
+  /**
+   * Prompts the user to enter their unique reservation number. Displays the corresponding
+   * reservation information if it exists. Prints an error message otherwise.
+   */
   public void viewReservationInfo() {
     /*
      * CASES
@@ -368,7 +471,7 @@ public class Hotel {
 
     while (true) {
 
-      System.out.print("View Details for Reservation Number: ");
+      System.out.print("\nView Details for Reservation Number: ");
       int reservationNum = getIntInput();
 
       if (reservationNum < 1 || reservationNum > allReservations.size()) {
@@ -383,6 +486,11 @@ public class Hotel {
     // breakdown of cost per night)
   }
 
+  /**
+   * Handles the process of removing rooms in a hotel. Prompts the user to enter
+   * the room number they wish to remove and removes it if the room exists and
+   * does not hold an active reservation.
+   */
   public void removeRooms() {
 
     boolean roomFound = false;
@@ -397,7 +505,7 @@ public class Hotel {
         System.out.println("* Room " + room.getRoomNum());
     }
 
-    System.out.println("\n- no reservation          * has reservation");
+    System.out.println("\n- no reservation    |    * has reservation");
 
     while(true){
       System.out.print("\n> Enter the room number to remove: ");
@@ -451,6 +559,11 @@ public class Hotel {
     }
   }
 
+  /**
+   * Updates the base price of a room given that no room in the hotel
+   * is reserved and that the new price entered by the user is not
+   * lower than 100.00.
+   */
   public void updateRoomPrice() {
     boolean isReserved = false;
     
@@ -501,6 +614,10 @@ public class Hotel {
     }
   }
 
+  /**
+   * Removes a reservation from the hotel by asking the user for their
+   * unique Booking ID.
+   */
   public void removeReservation() {
     boolean reservationFound = false;
     
@@ -518,13 +635,27 @@ public class Hotel {
           char confirm = scanner.next().charAt(0);
 
           if (confirm == 'Y' || confirm == 'y') {
+
+            int checkInDate =  room.getReservations().get(i).getCheckInDate();
+            int checkOutDate = room.getReservations().get(i).getCheckOutDate();
+            
             this.updateEstimateEarnings(room.getReservations().get(i).getTotalPrice(), false); // removes reservation
                                                                                                // total price from
                                                                                                // earnings
-            for (int day = room.getReservations().get(i).getCheckInDate(); day < room.getReservations().get(i)
-                .getCheckOutDate(); day++) {
-              room.roomAvailability(day, true); // updates room availability on dates
+            for (int day = checkInDate; day <= checkOutDate; day++) {
+              room.setRoomAvailability(day, true); // updates room availability on dates
+              room.incrementDaysAvailable();
             }
+
+            if(room.isReservationStartingEndingOn(checkOutDate, true)){
+              room.setRoomAvailability(checkOutDate, false); 
+              room.decrementDaysAvailable();
+            }
+            if(room.isReservationStartingEndingOn(checkInDate, false)){
+              room.setRoomAvailability(checkInDate, false); 
+              room.decrementDaysAvailable();
+            }
+            
             room.removeReservation(i); // removes the reservation instance
             this.allHotelReservations(); // updates reservation list
             System.out.println("Your reservation has been successfully removed.");
