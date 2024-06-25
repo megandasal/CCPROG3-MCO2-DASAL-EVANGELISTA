@@ -66,7 +66,7 @@ public class Main {
      * Allows the user to simulate booking a reservation.
      */
     private static void printMenu() {
-        System.out.println(".------------------------------------------------------."); 
+        System.out.println("\n.------------------------------------------------------."); 
         System.out.println("|                      MAIN MENU                       |");
         System.out.println("|               Current Hotel Count: " + hotelCount + "                 |"); 
         System.out.println(".------------------------------------------------------.");
@@ -83,17 +83,14 @@ public class Main {
      */
     private static void printHotels() {
         // Print the list of hotels with centered names
-        System.out.print("\n--- Available Hotels ---");
-        System.out.println("\n");
+        System.out.println("\n.------------------------------------------.");
+        System.out.println("|   HOTELS                                 |");
+        System.out.println(".------------------------------------------.");
+    
         for (Hotel hotel : hotelList) {
-            String hotelName = hotel.getHotelName();
-            int totalWidth = 24;  // total width of the output
-            int spaces = (totalWidth - hotelName.length()) / 2;
-            String formatString = "%" + spaces + "s%s%" + spaces + "s";
-            System.out.printf(formatString, "", hotelName, "");
-            System.out.println();  // move to the next line after each hotel
+            System.out.format("|     > %-35s|\n", hotel.getHotelName());
         }
-        System.out.println("\n------------------------");
+        System.out.println(".------------------------------------------.");
     }
 
 
@@ -154,7 +151,6 @@ public class Main {
           scanner.nextLine(); // consume the newline character
           return input;
         } else {
-          System.out.println("Invalid input. Please enter an integer.");
           scanner.next(); // clear the invalid input
           return -1; //signals that the input was invalid
         }
@@ -192,6 +188,7 @@ public class Main {
 
                     System.out.print("> Enter choice: ");
                     String choice = scanner.nextLine();
+                    choice = choice.toUpperCase();
 
                     switch (choice) {
                         case "DATE":
@@ -277,13 +274,14 @@ public class Main {
             System.out.print("> Enter choice: ");
             Scanner scanner = new Scanner(System.in);
             String manageChoice = scanner.nextLine();
+            manageChoice = manageChoice.toLowerCase();
             boolean hotelFound = false;
             String hotelName;
             String newName;
             boolean newNameIsValid = false;
 
             switch (manageChoice) {
-                case "Change Hotel Name":
+                case "change hotel name":
 
                     /*
                      * [/] 1. print all hotels
@@ -327,7 +325,7 @@ public class Main {
 
                     break;
 
-                case "Add Rooms":
+                case "add rooms":
                         System.out.println("Please select a hotel from the following: ");
                         printHotels();
                         System.out.print("\n> Enter the hotel name you wish to add rooms to: ");
@@ -344,7 +342,7 @@ public class Main {
                         }
                     break;
 
-                case "Remove Rooms": 
+                case "remove rooms": 
                         System.out.println("Please select a hotel from the following: ");
                         printHotels();
                         System.out.print("\n> Enter hotel name to remove rooms from: ");
@@ -367,7 +365,7 @@ public class Main {
                         }
                     break;
 
-                case "Update Room Base Price":
+                case "update room base price":
                         System.out.println("\nPlease select a hotel from the following: ");
                         printHotels();
                         System.out.print("\n> Enter hotel name to update base price: ");
@@ -384,7 +382,7 @@ public class Main {
                         }
                     break;
 
-                case "Remove Reservation":
+                case "remove reservation":
                         System.out.println("Please select a hotel from the following: ");
                         printHotels();
                         System.out.print("\n> Enter choice: ");
@@ -409,13 +407,13 @@ public class Main {
                     
                     break;
 
-                case "Remove Hotel":
+                case "remove hotel":
                     System.out.println("Please select a hotel from the following: "); 
                     printHotels();
                     System.out.print("\n> Enter hotel name to remove: ");
                     String removeHotelName = scanner.nextLine();
 
-                    Iterator<Hotel> iterator = hotelList.iterator();
+                    Iterator<Hotel> iterator = hotelList.iterator(); //remove iterator
                     while (iterator.hasNext()) {
                         Hotel hotel = iterator.next();
                         if (hotel.getHotelName().equals(removeHotelName)) {
@@ -506,22 +504,23 @@ public class Main {
             System.out.print("> Enter choice: ");
 
             String choice = scanner.nextLine();
+            choice = choice.toLowerCase();
 
             switch (choice) {
 
-                case "Create Hotel":
+                case "create hotel":
 
                     createHotel(hotelList);
 
                     break;
-                case "View Hotel":
+                case "view hotel":
                     viewHotel(hotelList);
                     break;
-                case "Manage Hotel":
+                case "manage hotel":
                     manageHotel(hotelList);
 
                     break;
-                case "Simulate Booking":
+                case "simulate booking":
                     simulateBooking(hotelList);
                     break;
 
