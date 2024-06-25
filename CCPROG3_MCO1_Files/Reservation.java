@@ -6,12 +6,49 @@ public class Reservation{
   private String guestName;
   private int checkInDate;
   private int checkOutDate;
-  private int numNights;
   private int roomNum;
   private double roomPrice;
   private double totalPrice;
   private String bookingID;
 
+  /**
+   * Prints out information about a reservation.
+   */
+  public void printReservationInformation(){
+    System.out.println("\n.------------------------------.");
+    System.out.println("|     * RESERVATION INFO *     |");
+    System.out.println("|                              |");
+    System.out.format("| Guest Name: %-16s |\n", this.guestName);
+    System.out.format("| Booking ID: %-16s |\n", this.bookingID);
+    System.out.format("| Room: %-22d |\n", this.roomNum);
+    System.out.format("| Check In: %-18d |\n", this.checkInDate);
+    System.out.format("| Check Out: %-17d |\n", this.checkOutDate);
+    System.out.format("| Cost per night: $%-11.2f |\n", this.roomPrice); 
+    System.out.format("| Total Price: $%-14.2f |\n", this.totalPrice);
+    System.out.println(".------------------------------.");
+  }
+
+  /**
+   * Generates a random booking ID for a successful reservation.
+   * @param roomNumber the room number a reservation is made under
+   * @return string of 6 random integers concatenated with the given room number
+   */
+  public String generateBookingID(int roomNumber){
+    int length = 6; // length of randomly generated integer
+    Random random = new Random();
+    String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
+    StringBuilder sb = new StringBuilder(length); // for string concatenation
+
+    for (int i = 0; i < length; i++) {
+        sb.append(random.nextInt(10)); // append a random digit (0-9) to the string
+    }
+
+    String randomInt = sb.toString();
+    String bookingID = randomInt + roomNum; 
+
+    return bookingID;
+  }
+  
   /**
    * Constructs a Reservation object.
    * @param guestName name of guest who made a reservation
@@ -31,36 +68,12 @@ public class Reservation{
   }
 
   /**
-   * Prints out information about a reservation.
-   */
-  public void printReservationInformation(){
-    System.out.println("\n.------------------------------.");
-    System.out.println("|     * RESERVATION INFO *     |");
-    System.out.println("|                              |");
-    System.out.format("| Guest Name: %-16s |\n", this.guestName);
-    System.out.format("| Booking ID: %-16s |\n", this.bookingID);
-    System.out.format("| Room: %-22d |\n", this.roomNum);
-    System.out.format("| Check In: %-18d |\n", this.checkInDate);
-    System.out.format("| Check Out: %-17d |\n", this.checkOutDate);
-    System.out.format("| Cost per night: $%-11.2f |\n", this.roomPrice); 
-    System.out.format("| Total Price: $%-14.2f |\n", this.totalPrice);
-    System.out.println(".------------------------------.");
-
-    //view information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night)
-  }
-
-  /**
    * Retrieves the reservation's room number.
    * @return room number
    */
   public int getRoomNum(){
     return this.roomNum;
   }
-
-  
-  public void calculateNumNights(){
-    // calculate number of nights
-  } 
 
   /**
    * Retrieves the name of the guest who made the reservation.
@@ -87,14 +100,6 @@ public class Reservation{
   }
 
   /**
-   * Retrieves the number of nights a guest stayed in the hotel.
-   * @return number of nights
-   */
-  public int getNumNights(){
-    return numNights;
-  }
-
-  /**
    * Retrieves the total cost of each night a guest stays in a hotel.
    * @return total cost/price of all nights stayed
    */
@@ -107,27 +112,6 @@ public class Reservation{
    * @return booking ID
    */
   public String getBookingID() {
-    return bookingID;
-  }
-
-  /**
-   * Generates a random booking ID for a successful reservation.
-   * @param roomNumber the room number a reservation is made under
-   * @return string of 6 random integers concatenated with the given room number
-   */
-  public String generateBookingID(int roomNumber){
-    int length = 6; // length of randomly generated integer
-    Random random = new Random();
-    String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
-    StringBuilder sb = new StringBuilder(length); // for string concatenation
-
-    for (int i = 0; i < length; i++) {
-        sb.append(random.nextInt(10)); // append a random digit (0-9) to the string
-    }
-
-    String randomInt = sb.toString();
-    String bookingID = randomInt + roomNum; 
-
     return bookingID;
   }
 
