@@ -47,23 +47,36 @@ public class Room {
    */
   public void printRoomInformation(){
     //information about selected room (name, cost per night, and availabilty across the whole month) just iterate through rooms and print out the information of the selected room
-    
-    System.out.println("\nRoom Name: " + this.roomNum);
-    System.out.println("Cost per Night: " + this.hotel.getRoomPrice());
-    System.out.println("Number of Days Available: " + this.nDaysAvailable);
-    /*DAYS AVAILABLE*/
 
-    System.out.println("\nAvailability for Room " + this.getRoomNum() + ":");
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|                   ROOM INFORMATION                   |");
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|                                                      |");
+    System.out.format("|   Room Name: %-39s |\n" , this.roomNum);
+    System.out.format("|   Cost per Night: %-34s |\n" , this.hotel.getRoomPrice()); 
+    System.out.format("|   Number of Days Available: %-24s |\n" , this.nDaysAvailable);
+    System.out.println("|                                                      |");
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|                     AVAILABILITY                     |");
+    System.out.println(".------------------------------------------------------.");
     for (int day = 0; day < this.availability.length; day++) {
-        if (this.availability[day]) {
-            System.out.println("Day " + (day + 1) + ": Available");
-        } else {
-            System.out.println("Day " + (day + 1) + ": Not Available");
-        }
+      if (this.availability[day]) {
+        System.out.format("|   DAY %d: %-43s |\n" , day+1, "Available");
+      }
+      else {
+        System.out.format("|   DAY %d: %-40s |\n" , day+1, "Not Available");
+      }
     }
+    System.out.println(".------------------------------------------------------.");
     
   } 
 
+  /**
+  *
+  * @param date
+  * @param starting
+  * @return
+  */
   public boolean isReservationStartingEndingOn(int date, boolean starting) {
     if(starting == true){ //checks if there is a check in on a specified date
       for (Reservation reservation : roomReservations) {
@@ -82,6 +95,9 @@ public class Room {
       return false;
   }
 
+  /**
+  * Updates the availability of a room in a boolean array.
+  */
   public void updateNDaysAvailable(){
 
     int ctr = 0;
@@ -112,12 +128,11 @@ public class Room {
   }
   
   /**
-   * Adds a reservation to array list of room reservations.
+   * Adds a reservation to the array list of room reservations.
    * @param reservation a Reservation object containing the guest's name, 
    * check-in and check-out dates, room number, room price, total room price, and
    * unique booking ID
    */
-  
   public void addReservation(Reservation reservation) {
     roomReservations.add(reservation);
   }
