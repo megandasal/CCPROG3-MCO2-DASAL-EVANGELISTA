@@ -188,9 +188,15 @@ public class Hotel {
 
     boolean available;
     ArrayList<Room> availableRooms = new ArrayList<Room>();
+        
 
     for (Room room : rooms) {// checks all rooms in hotel
       available = true;
+
+      if (room.isReservationStartingEndingOn(checkInDate, true) || room.isReservationStartingEndingOn(checkOutDate, false)){
+        available = false;
+        break;
+      }
 
       for (int day = checkInDate; day <= checkOutDate; day++) { // checks if room is available for each day in the
                                                                 // specified date range
@@ -243,16 +249,17 @@ public class Hotel {
    */
   public void bookRoom() {
 
+     Scanner scanner = new Scanner(System.in);
+
     // signals whether booking is successful/not, default is false and will only be
     // true once all conditions are met
-
-    scanner.nextLine();
 
     System.out.print("Enter name to book reservation: ");
     String guestName = scanner.nextLine();
 
     int checkInDate;
     int checkOutDate;
+
 
     while (true) {
       System.out.print("\nEnter Check In Date: ");
@@ -263,6 +270,7 @@ public class Hotel {
       } else {
         break;
       }
+
     }
 
     while (true) {
@@ -391,8 +399,8 @@ public class Hotel {
 
       if (roomNum == -1) {
         System.out.println("Invalid input. Please enter a valid room number.");
-      }else{
-          break;
+      } else {
+        break;
       }
     }
 
@@ -550,10 +558,12 @@ public class Hotel {
 
   /**
    * Updates the estimated earnings of a hotel by adding the total price
-   * of active reservations when new reservations are made and subtracting from it when
+   * of active reservations when new reservations are made and subtracting from it
+   * when
    * reservations are deleted.
+   * 
    * @param reservationTotalPrice total price of all reservations across a hotel
-   * @param newBooking represents a reservation
+   * @param newBooking            represents a reservation
    */
   public void updateEstimateEarnings(double reservationTotalPrice, boolean newBooking) {
     if (newBooking == true)
