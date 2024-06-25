@@ -10,6 +10,7 @@ public class Reservation{
   private double roomPrice;
   private double totalPrice;
   private String bookingID;
+  private Room roomLink;
 
   /**
    * Constructs a Reservation object.
@@ -19,7 +20,7 @@ public class Reservation{
    * @param roomNum room number the reservation is made under
    * @param price the cost of the reservation
    */
-  public Reservation(String guestName, int checkInDate, int checkOutDate, int roomNum, double price){
+  public Reservation(String guestName, int checkInDate, int checkOutDate, int roomNum, double price, Room room){
     this.roomNum = roomNum;
     this.guestName = guestName;
     this.checkInDate = checkInDate;
@@ -27,6 +28,7 @@ public class Reservation{
     this.roomPrice = price;
     this.totalPrice = this.roomPrice * (checkOutDate - checkInDate);
     this.bookingID = this.generateBookingID(roomNum);
+    roomLink = room;
   }
 
   /**
@@ -43,6 +45,7 @@ public class Reservation{
     System.out.format("| Check Out: %-17d |\n", this.checkOutDate);
     System.out.format("| Cost per night: $%-11.2f |\n", this.roomPrice); 
     System.out.format("| Total Price: $%-14.2f |\n", this.totalPrice);
+    System.out.format("| Link: $%-14.2f |\n", );
     System.out.println(".------------------------------.");
   }
 
