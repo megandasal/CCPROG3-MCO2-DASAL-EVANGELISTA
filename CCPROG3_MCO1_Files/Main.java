@@ -15,7 +15,7 @@ SPECIFICATIONS CHECKLIST:
             - reminder: check logic for reserving room from days n to n
         b. PRICE: total price and breakdown of cost per night
     
-  2. View Hotel ***NOTE: FIX AESTHETICS + ERROR PROOFING***
+  2. View Hotel
   
     [/] HIGH LEVEL INFORMATION
         [/] hotel name
