@@ -59,22 +59,22 @@ public class Main {
 
     public static int hotelCount = 0;
     public static ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
-
+    
     /**
      * Prints the main menu for the hotel reservation system.
      * Displays options for creating, viewing, and managing a hotel.
      * Allows the user to simulate booking a reservation.
      */
     private static void printMenu() {
-        System.out.println("\n.------------------------------------------------------.");
-        System.out.println("|\t\t\t\t\t   MAIN MENU  \t\t\t\t\t   |");
-        System.out.println("|\t\t\t\tcurrent hotel count: " + hotelCount + "\t\t\t\t   |"); // WILL REMOVE, THIS IS JUST
-                                                                                            // FOR CHECKING
-        System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
-        System.out.println("|\t [Create Hotel]\t\t\t\t\t\t[View Hotel]   |");
-        System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
-        System.out.println("|\t [Manage Hotel]  \t\t      [Simulate Booking]   |");
-        System.out.println("|\t\t\t\t\t\t\t\t\t\t\t\t\t   |");
+        System.out.println(".------------------------------------------------------."); 
+        System.out.println("|                      MAIN MENU                       |");
+        System.out.println("|               Current Hotel Count: " + hotelCount + "                 |"); 
+        System.out.println(".------------------------------------------------------.");
+        System.out.println("|                                                      |");
+        System.out.println("|   [Create Hotel]                      [View Hotel]   |");
+        System.out.println("|                                                      |");
+        System.out.println("|   [Manage Hotel]                [Simulate Booking]   |");
+        System.out.println("|                                                      |");
         System.out.println("'------------------------------------------------------'");
     }
 
@@ -82,13 +82,20 @@ public class Main {
      * Prints the list of hotels currently available.
      */
     private static void printHotels() {
-        int i = 1;
-
+        // Print the list of hotels with centered names
+        System.out.print("\n--- Available Hotels ---");
+        System.out.println("\n");
         for (Hotel hotel : hotelList) {
-            System.out.println(i + ". " + hotel.getHotelName());
-            i++;
+            String hotelName = hotel.getHotelName();
+            int totalWidth = 24;  // total width of the output
+            int spaces = (totalWidth - hotelName.length()) / 2;
+            String formatString = "%" + spaces + "s%s%" + spaces + "s";
+            System.out.printf(formatString, "", hotelName, "");
+            System.out.println();  // move to the next line after each hotel
         }
+        System.out.println("\n------------------------");
     }
+
 
     /**
      * Checks if an entered hotel name does not yet exist among the list of hotels.
@@ -162,9 +169,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         if (hotelCount > 0){
-            for (int i = 0; i < hotelCount; i++) {
-                System.out.println(i + 1 + ". " + hotelList.get(i).getHotelName());
-            }
+            printHotels();
 
             System.out.println("\nWhich hotel do you wish to view? ");
             System.out.print("> Enter choice: ");
@@ -175,15 +180,17 @@ public class Main {
             for (Hotel hotel : hotelList) {
                 if (hotel.getHotelName().equals(name)) {
                     /* DETAILS CAN BE PRINTED IN HOTEL CLASS */
+                    System.out.print("\n");
                     hotel.printHotelInformation();
 
                     /* FIX THIS PART, CLEAN UP */
-                    System.out.println(".-----------------------------------------.");
-                    System.out.println("|\t\t\t\t   SELECT\t\t\t\t   |");
-                    System.out.println("|\t [DATE]   [ROOM]   [RESERVATION]\t |");
-                    System.out.println(".-----------------------------------------.");
+                    System.out.println(".------------------------------------------------------.");
+                    System.out.println("|              LOW LEVEL HOTEL INFORMATION             |");
+                    System.out.println(".------------------------------------------------------.");
+                    System.out.println("|    [    DATE    ]  [    ROOM    ]  [ RESERVATION ]   |");
+                    System.out.println(".------------------------------------------------------.");
 
-                    System.out.print("Choice: ");
+                    System.out.print("> Enter choice: ");
                     String choice = scanner.nextLine();
 
                     switch (choice) {
@@ -221,8 +228,10 @@ public class Main {
                             // check-in and check-out dates, total price of booking and breakdown of cost
                             // per night)
                             break;
+                        default:
+                            System.out.println("Invalid input.");
+                            break;
                     }
-
                     found = true;
                     break;
                 }
@@ -246,20 +255,26 @@ public class Main {
      */
     private static void manageHotel(ArrayList<Hotel> hotelList) {
 
-        if (hotelCount > 0){
-            System.out.println("+------------------------------------------------------+");
-            System.out.println("|                                                      |");
-            System.out.println("|                         SELECT                       |");
-            System.out.println("|                                                      |");
-            System.out.println("|    [Change Hotel Name]               [Add Rooms]     |");
-            System.out.println("|                                                      |");
-            System.out.println("|    [Remove Rooms]       [Update Room Base Price]     |");
-            System.out.println("|                                                      |");
-            System.out.println("|    [Remove Reservation]           [Remove Hotel]     |");
-            System.out.println("|                                                      |");
-            System.out.println("+------------------------------------------------------+");
+        if (hotelCount > 0){ 
 
-            System.out.print("> Enter your choice: ");
+            System.out.println(".------------------------------------------------------.");
+            System.out.println("|                      MANAGE HOTEL                    |");
+            System.out.println(".------------------------------------------------------.");
+            System.out.println("|                  [Change Hotel Name]                 |");
+            System.out.println("|                                                      |");
+            System.out.println("|                      [Add Rooms]                     |");
+            System.out.println("|                                                      |");
+            System.out.println("|                     [Remove Rooms]                   |");
+            System.out.println("|                                                      |");
+            System.out.println("|               [Update Room Base Price]               |");
+            System.out.println("|                                                      |");
+            System.out.println("|                  [Remove Reservation]                |");
+            System.out.println("|                                                      |");
+            System.out.println("|                     [Remove Hotel]                   |");
+            System.out.println(".------------------------------------------------------.");
+
+            
+            System.out.print("> Enter choice: ");
             Scanner scanner = new Scanner(System.in);
             String manageChoice = scanner.nextLine();
             boolean hotelFound = false;
@@ -314,9 +329,7 @@ public class Main {
 
                 case "Add Rooms":
                         System.out.println("Please select a hotel from the following: ");
-                        for (Hotel hotel : hotelList) {
-                            System.out.println("- " + hotel.getHotelName());
-                        }
+                        printHotels();
                         System.out.print("\n> Enter the hotel name you wish to add rooms to: ");
                         String hotelNameToAddRooms = scanner.nextLine();
                         for (Hotel hotel : hotelList) {
@@ -356,9 +369,7 @@ public class Main {
 
                 case "Update Room Base Price":
                         System.out.println("\nPlease select a hotel from the following: ");
-                        for (Hotel hotel : hotelList) {
-                            System.out.println("- " + hotel.getHotelName());
-                        }
+                        printHotels();
                         System.out.print("\n> Enter hotel name to update base price: ");
                         String hotelUpdatePrice = scanner.nextLine();
                         for (Hotel hotel : hotelList) {
@@ -374,7 +385,6 @@ public class Main {
                     break;
 
                 case "Remove Reservation":
-
                         System.out.println("Please select a hotel from the following: ");
                         printHotels();
                         System.out.print("\n> Enter choice: ");
@@ -402,7 +412,7 @@ public class Main {
                 case "Remove Hotel":
                     System.out.println("Please select a hotel from the following: "); 
                     printHotels();
-                    System.out.print("> Enter hotel name to remove: ");
+                    System.out.print("\n> Enter hotel name to remove: ");
                     String removeHotelName = scanner.nextLine();
 
                     Iterator<Hotel> iterator = hotelList.iterator();
@@ -415,21 +425,21 @@ public class Main {
                             if (confirm == 'Y' || confirm == 'y') {
                                 iterator.remove();
                                 hotelCount--;
-                                System.out.println(removeHotelName + " removed successfully.");
+                                System.out.println("\n" + removeHotelName + " was removed successfully.");
                             } else {
-                                System.out.println("Modification cancelled.");
+                                System.out.println("\nModification cancelled.");
                             }
                             hotelFound = true;
                             break;
                         }
                     }
                     if (!hotelFound) {
-                        System.out.println("Hotel not found.");
+                        System.out.println("\nHotel not found.");
                     }
                     break;
 
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("\nInvalid choice.");
                     break;
             }
         }
@@ -455,10 +465,8 @@ public class Main {
         if (hotelCount > 0){
             Scanner scanner = new Scanner(System.in);
 
-            System.out.println("Please select a hotel to make a reservation. Available hotels:");
-            for (int i = 0; i < hotelList.size(); i++) {
-                System.out.println("- " + hotelList.get(i).getHotelName());
-            }
+            System.out.println("Please select a hotel to make a reservation. ");
+            printHotels();
 
             System.out.println("\nIn which hotel do you wish to book a room? ");
             System.out.print("> Enter choice: ");
@@ -495,7 +503,7 @@ public class Main {
 
             printMenu();
 
-            System.out.print("> Enter your choice: ");
+            System.out.print("> Enter choice: ");
 
             String choice = scanner.nextLine();
 
