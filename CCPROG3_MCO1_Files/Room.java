@@ -59,12 +59,26 @@ public class Room {
     System.out.println(".------------------------------------------------------.");
     System.out.println("|                     AVAILABILITY                     |");
     System.out.println(".------------------------------------------------------.");
+    System.out.println("|            Day            |          Status          |");
+    System.out.println(".------------------------------------------------------.");
     for (int day = 0; day < this.availability.length; day++) {
-      if (this.availability[day]) {
-        System.out.format("|   DAY %d: %-43s |\n" , day+1, "Available");
+      String dayStr = String.format("%2d", day + 1);
+      String reserved = availability[day] ? "Available" : "Not Available";
+      if (availability[day] == true){
+        if (day < 10){
+          System.out.format("|            %-2s             |         %-13s    |\n", dayStr, reserved);
+        }
+        else {
+          System.out.format("|             %-2s            |         %-13s    |\n", dayStr, reserved);
+        }
       }
-      else {
-        System.out.format("|   DAY %d: %-40s |\n" , day+1, "Not Available");
+      else{
+          if (day < 10){
+            System.out.format("|            %-2s             |       %-13s      |\n", dayStr, reserved);
+          }
+          else {
+           System.out.format("|             %-2s            |       %-13s      |\n", dayStr, reserved);
+          }
       }
     }
     System.out.println(".------------------------------------------------------.");
