@@ -60,6 +60,11 @@ public class Main {
     public static int hotelCount = 0;
     public static ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
 
+    /**
+     * Prints the main menu for the hotel reservation system.
+     * Displays options for creating, viewing, and managing a hotel.
+     * Allows the user to simulate booking a reservation.
+     */
     private static void printMenu() {
         System.out.println("\n.------------------------------------------------------.");
         System.out.println("|\t\t\t\t\t   MAIN MENU  \t\t\t\t\t   |");
@@ -73,6 +78,9 @@ public class Main {
         System.out.println("'------------------------------------------------------'");
     }
 
+    /**
+     * Prints the list of hotels currently available.
+     */
     private static void printHotels() {
         int i = 1;
 
@@ -82,6 +90,12 @@ public class Main {
         }
     }
 
+    /**
+     * Checks if an entered hotel name does not yet exist among the list of hotels.
+     * @param hotelList List of hotels to check against
+     * @param hotelName Name of hotel to check
+     * @return true if hotel name is unique, return false otherwise
+     */
     private static boolean isUniqueName(ArrayList<Hotel> hotelList, String hotelName) {
 
         for (Hotel hotel : hotelList) { // iterates through hotelList to check if hotelName already exists
@@ -94,6 +108,10 @@ public class Main {
         return true;
     }
 
+    /**
+     * Creates a hotel and adds it to the list of currently existing hotels.
+     * @param hotelList list of available hotels
+     */
     private static void createHotel(ArrayList<Hotel> hotelList) {
 
         Scanner scanner = new Scanner(System.in);
@@ -117,6 +135,12 @@ public class Main {
         }
     }
 
+  /**
+   * Determines if a user's input is a valid integer.
+   * Returns the integer input if the input is valid.
+   * Prints an error message and returns -1 otherwise.
+   * @return user's input if valid, -1 if not
+   */
     private static int getIntInput() {
         if (scanner.hasNextInt()) {
           int input = scanner.nextInt();
@@ -129,6 +153,10 @@ public class Main {
         }
       }
 
+    /**
+     * Allows user to view the date, room, and reservation information of a given hotel.
+     * @param hotelList list of available hotels
+     */
     private static void viewHotel(ArrayList<Hotel> hotelList) {
 
         Scanner scanner = new Scanner(System.in);
@@ -138,7 +166,8 @@ public class Main {
                 System.out.println(i + 1 + ". " + hotelList.get(i).getHotelName());
             }
 
-            System.out.print("Which Hotel do you wish to view? ");
+            System.out.println("\nWhich hotel do you wish to view? ");
+            System.out.print("> Enter choice: ");
             String name = scanner.nextLine();
 
             boolean found = false;
@@ -209,18 +238,25 @@ public class Main {
         
     }
 
+    /**
+     * Allow the user to manage the hotel by changing the hotel name, adding and removing rooms,
+     * updating the base price of a room, removing an existing reservation, and
+     * removing the hotel itself.
+     * @param hotelList list of available hotels
+     */
     private static void manageHotel(ArrayList<Hotel> hotelList) {
 
         if (hotelCount > 0){
             System.out.println("+------------------------------------------------------+");
-            System.out.println("|\t\t\t\t\t       SELECT \t\t\t\t\t   |");
-            System.out.println("|\t\t\t\t\t\t       \t\t\t\t\t\t   |");
-            System.out.println("|\t\t [Change Hotel Name] \t     [Add Rooms]       |");
-            System.out.println("|\t\t\t\t\t\t        \t\t\t\t\t|");
-            System.out.println("|\t\t [Remove Rooms]\t[Update Room Base Price]\t   |");
-            System.out.println("|\t\t\t\t\t\t          \t\t\t\t\t \t|");
-            System.out.println("|\t\t [Remove Reservation] \t     [Remove Hotel]\t|");
-            System.out.println("|\t\t\t\t\t\t         \t\t\t\t\t \t|");
+            System.out.println("|                                                      |");
+            System.out.println("|                         SELECT                       |");
+            System.out.println("|                                                      |");
+            System.out.println("|    [Change Hotel Name]               [Add Rooms]     |");
+            System.out.println("|                                                      |");
+            System.out.println("|    [Remove Rooms]       [Update Room Base Price]     |");
+            System.out.println("|                                                      |");
+            System.out.println("|    [Remove Reservation]           [Remove Hotel]     |");
+            System.out.println("|                                                      |");
             System.out.println("+------------------------------------------------------+");
 
             System.out.print("> Enter your choice: ");
@@ -402,6 +438,11 @@ public class Main {
         }
     }
 
+    /**
+     * Allows the user to book a reservation in the hotel by entering information such as
+     * their name, and the dates they wish to check in and check out.
+     * @param hotelList list of available hotels
+     */
     private static void simulateBooking(ArrayList<Hotel> hotelList) {
         /*
          * [/] 1. ask for check in and check out dates
@@ -469,8 +510,6 @@ public class Main {
                     viewHotel(hotelList);
                     break;
                 case "Manage Hotel":
-                    // manage hotel
-                    // if hotelcount = 0, print "no hotels to manage"
                     manageHotel(hotelList);
 
                     break;
