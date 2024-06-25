@@ -1,64 +1,11 @@
-/*
-SPECIFICATIONS CHECKLIST:
-
-  [X] - FOR NOT YET IMPLEMENTED
-  [_] - FOR ONGOING
-  [/] - FOR IMPLEMENTED
-  
-  1. Create Hotel
-  
-    [/] Initialize New Hotel - Hotel Count must start at 0 and name must be UNIQUE.
-    [/] Create Rooms - 0...50 rooms, each room has a unique name. 
-    [/] Set Room Base Price to default price of 1,299.0 (this will be set in Room class constructor) (note: this is effective for all rooms in the hotel)
-    [/] Reserve a Room 
-        a. BASIC INFORMATION: guest name, check-in date, check-out date, and link too room information.   
-            - reminder: check logic for reserving room from days n to n
-        b. PRICE: total price and breakdown of cost per night
-    
-  2. View Hotel
-  
-    [/] HIGH LEVEL INFORMATION
-        [/] hotel name
-        [/] total number of rooms
-        [FOR CHECKING] estimate earnings per month (i.e. sum of total price across all reservations)
-        
-    [/] LOW LEVEL INFORMATION
-        [/] number of available and booked rooms for a selected date
-        [FOR CHECKING] information about selected room (name, cost per night, and availabilty across the whole month)
-        note: REVISE COMPUTATION 
-        [/] information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night) (note: this just                  displays the same information as the one in the 'reservation ticket")
-        
-  3. Manage Hotel - User must be prompted to confirm modification before it is made or else it will be discarded
-        [/] Change name of hotel
-        [UNDER REVISION] Add room(s)
-        [UNDER REVISION] Remove room(s)\
-            note: can only remove rooms that do not have active reservations 
-        [/] Update base price for rooms 
-            - can only update room price if there are no reservations
-            - new price must be >= 100.0
-        [/] Remove reservation
-        [/] Remove hotel
-            
-  
-  4. Simulate Booking
-      [/] Select hotel and specify information 
-      [/] Select room 
-        note: just display a list of the rooms available and user can select from those
-      [/] Validation of Check in and Check out dates
-      [/] Update status of room
-
-*/
-
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Main {
 
-    private static Scanner scanner = new Scanner(System.in);
-
     public static int hotelCount = 0;
     public static ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
+    private static Scanner scanner = new Scanner(System.in);
     
     /**
      * Prints the main menu for the hotel reservation system.
@@ -75,6 +22,7 @@ public class Main {
         System.out.println("|                                                      |");
         System.out.println("|   [Manage Hotel]                [Simulate Booking]   |");
         System.out.println("|                                                      |");
+        System.out.println("|                        [Exit]                        |");
         System.out.println("'------------------------------------------------------'");
     }
 
@@ -93,6 +41,22 @@ public class Main {
         System.out.println(".------------------------------------------.");
     }
 
+  /**
+   * Determines if a user's input is a valid integer.
+   * Returns the integer input if the input is valid.
+   * Prints an error message and returns -1 otherwise.
+   * @return user's input if valid, -1 if not
+   */
+    private static int getIntInput() {
+        if (scanner.hasNextInt()) {
+          int input = scanner.nextInt();
+          scanner.nextLine(); // consume the newline character
+          return input;
+        } else {
+          scanner.next(); // clear the invalid input
+          return -1; //signals that the input was invalid
+        }
+      }
 
     /**
      * Checks if an entered hotel name does not yet exist among the list of hotels.
@@ -123,38 +87,17 @@ public class Main {
         System.out.print("\nHotel Name: ");
         String hotelName = scanner.nextLine();
 
-        if (isUniqueName(hotelList, hotelName)) {
+        if (isUniqueName(hotelList, hotelName)) { //checks if hotel name is unique before creating a new hotel object
             Hotel hotel = new Hotel(hotelName);
-            hotelList.add(hotel);
-            hotelCount++;
+            hotelList.add(hotel); // adds hotel to hotelList
+            hotelCount++; // increase number of hotels
             System.out.println(hotelName + " was created!");
 
-            // add code for room creation here (note: MIN OF 1 ROOM AND MAX OF 50 ROOMS)
             hotel.addRooms();
 
             System.out.println("Number of rooms: " + hotel.getNRooms());
-
-            // print rooms made
-
         }
     }
-
-  /**
-   * Determines if a user's input is a valid integer.
-   * Returns the integer input if the input is valid.
-   * Prints an error message and returns -1 otherwise.
-   * @return user's input if valid, -1 if not
-   */
-    private static int getIntInput() {
-        if (scanner.hasNextInt()) {
-          int input = scanner.nextInt();
-          scanner.nextLine(); // consume the newline character
-          return input;
-        } else {
-          scanner.next(); // clear the invalid input
-          return -1; //signals that the input was invalid
-        }
-      }
 
     /**
      * Allows user to view the date, room, and reservation information of a given hotel.
@@ -174,12 +117,11 @@ public class Main {
             boolean found = false;
 
             for (Hotel hotel : hotelList) {
-                if (hotel.getHotelName().equals(name)) {
-                    /* DETAILS CAN BE PRINTED IN HOTEL CLASS */
+                if (hotel.getHotelName().equals(name)) { // check if entered name exists within hotelList
+
                     System.out.print("\n");
                     hotel.printHotelInformation();
 
-                    /* FIX THIS PART, CLEAN UP */
                     System.out.println(".------------------------------------------------------.");
                     System.out.println("|              LOW LEVEL HOTEL INFORMATION             |");
                     System.out.println(".------------------------------------------------------.");
@@ -192,38 +134,30 @@ public class Main {
 
                     switch (choice) {
                         case "DATE":
-                            while(true){
+                            while(true){ //checks if date input is valid
                                 System.out.print("Date: ");
                                 int date = getIntInput();
 
                                 if((date >= 1 && date <= 31) && date > 0){
                                     System.out.print("Number of rooms available on " + date + ": " + hotel.roomsAvailableOnDate(date));
                                     break;
-                            }
-                                else
+                                }else
                                     System.out.println("Invalid date. Please enter a valid date.");
-                                
-                            }
+                                }
                             break;
                         case "ROOM":
-                            hotel.viewRooms();
-                            hotel.viewRoomInfo();
-                            // information about selected room (name, cost per night, and availabilty across
-                            // the whole month) just iterate through rooms and print out the information of
-                            // the selected room
+                            hotel.printRooms();
+                            hotel.printRoomInfo();
                             break;
 
                         case "RESERVATION":
-                            if(hotel.totalReservations() == 0){
+                            if(hotel.totalReservations() == 0){ //checks if there are any reservations in the hotel
                                 System.out.println("There are no reservations in this hotel.");
                                 return;
                             }else{
                             hotel.printAllReservations();
-                            hotel.viewReservationInfo();
+                            hotel.printReservationInfo();
                             }
-                            // information about selected reservation (guest information, room information,
-                            // check-in and check-out dates, total price of booking and breakdown of cost
-                            // per night)
                             break;
                         default:
                             System.out.println("Invalid input.");
@@ -282,26 +216,18 @@ public class Main {
 
             switch (manageChoice) {
                 case "change hotel name":
-
-                    /*
-                     * [/] 1. print all hotels
-                     * [/] 2. input hotel you wish to change name
-                     * [/] 3. if found, ask for new name
-                     * [/] 4. if new name is valid, call hotel class setter
-                     */
-
                         System.out.println("Please select a hotel from the following: ");
                         printHotels();
                         System.out.print("Hotel Name: ");
                         hotelName = scanner.nextLine();
                         for (Hotel hotel : hotelList) {
-                            if (hotel.getHotelName().equals(hotelName)) {
+                            if (hotel.getHotelName().equals(hotelName)) { //checks if entered hotel name exists
                                 hotelFound = true;
 
-                                while(!newNameIsValid){
+                                while(!newNameIsValid){ //repeatedly asks for new hotel name until it is valid
                                     System.out.print("New Name: ");
                                     newName = scanner.nextLine();
-                                    newNameIsValid = isUniqueName(hotelList, newName);
+                                    newNameIsValid = isUniqueName(hotelList, newName); //checks if new name is unique
                                     if(newNameIsValid){
                                         System.out.print("Would you like to proceed with this modification? [Y/N]: ");
                                         char c = scanner.nextLine().charAt(0);
@@ -331,7 +257,7 @@ public class Main {
                         System.out.print("\n> Enter the hotel name you wish to add rooms to: ");
                         String hotelNameToAddRooms = scanner.nextLine();
                         for (Hotel hotel : hotelList) {
-                            if (hotel.getHotelName().equals(hotelNameToAddRooms)) {
+                            if (hotel.getHotelName().equals(hotelNameToAddRooms)) { //if hotel selected exists
                                 hotel.addRooms();
                                 hotelFound = true;
                                 break;
@@ -351,7 +277,7 @@ public class Main {
                             if (hotel.getHotelName().equals(hotelNameToRemoveRooms)) {
                                 hotelFound = true;
                                 
-                                if(hotel.getNRooms() == 1){
+                                if(hotel.getNRooms() == 1){ //if there is only one room in the hotel
                                     System.out.println("There are no rooms to remove.");
                                     return;
                                 }else{
@@ -391,7 +317,7 @@ public class Main {
                             if (hotel.getHotelName().equals(hotelNameToRemoveReservation)) {
                                 hotelFound = true;
                                 
-                                if(hotel.totalReservations() == 0){
+                                if(hotel.totalReservations() == 0){ //if there are no reservations in the hotel
                                     System.out.println("There are no reservations in this hotel.");
                                 }
                                 else{
@@ -413,15 +339,14 @@ public class Main {
                     System.out.print("\n> Enter hotel name to remove: ");
                     String removeHotelName = scanner.nextLine();
 
-                    Iterator<Hotel> iterator = hotelList.iterator(); //remove iterator
-                    while (iterator.hasNext()) {
-                        Hotel hotel = iterator.next();
+                    for (int i = 0; i < hotelList.size(); i++) {
+                        Hotel hotel = hotelList.get(i);
                         if (hotel.getHotelName().equals(removeHotelName)) {
                             System.out.print("Would you like to proceed with this modification? [Y/N]: ");
                             char confirm = scanner.nextLine().charAt(0);
 
                             if (confirm == 'Y' || confirm == 'y') {
-                                iterator.remove();
+                                hotelList.remove(i);
                                 hotelCount--;
                                 System.out.println("\n" + removeHotelName + " was removed successfully.");
                             } else {
@@ -431,10 +356,12 @@ public class Main {
                             break;
                         }
                     }
+                    
                     if (!hotelFound) {
                         System.out.println("\nHotel not found.");
                     }
                     break;
+                 
 
                 default:
                     System.out.println("\nInvalid choice.");
@@ -452,18 +379,8 @@ public class Main {
      * @param hotelList list of available hotels
      */
     private static void simulateBooking(ArrayList<Hotel> hotelList) {
-        /*
-         * [/] 1. ask for check in and check out dates
-         * [/] 2. print which rooms are available on those given days
-         * [/] 3. user chooses a room from the list
-         * [/] 4. reservation is made and room availability is updated
-         * [/] 5. reservation details are printed
-         */
-
         if (hotelCount > 0){
             Scanner scanner = new Scanner(System.in);
-
-            System.out.println("Please select a hotel to make a reservation. ");
             printHotels();
 
             System.out.println("\nIn which hotel do you wish to book a room? ");
@@ -482,7 +399,6 @@ public class Main {
                     break;
                 }
             }
-
             if (!hotelFound) {
                 System.out.println("Hotel not found.");
             }
@@ -495,41 +411,34 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
-
             printMenu();
-
             System.out.print("> Enter choice: ");
 
             String choice = scanner.nextLine();
             choice = choice.toLowerCase();
 
             switch (choice) {
-
                 case "create hotel":
-
                     createHotel(hotelList);
-
                     break;
                 case "view hotel":
                     viewHotel(hotelList);
                     break;
                 case "manage hotel":
                     manageHotel(hotelList);
-
                     break;
                 case "simulate booking":
                     simulateBooking(hotelList);
                     break;
-
+                case "exit":
+                    System.out.println("\n       --- Exiting the program. Goodbye! ---");
+                    return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
                     break;
-
             }
-
             choice = ""; // repeats menu
         }
 
