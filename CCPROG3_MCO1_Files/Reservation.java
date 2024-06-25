@@ -34,14 +34,17 @@ public class Reservation{
    * Prints out information about a reservation.
    */
   public void printReservationInformation(){
-    System.out.println("Guest Name: " + this.guestName);
-    System.out.println("Booking ID: " + this.bookingID);
-    System.out.println("Room: " + this.roomNum);
-    System.out.println("Check In: " + this.checkInDate);
-    System.out.println("Check Out: " + this.checkOutDate);
-    System.out.println("Cost per night: $" + this.roomPrice);
-    System.out.println("Total Price: $" + this.totalPrice);
-
+    System.out.println("\n.------------------------------.");
+    System.out.println("|     * RESERVATION INFO *     |");
+    System.out.println("|                              |");
+    System.out.format("| Guest Name: %-16s |\n", this.guestName);
+    System.out.format("| Booking ID: %-16s |\n", this.bookingID);
+    System.out.format("| Room: %-22d |\n", this.roomNum);
+    System.out.format("| Check In: %-18d |\n", this.checkInDate);
+    System.out.format("| Check Out: %-17d |\n", this.checkOutDate);
+    System.out.format("| Cost per night: $%-11.2f |\n", this.roomPrice); 
+    System.out.format("| Total Price: $%-14.2f |\n", this.totalPrice);
+    System.out.println(".------------------------------.");
 
     //view information about selected reservation (guest information, room information, check-in and                  check-out dates, total price of booking and breakdown of cost per night)
   }
