@@ -4,12 +4,10 @@ import java.util.ArrayList;
 public class Room {
 
   private int roomNum;
-  private Hotel hotel; //gives access to hotel the room is under
-
-  private boolean[] availability; // represents the availability of a room for each day
   private int nDaysAvailable;
-  private ArrayList<Reservation> roomReservations = new ArrayList<Reservation>();
-  private ArrayList<String> bookingIDs = new ArrayList<>();
+  private boolean[] availability; // represents the availability of a room for each day
+  private ArrayList<Reservation> roomReservations = new ArrayList<Reservation>(); //keeps track of all the reservations in a room
+  private Hotel hotel; //gives access to hotel the room is under
 
   /**
    * Constructs a Room object.
@@ -25,13 +23,50 @@ public class Room {
   }
 
   /**
-   * Retrieves a room number in a hotel.
-   * @return room number
+   * Displays a room's name, cost per night, and its availability across the whole month.
    */
-  public int getRoomNum() {
-    return this.roomNum; // turn into string
-  }
+  public void printRoomInformation(){
+    // print room info
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|                   ROOM INFORMATION                   |");
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|                                                      |");
+    System.out.format("|   Room Name: %-39s |\n" , this.roomNum);
+    System.out.format("|   Cost per Night: %-34s |\n" , this.hotel.getRoomPrice()); 
+    System.out.format("|   Number of Days Available: %-24s |\n" , this.nDaysAvailable);
+    System.out.println("|                                                      |");
+    // print availability of the room for each day
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|                     AVAILABILITY                     |");
+    System.out.println(".------------------------------------------------------.");
+    System.out.println("|            Day            |          Status          |");
+    System.out.println(".------------------------------------------------------.");
+    // iterate over each day's availability
+    for (int day = 0; day < this.availability.length; day++) {
+      String dayStr = String.format("%2d", day + 1);
+      String reserved = availability[day] ? "Available" : "Not Available";
+      // handle formatting for day and status column to center text
+      if (availability[day] == true){
+        if (day < 9){
+          System.out.format("|            %-2s             |         %-13s    |\n", dayStr, reserved);
+        }
+        else {
+          System.out.format("|             %-2s            |         %-13s    |\n", dayStr, reserved);
+        }
+      }
+      else{
+          if (day < 9){
+            System.out.format("|            %-2s             |       %-13s      |\n", dayStr, reserved);
+          }
+          else {
+           System.out.format("|             %-2s            |       %-13s      |\n", dayStr, reserved);
+          }
+      }
+    }
+    System.out.println(".------------------------------------------------------.");
 
+  } 
+  
   /**
    * Gets the availability of a room on a specified date.
    * @param day the day to check the availability of a room
@@ -43,59 +78,16 @@ public class Room {
   }
 
   /**
-   * Displays a room's name, cost per night, and its availability across the whole month.
-   */
-  public void printRoomInformation(){
-    //information about selected room (name, cost per night, and availabilty across the whole month) just iterate through rooms and print out the information of the selected room
-
-    System.out.println(".------------------------------------------------------.");
-    System.out.println("|                   ROOM INFORMATION                   |");
-    System.out.println(".------------------------------------------------------.");
-    System.out.println("|                                                      |");
-    System.out.format("|   Room Name: %-39s |\n" , this.roomNum);
-    System.out.format("|   Cost per Night: %-34s |\n" , this.hotel.getRoomPrice()); 
-    System.out.format("|   Number of Days Available: %-24s |\n" , this.nDaysAvailable);
-    System.out.println("|                                                      |");
-    System.out.println(".------------------------------------------------------.");
-    System.out.println("|                     AVAILABILITY                     |");
-    System.out.println(".------------------------------------------------------.");
-    System.out.println("|            Day            |          Status          |");
-    System.out.println(".------------------------------------------------------.");
-    for (int day = 0; day < this.availability.length; day++) {
-      String dayStr = String.format("%2d", day + 1);
-      String reserved = availability[day] ? "Available" : "Not Available";
-      if (availability[day] == true){
-        if (day < 10){
-          System.out.format("|            %-2s             |         %-13s    |\n", dayStr, reserved);
-        }
-        else {
-          System.out.format("|             %-2s            |         %-13s    |\n", dayStr, reserved);
-        }
-      }
-      else{
-          if (day < 10){
-            System.out.format("|            %-2s             |       %-13s      |\n", dayStr, reserved);
-          }
-          else {
-           System.out.format("|             %-2s            |       %-13s      |\n", dayStr, reserved);
-          }
-      }
-    }
-    System.out.println(".------------------------------------------------------.");
-    
-  } 
-
-  /**
-  *
-  * @param date
-  * @param starting
-  * @return
+  * Checks if a guest has checked in or checked out on a specified date
+  * @param date the date to check if a guest has checked in/out of a room
+  * @param starting ???
+  * @return true if a guest has checked in or checked out on a date
   */
   public boolean isReservationStartingEndingOn(int date, boolean starting) {
     if(starting == true){ //checks if there is a check in on a specified date
       for (Reservation reservation : roomReservations) {
           if (reservation.getCheckInDate() == date) {
-              return true;
+              return true; // return true if found
           }
       }
     }
@@ -106,7 +98,7 @@ public class Room {
           }
       }
     }
-      return false;
+      return false; // return false otherwise
   }
 
   /**
@@ -117,29 +109,13 @@ public class Room {
     int ctr = 0;
     
     for(int i = 0; i < 31; i++){
-      if(this.availability[i] == true)
+      if(this.availability[i] == true) // iterate through the boolean array and count the number of days that are available
         ctr++;
     }
 
     this.nDaysAvailable = ctr;
   }
-  
-  /**
-  * Sets the availability of a room on a specified date and updates the number of days a room is available.
-  * @param date the date to set the availability of the room on
-  * @param availability the availability of the room
-  */
-  public void setRoomAvailability(int date, boolean availability){
-      this.availability[date - 1] = availability;
-  }
 
-  /**
-   * Retrieves the number of days a room is not reserved.
-   * @return number of days a room is available
-   */
-  public int getNDaysAvailable(){
-    return this.nDaysAvailable;
-  }
   
   /**
    * Adds a reservation to the array list of room reservations.
@@ -152,6 +128,14 @@ public class Room {
   }
 
   /**
+   * Removes a reservation from the array list of reservations at a given index.
+   * @param i the index of the reservation to remove
+   */
+  public void removeReservation(int i) {
+    roomReservations.remove(i);
+  }
+
+  /**
    * Retrieves the list of reservations made across all rooms.
    * @return an array list containing the reservations from all rooms
    */
@@ -160,11 +144,28 @@ public class Room {
   }
 
   /**
-   * Removes a reservation from the array list of reservations at a given index.
-   * @param i the index of the reservation to remove
+   * Retrieves a room number in a hotel.
+   * @return room number
    */
-  public void removeReservation(int i) {
-    roomReservations.remove(i);
+  public int getRoomNum() {
+    return this.roomNum; // turn into string
+  }
+
+  /**
+   * Retrieves the number of days a room is reserved.
+   * @return number of days a room is booked
+   */
+  public int getNReservations(){
+    return this.roomReservations.size();
+  }
+
+  /**
+  * Sets the availability of a room on a specified date and updates the number of days a room is available.
+  * @param date the date to set the availability of the room to
+  * @param availability the availability of the room
+  */
+  public void setRoomAvailability(int date, boolean availability){
+      this.availability[date - 1] = availability;
   }
 
 }
