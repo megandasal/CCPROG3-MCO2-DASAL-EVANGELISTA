@@ -2,11 +2,11 @@
 
 [/] Change roomNum from int to String
 note: add checkers for room input validity 
-[_] Room Types 
-- [X] Room Availability
+[/] Room Types 
+- [/] Room Availability
 - [/] Removing Room
 - [/] Adding Rooms
-- [X] Updating Room Price
+- [/] Updating Room Price
 
     simulate booking > select hotel > select room
 
@@ -17,16 +17,16 @@ note: add checkers for room input validity
 fix: 
     [_] 1. create hotel - should prompt user how many rooms for each type they wish to add
     [/] 2. room class - add room type as a new variable
-    [X] 3. remove rooms - should ask room type
+    [/] 3. remove rooms - should ask room type
     [/] 4. add rooms - should ask room type
-    [_] 5. simulate booking - should only display a certain room type’s availability
-    [_] 6. add room type to displays ex. view hotel > room > room #
-    [_] 7. change room base price 
+    [/] 5. simulate booking - should only display a certain room type’s availability
+    [/] 6. add room type to displays ex. view hotel > room > room #
+    [/] 7. change room base price 
 
     note: set separate variables for room price based on the type (under hotel class)
 
-[X] Discount code
-    simulate booking > select hotel > select type > (continue with the same procedure for reserving) > discount code
+[_] Discount code
+    simulate booking > select hotel > select room > (continue with the same procedure for reserving) > discount code
 [X] Date Price Modifier
 [X] MVC
 [X] GUI
