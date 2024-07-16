@@ -3,7 +3,8 @@ import java.util.ArrayList;
 
 public class Room {
 
-    private int roomNum;
+    //private int roomNum;
+    private String roomName; //temp
     private int nDaysAvailable;
     private boolean[] availability; // represents the availability of a room for each day
     private ArrayList<Reservation> roomReservations = new ArrayList<Reservation>(); //keeps track of all the reservations in a room
@@ -15,7 +16,8 @@ public class Room {
      * @param roomPrice - the price of a room upon instantiation
      */
     public Room(int roomCount, double roomPrice) {
-        roomNum = 100 + roomCount; // should update when a room is deleted
+        //roomNum = 100 + roomCount; // should update when a room is deleted
+        roomName = Integer.toString(100 + roomCount) + 'S'; //temp
         this.availability = new boolean[31];
         Arrays.fill(availability, true);
         nDaysAvailable = availability.length;
@@ -31,7 +33,7 @@ public class Room {
         System.out.println("|                   ROOM INFORMATION                   |");
         System.out.println(".------------------------------------------------------.");
         System.out.println("|                                                      |");
-        System.out.format("|   Room Name: %-39s |\n" , this.roomNum);
+        System.out.format("|   Room Name: %-39s |\n" , this.roomName);
         System.out.format("|   Cost per Night: %-34s |\n" , this.roomPrice);
         System.out.format("|   Number of Days Available: %-24s |\n" , this.nDaysAvailable);
         System.out.println("|                                                      |");
@@ -147,8 +149,8 @@ public class Room {
      * Retrieves a room number in a hotel.
      * @return room number
      */
-    public int getRoomNum() {
-        return this.roomNum; // turn into string
+    public String getRoomName() { 
+        return this.roomName; 
     }
 
     /**
