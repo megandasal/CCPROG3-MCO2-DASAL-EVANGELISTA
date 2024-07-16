@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public class Hotel {
 
+    private double baseRate;
     private String hotelName;
     private int nRooms;
-    private double roomPrice;
     private double estimateEarnings;
     private int roomCtr; // counts how many rooms have been added so far, even those removed. this will
     // be used for unique naming of rooms
@@ -25,8 +25,8 @@ public class Hotel {
     public Hotel(String hotelName) {
         this.hotelName = hotelName;
         this.nRooms = 1;
-        this.roomPrice = 1299.0;
-        rooms.add(new Room(1, roomPrice)); // add 1 room to the hotel upon instantiation
+        this.baseRate = 1299.0;
+        rooms.add(new StandardRoom(0, this.baseRate)); // add 1 room to the hotel upon instantiation
         this.estimateEarnings = 0;
         this.roomCtr = 1; // count rooms created, this is only used for naming purposes
     }
@@ -42,7 +42,7 @@ public class Hotel {
         System.out.println("|                                                      |");
         System.out.format("|   Hotel Name: %-38s |\n", this.hotelName);
         System.out.format("|   Number of Rooms: %-33s |\n", this.nRooms);
-        System.out.format("|   Room Price: %-38s |\n", this.roomPrice);
+        System.out.format("|   Base Rate: %-38s |\n", this.baseRate); // REVISE: print different room prices..?
         System.out.format("|   Estimate Earnings: %-31s |\n", this.estimateEarnings);
         System.out.println("|                                                      |");
         System.out.println(".------------------------------------------------------.");
@@ -73,7 +73,7 @@ public class Hotel {
          */
 
         scanner = new Scanner(System.in);
-        
+
         boolean roomExists = false;
 
         System.out.print("Room Name: ");
@@ -142,36 +142,49 @@ public class Hotel {
                 System.out.println("There are currently " + nRooms + " rooms available.");
 
             int newRooms;
-            while (true) {
-                System.out.println("\nHow many rooms would you like to add?");
-                System.out.print("> Enter amount: ");
-                newRooms = getIntInput();
-                if (newRooms >= 0 && nRooms + newRooms <= 50) { // only adds rooms if number of rooms hasn't met its
-                                                                // full
-                    // capacity/input is a valid integer
-                    System.out.print("\nWould you like to proceed with this modification? [Y/N]: "); // prompts to
-                                                                                                     // verify
-                    // modification
-                    char confirm = scanner.next().charAt(0);
-                    if (confirm == 'Y' || confirm == 'y') {
-                        for (int i = 0; i < newRooms; i++) { // creates new room objects
-                            nRooms++; // updates current number of rooms in hotel
-                            roomCtr++; // updates current number of rooms created in the hotel's existence
-                            rooms.add(new Room(this.roomCtr, this.roomPrice)); // instantiates room object
-                        }
-                        System.out.println("\n" + newRooms + " rooms have been added to this hotel.");
-                        break;
-                    } else if (confirm == 'N' || confirm == 'n') {
-                        System.out.println("\nModification cancelled.");
-                        break;
-                    } else {
-                        System.out.println("\nInvalid input.");
+            Room room;
+
+            System.out.println("\nHow many rooms would you like to add?");
+            System.out.print("> Enter amount: ");
+            newRooms = getIntInput();
+            if (newRooms < 0 && nRooms + newRooms > 50) {
+                System.out.println(
+                        "\nInvalid number of rooms. There are currently " + nRooms + " rooms.");
+            } else {
+
+                System.out.println(".------------------------------------------------------.");
+                System.out.println("|     STANDARD     |     DELUXE     |     EXECUTIVE    |");
+                System.out.println(".------------------------------------------------------.");
+
+                String roomTypeChoice;
+                System.out.print("\nWhat type of room would you like to add?: ");
+                roomTypeChoice = scanner.nextLine();
+
+                for (int i = 0; i < newRooms; i++) {
+                    switch (roomTypeChoice.toLowerCase()) {
+                        case "standard":
+                            room = new StandardRoom(roomCtr, this.baseRate);
+                            rooms.add(room);
+                            break;
+                        case "deluxe":
+                            room = new DeluxeRoom(roomCtr, this.baseRate);
+                            rooms.add(room);
+                            break;
+                        case "executive":
+                            room = new ExecutiveRoom(roomCtr, this.baseRate);
+                            rooms.add(room);
+                            break;
+                        default:
+                            System.out.println("Invalid room type. Please try again.");
+                            return;
                     }
-                } else {
-                    System.out.println(
-                            "\nInvalid number of rooms. Please enter a number between 1 and " + (50 - nRooms) + ".");
+                    nRooms++;
+                    roomCtr++;
                 }
             }
+
+            // REVISE: VERIFY MODIFICATION
+
         }
 
     }
@@ -356,7 +369,7 @@ public class Hotel {
     public void removeRooms() {
 
         scanner = new Scanner(System.in);
-        
+
         boolean roomFound = false;
         boolean roomRemoved = false;
         int i = 0;
@@ -494,6 +507,10 @@ public class Hotel {
      * lower than 100.00.
      */
     public void updateRoomPrice() {
+
+        System.out.println("This feature has not yet been implemented.");
+        
+        /*
         boolean isReserved = false;
 
         for (Room room : rooms) {
@@ -503,8 +520,8 @@ public class Hotel {
         }
 
         if (isReserved == false) { // if there are no rooms reserved, the user is prompted to enter a new room base
-            // price
-            System.out.println("The current base price for a room is: " + this.roomPrice);
+                                   // price
+            System.out.println("The current base price for a room is: " + this.baseRate);
 
             double newPrice;
 
@@ -520,12 +537,13 @@ public class Hotel {
             }
 
             if (newPrice >= 100.00) { // if the new price is greater than or equal to 100.00, the room price is
-                // updated
+                                      // updated
                 System.out.print("Would you like to proceed with this modification? [Y/N]: ");
                 char c = scanner.nextLine().charAt(0);
                 if (c == 'Y' || c == 'y') {
-                    setRoomPrice(newPrice); // successful update
-                    System.out.println("\nThe new base price for a room has been updated to " + this.roomPrice + "!");
+                    setBaseRate(newPrice); // successful update
+                    System.out.println("\nThe new base price for a room has been updated to " +
+                            this.baseRate + "!");
                 } else if (c == 'N' || c == 'n') {
                     System.out.println("Modification cancelled.");
                 } else {
@@ -537,6 +555,8 @@ public class Hotel {
         } else {
             System.out.println("\nUnable to update room base price due to active reservations in this hotel.");
         }
+        */
+
     }
 
     /**
@@ -573,7 +593,7 @@ public class Hotel {
      * @return user's input if valid, -1 if not
      */
     private int getIntInput() {
-        
+
         if (scanner.hasNextInt()) {
             int input = scanner.nextInt();
             scanner.nextLine(); // consume the newline character
@@ -582,7 +602,7 @@ public class Hotel {
             scanner.next(); // clear the invalid input
             return -1; // signals that the input was invalid
         }
-        
+
     }
 
     /**
@@ -590,9 +610,11 @@ public class Hotel {
      *
      * @return price of a room as a double
      */
-    public double getRoomPrice() {
-        return roomPrice;
-    }
+    /*
+     * public double getRoomPrice() {
+     * return roomPrice;
+     * }
+     */
 
     /**
      * Retrieves the number of rooms available on a given date.
@@ -645,13 +667,16 @@ public class Hotel {
      *
      * @param roomPrice price of a room as a double
      */
-    public void setRoomPrice(double roomPrice) {
+
+    /*
+    public void setBaseRate(double baseRate) {
 
         for (Room room : rooms) {
-            room.setRoomPrice(roomPrice);
+            room.setRoomPrice(baseRate);
         }
 
-        this.roomPrice = roomPrice;
+        this.baseRate = baseRate;
     }
+    */
 
 }
