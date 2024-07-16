@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Hotel {
 
@@ -12,6 +13,8 @@ public class Hotel {
     private ArrayList<Room> rooms = new ArrayList<Room>(); // list of rooms in hotel
     private ArrayList<Reservation> allReservations = new ArrayList<Reservation>(); // keeps track of all the
                                                                                    // reservations
+
+    private int[] multiplierDatabase = new int[30]; // date price modifier for 30 nights
 
     // in a hotel
     private Scanner scanner = new Scanner(System.in);
@@ -30,6 +33,9 @@ public class Hotel {
         rooms.add(new StandardRoom(0, this.baseRate)); // add 1 room to the hotel upon instantiation
         this.estimateEarnings = 0;
         this.roomCtr = 1; // count rooms created, this is only used for naming purposes
+        Arrays.fill(multiplierDatabase, 100); //makes price for all dates 100%
+
+        
     }
 
     /**
@@ -380,7 +386,7 @@ public class Hotel {
 
                 System.out.print("\nDiscount Code: ");
                 String discountCode = scanner.nextLine();
-                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room); // creates
+                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room, multiplierDatabase); // creates
                 // a
                 // new
                 // reservation
@@ -606,6 +612,92 @@ public class Hotel {
 
     }
 
+    public void printMultiplierDatabase(){
+
+        System.out.println(".------------------------------------------------------.");
+        System.out.println("|                   DATE ROOM RATES                    |");
+        System.out.println(".------------------------------------------------------.");
+        System.out.println("|            Day            |           Rate           |");
+        System.out.println(".------------------------------------------------------.");
+
+        for(int i = 0; i < 30; i++){
+            System.out.format("|            %-2s             |           %-3s%            |\n", i+1, multiplierDatabase[i]);
+        }
+        System.out.println("|                                                      |");
+        System.out.println(".------------------------------------------------------.");
+
+        
+    }
+
+    /*
+    public void updateMultiplierDatabase(int startDate, int endDate, int multiplier){
+        for (int i = startingDate; i < endingDate; i++) {
+            this.multiplierDatabase[i + 1] = multiplier;
+        }
+    }
+
+    public void modifyDatePrice(int startDate, int endDate) {
+        boolean isValidDateRange;
+        
+        System.out.println("The current base price for a room is: " + this.baseRate);
+        System.out.println("Please enter the start and end dates for price modification.");
+
+        // input dates
+        System.out.print("\nStart on: ");
+        if (getIntInput() == -1){
+            System.out.println("Please enter a valid date.");
+            return;
+        }
+        else {
+            int startingDate = getIntInput();
+        }
+        
+        System.out.print("End on: ");
+        getIntInput();
+        if (getIntInput() == -1){
+            System.out.println("Please enter a valid date.");
+            return;
+        }
+        else {
+            int endingDate = getIntInput();
+        }
+
+        // check for valid date range
+        if (startingDate > endingDate || startingDate == endingDate){
+            isValidDateRange = false;
+        }
+        else {
+            isValidDateRange = true;
+        }
+
+        if (isValidDateRange = true){
+            System.out.println("\nEnter multiplier: "); // integer input
+            if (multiplier == -1){
+                System.out.println("Invalid value. Try again.");
+                return;
+            }
+            else if (multiplier >= 50 && <= 150){
+                int multiplier = getIntInput();
+                // update database array to specified price modifier
+                updateMultiplierDatabase(startDate, endDate, multiplier);
+                    
+                // make separate method for calculating new price
+                
+                }
+            else {
+                System.out.println("Please enter a value between 50 and 150.");
+                return;
+            }
+        }
+        else {
+            System.out.println("Please enter a valid date range.");
+            return;
+        }
+
+        
+    }
+    */
+
     /**
      * Updates the estimated earnings of a hotel by adding the total price
      * of active reservations when new reservations are made and subtracting from it
@@ -728,5 +820,4 @@ public class Hotel {
 
         this.baseRate = baseRate;
     }
-
 }
