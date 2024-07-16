@@ -12,6 +12,7 @@ public class Hotel {
     private ArrayList<Room> rooms = new ArrayList<Room>(); // list of rooms in hotel
     private ArrayList<Reservation> allReservations = new ArrayList<Reservation>(); // keeps track of all the
                                                                                    // reservations
+
     // in a hotel
     private Scanner scanner = new Scanner(System.in);
 
@@ -284,14 +285,59 @@ public class Hotel {
         // checked given the
         // check-in and check-out
         // dates
-        if (availableRooms.size() > 0) { // if there are rooms available, it is printed
-            System.out.println("\n.-------------------------.");
-            System.out.println("|     AVAILABLE ROOMS     |");
-            System.out.println(".-------------------------.");
 
-            for (Room room : availableRooms) {
-                System.out.format("|       [ROOM %s]       |\n", room.getRoomName());
+        int roomTypeCtr = 0;
+
+        if (availableRooms.size() > 0) { // if there are rooms available, it is printed
+
+            System.out.println(".-------------------------.");
+            System.out.println("|        STANDARD         |");
+            System.out.println("|-------------------------|");
+            
+            for (Room room : availableRooms) { // prints available standard rooms
+                if (room.getRoomType().equals("Standard")) {
+                    System.out.format("|       [ROOM %s]       |\n", room.getRoomName());
+                    roomTypeCtr++;
+                }
             }
+
+            if (roomTypeCtr == 0)
+                System.out.println("|            -            |");
+
+            roomTypeCtr = 0;
+
+            System.out.println("|-------------------------|");
+            System.out.println("|          DELUXE         |");
+            System.out.println("|-------------------------|");
+
+            for (Room room : availableRooms) { // prints available deluxe rooms
+                if (room.getRoomType().equals("Deluxe")) {
+                    System.out.format("|       [ROOM %s]       |\n", room.getRoomName());
+                    roomTypeCtr++;
+                }
+            }
+
+            if (roomTypeCtr == 0)
+                System.out.println("|            -            |");
+
+            roomTypeCtr = 0;
+
+            System.out.println("|-------------------------|");
+            System.out.println("|        EXECUTIVE        |");
+            System.out.println("|-------------------------|");
+
+            for (Room room : availableRooms) { // prints available executive rooms
+                if (room.getRoomType().equals("Executive")) {
+                    System.out.format("|       [ROOM %s]       |\n", room.getRoomName());
+                    roomTypeCtr++;
+                }
+            }
+
+            if (roomTypeCtr == 0)
+                System.out.println("|            -            |");
+
+            roomTypeCtr = 0;
+
             System.out.println(".-------------------------.");
         } else if (availableRooms.size() == 0) {
             System.out.println("\nThere are no rooms available on the given dates.");
@@ -508,9 +554,6 @@ public class Hotel {
      */
     public void updateRoomPrice() {
 
-        System.out.println("This feature has not yet been implemented.");
-        
-        /*
         boolean isReserved = false;
 
         for (Room room : rooms) {
@@ -541,7 +584,8 @@ public class Hotel {
                 System.out.print("Would you like to proceed with this modification? [Y/N]: ");
                 char c = scanner.nextLine().charAt(0);
                 if (c == 'Y' || c == 'y') {
-                    setBaseRate(newPrice); // successful update
+                    setBaseRate(newPrice); // update room price for each room type in room class
+                    this.baseRate = newPrice; // updates base price in hotel class
                     System.out.println("\nThe new base price for a room has been updated to " +
                             this.baseRate + "!");
                 } else if (c == 'N' || c == 'n') {
@@ -555,7 +599,6 @@ public class Hotel {
         } else {
             System.out.println("\nUnable to update room base price due to active reservations in this hotel.");
         }
-        */
 
     }
 
@@ -668,7 +711,6 @@ public class Hotel {
      * @param roomPrice price of a room as a double
      */
 
-    /*
     public void setBaseRate(double baseRate) {
 
         for (Room room : rooms) {
@@ -677,6 +719,5 @@ public class Hotel {
 
         this.baseRate = baseRate;
     }
-    */
 
 }
