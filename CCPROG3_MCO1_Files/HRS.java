@@ -25,9 +25,9 @@ fix:
 
     note: set separate variables for room price based on the type (under hotel class)
 
-[_] Discount code
+[/] Discount code
     simulate booking > select hotel > select room > (continue with the same procedure for reserving) > discount code
-[X] Date Price Modifier
+[_] Date Price Modifier
 [X] MVC
 [X] GUI
 
@@ -235,6 +235,8 @@ public class HRS {
             System.out.println("|                                                      |");
             System.out.println("|               [Update Room Base Price]               |");
             System.out.println("|                                                      |");
+            System.out.println("|                 [Date Price Modifier]                |");
+            System.out.println("|                                                      |");
             System.out.println("|                  [Remove Reservation]                |");
             System.out.println("|                                                      |");
             System.out.println("|                     [Remove Hotel]                   |");
@@ -343,7 +345,23 @@ public class HRS {
                         System.out.println("Hotel not found.");
                     }
                     break;
-
+                case "date price modifier":
+                    System.out.println("\nPlease select a hotel from the following: ");
+                    printHotels();
+                    System.out.print("\n> Enter hotel name to update base price: ");
+                    String hotelChoice = scanner.nextLine();
+                    for (Hotel hotel : hotelList) {
+                        if (hotel.getHotelName().equals(hotelChoice)) {
+                            hotel.printMultiplierDatabase();
+                            hotelFound = true;
+                            break;
+                        }
+                    }
+                    if (!hotelFound) {
+                        System.out.println("Hotel not found.");
+                    }
+                    
+                    break;
                 case "remove reservation":
                     System.out.println("Please select a hotel from the following: ");
                     printHotels();
