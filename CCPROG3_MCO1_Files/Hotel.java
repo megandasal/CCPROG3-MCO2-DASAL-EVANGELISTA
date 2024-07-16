@@ -375,13 +375,17 @@ public class Hotel {
                     room.setRoomAvailability(day, false);
                 }
 
+
                 room.updateNDaysAvailable(); // updates the number of days available in the room
 
+                System.out.print("\nDiscount Code: ");
+                String discountCode = scanner.nextLine();
                 Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room); // creates
                 // a
                 // new
                 // reservation
                 // object
+                reservation.applyDiscount(discountCode);
                 room.addReservation(reservation); // adds new reservation to room's reservation list
                 updateEstimateEarnings(reservation.getTotalPrice(), true); // updates the hotel's estimated earnings
                 this.allHotelReservations(); // adds new reservation to hotel's reservation list
@@ -627,6 +631,11 @@ public class Hotel {
     public int totalReservations() {
         return allReservations.size();
     }
+
+    /*
+        returns true when discount code is applied
+        @param  discountCode is the discount code entered by the user
+    */
 
     /**
      * Determines if a user's input is a valid integer.
