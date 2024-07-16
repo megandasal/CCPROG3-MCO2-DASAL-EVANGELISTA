@@ -42,14 +42,13 @@ public class Reservation {
         double grossPrice = 0;
 
         // Calculate from checkInDate + 1 to checkOutDate (inclusive)
-        for (int i = this.checkInDate + 1; i <= this.checkOutDate; i++) {
-            int index = i - 1; // Adjust index to match the night correctly
-            grossPrice += this.roomPrice * ((double) this.priceModifierDatabase[index] / 100.0);
+        for (int i = this.checkInDate; i < this.checkOutDate; i++) {
+            grossPrice += this.roomPrice * ((double) this.priceModifierDatabase[i-1] / 100.0);
 
             // Print for checking
             System.out.println("total price = " + grossPrice + " + " + this.roomPrice + " * "
-                    + ((double) this.priceModifierDatabase[index] / 100.0));
-            System.out.println("Night " + i + " = " + this.priceModifierDatabase[index]);
+                    + ((double) this.priceModifierDatabase[i-1] / 100.0));
+            System.out.println("Night " + i + " - " + (i + 1) + " = " + this.priceModifierDatabase[i-1]);
         }
 
         return grossPrice;
