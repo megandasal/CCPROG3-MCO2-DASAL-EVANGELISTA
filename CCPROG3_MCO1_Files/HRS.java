@@ -1,36 +1,33 @@
-
 /*
 
-[_] Change roomNum from int to String
+[/] Change roomNum from int to String
 note: add checkers for room input validity 
-[_] Room Types (...getter??)
+[_] Room Types 
+- [X] Room Availability
+- [/] Removing Room
+- [/] Adding Rooms
+- [X] Updating Room Price
 
-    turn room class into an abstract class and make room types its subclasses
-    1. add as a variable
-    2. revise methods 
-
-    simulate booking > select hotel > select type > (continue with the same procedure for reserving)
-
-    question: do we have to set a certain number of rooms to be a certain type (only rooms available with that room type will be displayed) or will the user be able to book a room and turn it into any type they wish for it to be (same process for room availability in mco1)
+    simulate booking > select hotel > select room
 
     standard - 1299.0
-    deluxe - 1558.8
-    executive - 1753.65
+    deluxe - base + 20%
+    executive - base + 35%
 
 fix: 
-    1. create hotel - should prompt user how many rooms for each type they wish to add
-    2. room class - add room type as a new variable
-    3. remove rooms - should ask room type
-    4. add rooms - should ask room type
-    5. simulate booking - should only display a certain room type’s availability
-    6. add room type to displays ex. view hotel > room > room #
-    7. change room base price idk yet 😆😆😆😆😆 ask room type????
+    [_] 1. create hotel - should prompt user how many rooms for each type they wish to add
+    [/] 2. room class - add room type as a new variable
+    [X] 3. remove rooms - should ask room type
+    [/] 4. add rooms - should ask room type
+    [_] 5. simulate booking - should only display a certain room type’s availability
+    [_] 6. add room type to displays ex. view hotel > room > room #
+    [_] 7. change room base price 
 
     note: set separate variables for room price based on the type (under hotel class)
 
-[X] discount code
+[X] Discount code
     simulate booking > select hotel > select type > (continue with the same procedure for reserving) > discount code
-[X] date price modifier
+[X] Date Price Modifier
 [X] MVC
 [X] GUI
 
