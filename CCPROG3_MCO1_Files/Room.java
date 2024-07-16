@@ -8,7 +8,8 @@ public abstract class Room {
     private int nDaysAvailable;
     private boolean[] availability; // represents the availability of a room for each day
     private ArrayList<Reservation> roomReservations = new ArrayList<Reservation>(); //keeps track of all the reservations in a room
-    private double roomPrice;
+    protected double roomPrice;
+    protected double multiplier; // add multiplier
 
     /**
      * Constructs a Room object.
@@ -21,7 +22,6 @@ public abstract class Room {
         this.availability = new boolean[31];
         Arrays.fill(availability, true);
         nDaysAvailable = availability.length;
-        this.roomPrice = roomPrice;
     }
 
     /**
@@ -165,6 +165,15 @@ public abstract class Room {
     public double getRoomPrice(){
         return this.roomPrice;
     }
+
+    public String getRoomType(){
+        return this.roomType;
+    }
+
+    public void setRoomPrice(double baseRate) {
+        this.roomPrice = baseRate * this.multiplier;
+    }
+
 
     /**
      * Sets the availability of a room on a specified date and updates the number of days a room is available.
