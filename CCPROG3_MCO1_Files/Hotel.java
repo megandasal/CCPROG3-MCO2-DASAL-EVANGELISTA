@@ -35,7 +35,7 @@ public class Hotel {
         this.roomCtr = 1; // count rooms created, this is only used for naming purposes
         Arrays.fill(multiplierDatabase, 100); //makes price for all dates 100%
 
-
+        
     }
 
     /**
@@ -299,7 +299,7 @@ public class Hotel {
             System.out.println(".-------------------------.");
             System.out.println("|        STANDARD         |");
             System.out.println("|-------------------------|");
-
+            
             for (Room room : availableRooms) { // prints available standard rooms
                 if (room.getRoomType().equals("Standard")) {
                     System.out.format("|       [ROOM %s]       |\n", room.getRoomName());
@@ -626,7 +626,7 @@ public class Hotel {
         System.out.println("|                                                      |");
         System.out.println(".------------------------------------------------------.");
 
-
+        
     }
 
     public void datePriceModifier(){
@@ -641,7 +641,7 @@ public class Hotel {
         newRate = scanner.nextInt();
 
         multiplierDatabase[userChoice-1] = newRate;
-
+        
     }
 
     /*
@@ -653,7 +653,7 @@ public class Hotel {
 
     public void modifyDatePrice(int startDate, int endDate) {
       boolean isValidDateRange;
-
+        
         System.out.println("The current base price for a room is: " + this.baseRate);
         System.out.println("Please enter the start and end dates for price modification.");
 
@@ -690,7 +690,7 @@ public class Hotel {
                     else if (multiplier >= 50 && multiplier <= 150){
                         // update database array to specified price modifier
                         updateMultiplierDatabase(startDate, endDate, multiplier);
-
+                            
                         // make separate method for calculating new price
                         reservation.computeTotalPrice();
                         }
