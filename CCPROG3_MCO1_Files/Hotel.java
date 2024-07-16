@@ -621,7 +621,7 @@ public class Hotel {
         System.out.println(".------------------------------------------------------.");
 
         for(int i = 0; i < 30; i++){
-            System.out.format("|            %-2s             |            %-3d            |\n", i+1, multiplierDatabase[i]);
+            System.out.format("|            %-2s             |            %-3d           |\n", i+1, multiplierDatabase[i]);
         }
         System.out.println("|                                                      |");
         System.out.println(".------------------------------------------------------.");
