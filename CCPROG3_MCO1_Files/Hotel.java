@@ -35,7 +35,7 @@ public class Hotel {
         this.roomCtr = 1; // count rooms created, this is only used for naming purposes
         Arrays.fill(multiplierDatabase, 100); //makes price for all dates 100%
 
-        
+
     }
 
     /**
@@ -299,7 +299,7 @@ public class Hotel {
             System.out.println(".-------------------------.");
             System.out.println("|        STANDARD         |");
             System.out.println("|-------------------------|");
-            
+
             for (Room room : availableRooms) { // prints available standard rooms
                 if (room.getRoomType().equals("Standard")) {
                     System.out.format("|       [ROOM %s]       |\n", room.getRoomName());
@@ -617,16 +617,31 @@ public class Hotel {
         System.out.println(".------------------------------------------------------.");
         System.out.println("|                   DATE ROOM RATES                    |");
         System.out.println(".------------------------------------------------------.");
-        System.out.println("|            Day            |           Rate           |");
+        System.out.println("|           Day             |           Rate           |");
         System.out.println(".------------------------------------------------------.");
 
         for(int i = 0; i < 30; i++){
-            System.out.format("|            %-2s             |            %-3d           |\n", i+1, multiplierDatabase[i]);
+            System.out.format("|          %2d - %-2d          |           %3d%%           |\n",i+1, i+2, multiplierDatabase[i]);
         }
         System.out.println("|                                                      |");
         System.out.println(".------------------------------------------------------.");
 
-        
+
+    }
+
+    public void datePriceModifier(){
+
+        int userChoice, newRate;
+
+        System.out.println("Which day do you wish to modify?");
+        System.out.print("Enter the starting day number: ");
+        userChoice = scanner.nextInt();
+
+        System.out.print("Enter the percentage you wish to modify it to: ");
+        newRate = scanner.nextInt();
+
+        multiplierDatabase[userChoice-1] = newRate;
+
     }
 
     /*
@@ -637,64 +652,59 @@ public class Hotel {
     }
 
     public void modifyDatePrice(int startDate, int endDate) {
-        boolean isValidDateRange;
-        
+      boolean isValidDateRange;
+
         System.out.println("The current base price for a room is: " + this.baseRate);
         System.out.println("Please enter the start and end dates for price modification.");
 
         // input dates
         System.out.print("\nStart on: ");
-        if (getIntInput() == -1){
+        int startingDate = getIntInput();
+        if (startingDate == -1){
             System.out.println("Please enter a valid date.");
             return;
         }
         else {
-            int startingDate = getIntInput();
-        }
-        
-        System.out.print("End on: ");
-        getIntInput();
-        if (getIntInput() == -1){
-            System.out.println("Please enter a valid date.");
-            return;
-        }
-        else {
+            System.out.print("End on: ");
             int endingDate = getIntInput();
-        }
-
-        // check for valid date range
-        if (startingDate > endingDate || startingDate == endingDate){
-            isValidDateRange = false;
-        }
-        else {
-            isValidDateRange = true;
-        }
-
-        if (isValidDateRange = true){
-            System.out.println("\nEnter multiplier: "); // integer input
-            if (multiplier == -1){
-                System.out.println("Invalid value. Try again.");
+            if (endingDate == -1){
+                System.out.println("Please enter a valid date.");
                 return;
             }
-            else if (multiplier >= 50 && <= 150){
-                int multiplier = getIntInput();
-                // update database array to specified price modifier
-                updateMultiplierDatabase(startDate, endDate, multiplier);
-                    
-                // make separate method for calculating new price
-                
-                }
             else {
-                System.out.println("Please enter a value between 50 and 150.");
-                return;
-            }
-        }
-        else {
-            System.out.println("Please enter a valid date range.");
-            return;
-        }
+                // check for valid date range
+                if (startingDate > endingDate || startingDate == endingDate){
+                    isValidDateRange = false;
+                }
+                else {
+                    isValidDateRange = true;
+                }
 
-        
+                if (isValidDateRange = true){
+                    System.out.println("\nEnter multiplier: "); // integer input
+                    int multiplier = getIntInput();
+                    if (multiplier == -1){
+                        System.out.println("Invalid value. Try again.");
+                        return;
+                    }
+                    else if (multiplier >= 50 && multiplier <= 150){
+                        // update database array to specified price modifier
+                        updateMultiplierDatabase(startDate, endDate, multiplier);
+
+                        // make separate method for calculating new price
+                        reservation.computeTotalPrice();
+                        }
+                    else {
+                        System.out.println("Please enter a value between 50 and 150.");
+                        return;
+                    }
+                }
+                else {
+                    System.out.println("Please enter a valid date range.");
+                    return;
+                }
+            }
+        }        
     }
     */
 
