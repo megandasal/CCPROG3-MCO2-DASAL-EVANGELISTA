@@ -6,7 +6,7 @@ public class Reservation{
     private String guestName;
     private int checkInDate;
     private int checkOutDate;
-    private int roomNum;
+    private String roomName;
     private double roomPrice;
     private double totalPrice;
     private String bookingID;
@@ -20,13 +20,13 @@ public class Reservation{
      * @param room Room object associated with the reservation made
      */
     public Reservation(String guestName, int checkInDate, int checkOutDate, Room room){
-        this.roomNum = room.getRoomNum();
+        this.roomName = room.getRoomName();
         this.guestName = guestName;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.roomPrice = room.getRoomPrice();
         this.totalPrice = this.roomPrice * (checkOutDate - checkInDate);
-        this.bookingID = this.generateBookingID(roomNum);
+        this.bookingID = this.generateBookingID();
         roomLink = room;
     }
 
@@ -39,7 +39,7 @@ public class Reservation{
         System.out.println("|                               |");
         System.out.format("| Guest Name: %-17s |\n", this.guestName);
         System.out.format("| Booking ID: %-17s |\n", this.bookingID);
-        System.out.format("| Room: %-23d |\n", this.roomNum);
+        System.out.format("| Room: %-23s |\n", this.roomName);
         System.out.format("| Check In: %-19d |\n", this.checkInDate);
         System.out.format("| Check Out: %-18d |\n", this.checkOutDate);
         System.out.format("| Cost per night: $%-12.2f |\n", this.roomPrice);
@@ -50,13 +50,11 @@ public class Reservation{
 
     /**
      * Generates a random booking ID for a successful reservation.
-     * @param roomNumber the room number a reservation is made under
      * @return string of 6 random integers concatenated with the given room number
      */
-    public String generateBookingID(int roomNumber){
+    public String generateBookingID(){
         int length = 6; // length of randomly generated integer
         Random random = new Random();
-        String roomNum = String.valueOf(roomNumber); // convert the integer roomNumber to a string for concatenation
         StringBuilder sb = new StringBuilder(length); // used for string concatenation
 
         for (int i = 0; i < length; i++) {
@@ -64,7 +62,7 @@ public class Reservation{
         }
 
         String randomInt = sb.toString();
-        String bookingID = randomInt + roomNum; // concatenate the random integer and the room number
+        String bookingID = randomInt + this.roomName; // concatenate the random integer and the room number
 
         return bookingID;
     }
@@ -105,8 +103,8 @@ public class Reservation{
      * Retrieves the reservation's room number.
      * @return room number
      */
-    public int getRoomNum(){
-        return this.roomNum;
+    public String getRoomName(){
+        return this.roomName;
     }
 
     /**
