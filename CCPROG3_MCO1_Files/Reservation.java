@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Reservation {
@@ -13,6 +14,7 @@ public class Reservation {
     private Room roomLink; // links(gives access to) the reservation to the information of the room it is
                            // in
     private String coupon;
+    private int[] priceModifierDatabase = new int[30];
 
     /**
      * Constructs a Reservation object.
@@ -22,16 +24,35 @@ public class Reservation {
      * @param checkOutDate date a guest checked out
      * @param room         Room object associated with the reservation made
      */
-    public Reservation(String guestName, int checkInDate, int checkOutDate, Room room) {
+    public Reservation(String guestName, int checkInDate, int checkOutDate, Room room, int[] multiplierDatabase) {
         this.roomName = room.getRoomName();
         this.guestName = guestName;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.roomPrice = room.getRoomPrice();
-        this.totalPrice = this.roomPrice * (checkOutDate - checkInDate);
+        System.arraycopy(multiplierDatabase, 0, this.priceModifierDatabase, 0, 30);
+        this.totalPrice = computeTotalPrice();
         this.bookingID = this.generateBookingID();
         this.coupon = "None";
         roomLink = room;
+
+    }
+
+    private double computeTotalPrice() {
+        double grossPrice = 0;
+
+        // Calculate from checkInDate + 1 to checkOutDate (inclusive)
+        for (int i = this.checkInDate + 1; i <= this.checkOutDate; i++) {
+            int index = i - 1; // Adjust index to match the night correctly
+            grossPrice += this.roomPrice * ((double) this.priceModifierDatabase[index] / 100.0);
+
+            // Print for checking
+            System.out.println("total price = " + grossPrice + " + " + this.roomPrice + " * "
+                    + ((double) this.priceModifierDatabase[index] / 100.0));
+            System.out.println("Night " + i + " = " + this.priceModifierDatabase[index]);
+        }
+
+        return grossPrice;
     }
 
     /**
