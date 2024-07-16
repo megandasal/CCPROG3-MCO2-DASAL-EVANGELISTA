@@ -1,10 +1,10 @@
 import java.util.Arrays;
 import java.util.ArrayList;
 
-public class Room {
+public abstract class Room {
 
-    //private int roomNum;
-    private String roomName; //temp
+    String roomType;
+    String roomName; //what do i make this
     private int nDaysAvailable;
     private boolean[] availability; // represents the availability of a room for each day
     private ArrayList<Reservation> roomReservations = new ArrayList<Reservation>(); //keeps track of all the reservations in a room
@@ -15,9 +15,9 @@ public class Room {
      * @param roomCount number of rooms in a hotel
      * @param roomPrice - the price of a room upon instantiation
      */
-    public Room(int roomCount, double roomPrice) {
-        //roomNum = 100 + roomCount; // should update when a room is deleted
-        roomName = Integer.toString(100 + roomCount) + 'S'; //temp
+    public Room(int roomCount, double roomPrice, String roomType) {
+        this.roomType = roomType;
+        roomName = Integer.toString(100 + roomCount) + roomType.substring(0, 1); //temp
         this.availability = new boolean[31];
         Arrays.fill(availability, true);
         nDaysAvailable = availability.length;
@@ -34,6 +34,7 @@ public class Room {
         System.out.println(".------------------------------------------------------.");
         System.out.println("|                                                      |");
         System.out.format("|   Room Name: %-39s |\n" , this.roomName);
+        System.out.format("|   Room Type: %-39s |\n" , this.roomType); //incorporate encapsulation..?
         System.out.format("|   Cost per Night: %-34s |\n" , this.roomPrice);
         System.out.format("|   Number of Days Available: %-24s |\n" , this.nDaysAvailable);
         System.out.println("|                                                      |");
@@ -161,22 +162,8 @@ public class Room {
         return this.roomReservations.size();
     }
 
-    /**
-     * Retrieves the room price.
-     * @return room price
-     */
-
     public double getRoomPrice(){
         return this.roomPrice;
-    }
-
-    /**
-     * Sets the room price.
-     * @param roomPrice the new room price
-     */
-
-    public void setRoomPrice(double roomPrice){
-        this.roomPrice = roomPrice;
     }
 
     /**
