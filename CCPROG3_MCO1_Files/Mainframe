@@ -1,0 +1,165 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class Mainframe {
+    private JFrame frame;
+    private JPanel panel;
+    private ArrayList<Hotel> hotelList;
+    private int hotelCount;
+
+    public Mainframe() {
+        hotelList = new ArrayList<>();
+        hotelCount = 0;
+
+        // Set up the main frame
+        frame = new JFrame("Hotel Reservation System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+
+        // Set up the main panel
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        // Add the main menu buttons
+        JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(new GridLayout(4, 1));
+        addButton(menuPanel, "Create Hotel", e -> createHotel());
+        addButton(menuPanel, "View Hotel", e -> viewHotel());
+        addButton(menuPanel, "Manage Hotel", e -> manageHotel());
+        addButton(menuPanel, "Simulate Booking", e -> simulateBooking());
+
+        panel.add(menuPanel, BorderLayout.CENTER);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+
+    private void addButton(JPanel panel, String text, ActionListener listener) {
+        JButton button = new JButton(text);
+        button.addActionListener(listener);
+        panel.add(button);
+    }
+
+    private void createHotel() {
+
+        while(true){
+            String hotelName = JOptionPane.showInputDialog(frame, "Enter Hotel Name:");
+            if (hotelName != null && !hotelName.trim().isEmpty()) {
+                Hotel hotel = new Hotel(hotelName);
+                hotelList.add(hotel);
+                hotelCount++;
+                JOptionPane.showMessageDialog(frame, hotelName + " was created!");
+                // Add rooms to the hotel
+                addRooms(hotel);
+                break;
+            }
+            else{
+                JOptionPane.showMessageDialog(frame, "Please enter a hotel name");
+            }
+        }
+    }
+
+    private void addRooms(Hotel hotel) {
+        String stdCountStr = JOptionPane.showInputDialog(frame, "Number of standard rooms to add:");
+        int stdCount = Integer.parseInt(stdCountStr);
+        for (int i = 0; i < stdCount; i++) {
+            hotel.addRoom(new StandardRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+        }
+
+        String dlxCountStr = JOptionPane.showInputDialog(frame, "Number of deluxe rooms to add:");
+        int dlxCount = Integer.parseInt(dlxCountStr);
+        for (int i = 0; i < dlxCount; i++) {
+            hotel.addRoom(new DeluxeRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+        }
+
+        String exeCountStr = JOptionPane.showInputDialog(frame, "Number of executive rooms to add:");
+        int exeCount = Integer.parseInt(exeCountStr);
+        for (int i = 0; i < exeCount; i++) {
+            hotel.addRoom(new ExecutiveRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+        }
+    }
+
+    private void viewHotel() {
+        if (hotelCount > 0) {
+            // Get hotel names for selection
+            String[] hotelNames = hotelList.stream().map(Hotel::getHotelName).toArray(String[]::new);
+            String selectedHotel = (String) JOptionPane.showInputDialog(frame, "Choose a hotel to view:",
+                    "View Hotel", JOptionPane.QUESTION_MESSAGE, null, hotelNames, hotelNames[0]);
+            
+            if (selectedHotel != null) {
+                for (Hotel hotel : hotelList) {
+                    if (hotel.getHotelName().equals(selectedHotel)) {
+                        String hotelInfo = hotel.getHotelInformation();
+                        
+                        // Create a JPanel for high-level information
+                        JPanel highLevelPanel = new JPanel(new BorderLayout());
+                        JLabel highLevelLabel = new JLabel("HIGH LEVEL INFORMATION");
+                        Font font = new Font("Arial",Font.BOLD,16);
+                        highLevelLabel.setFont(font);
+                        highLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                        JTextArea highLevelTextArea = new JTextArea(hotelInfo);
+                        highLevelTextArea.setEditable(false);
+                        JScrollPane highLevelScrollPane = new JScrollPane(highLevelTextArea);
+                        highLevelPanel.add(highLevelLabel, BorderLayout.NORTH);
+                        highLevelPanel.add(highLevelScrollPane, BorderLayout.CENTER);
+                        
+                        // Create buttons panel with 3 buttons horizontally
+                        JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
+                        JButton button1 = new JButton("DATE");
+                        JButton button2 = new JButton("ROOM");
+                        JButton button3 = new JButton("RESERVATION");
+                        buttonsPanel.add(button1);
+                        buttonsPanel.add(button2);
+                        buttonsPanel.add(button3);
+                        
+                        // Create a JPanel for low-level information (including buttons)
+                        JPanel lowLevelPanel = new JPanel(new BorderLayout());
+                        JLabel lowLevelLabel = new JLabel("LOW LEVEL INFORMATION");
+                        lowLevelLabel.setFont(font);
+                        lowLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                        
+                        // Add buttons panel to the bottom of low-level information panel
+                        lowLevelPanel.add(lowLevelLabel, BorderLayout.NORTH);
+                        lowLevelPanel.add(buttonsPanel, BorderLayout.SOUTH); // Adding buttons here
+                        
+                        // Combine high-level and low-level information panels
+                        JPanel mainPanel = new JPanel(new BorderLayout());
+                        mainPanel.add(highLevelPanel, BorderLayout.CENTER);
+                        mainPanel.add(lowLevelPanel, BorderLayout.SOUTH);
+                        
+                        // Show the combined panel with buttons in JOptionPane
+                        int option = JOptionPane.showOptionDialog(frame, mainPanel, "Hotel Information",
+                                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                                new Object[]{}, null);
+                        
+                        // Handle button actions if needed
+                        if (option == 0) {
+                            // Action for button 1 (DATE)
+                        } else if (option == 1) {
+                            // Action for button 2 (ROOM)
+                        } else if (option == 2) {
+                            // Action for button 3 (RESERVATION)
+                        }
+                    }
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "There are no hotels to view at the moment.",
+                    "No Hotels Found", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void manageHotel() {
+        // Similar to the viewHotel method, implement the manageHotel functionality
+    }
+
+    private void simulateBooking() {
+        // Similar to the viewHotel method, implement the simulateBooking functionality
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(HRS_GUI::new);
+    }
+}
