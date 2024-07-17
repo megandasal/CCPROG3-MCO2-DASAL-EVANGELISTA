@@ -194,4 +194,10 @@ public abstract class Room {
         this.availability[date - 1] = availability;
     }
 
+    private boolean isAvailable;
+
+    public String getRoomInformation() {
+        return "Room Name: " + roomName + ", Room Type: " + roomType + ", Room Price: " + roomPrice + ", Availability: " + (isAvailable ? "Available" : "Not Available");
+    }
+
 }
