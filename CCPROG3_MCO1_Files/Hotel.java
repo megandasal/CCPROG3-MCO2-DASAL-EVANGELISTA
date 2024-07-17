@@ -770,6 +770,10 @@ public class Hotel {
      * }
      */
 
+     public double getBaseRate(){
+        return this.baseRate;
+     }
+
     /**
      * Retrieves the number of rooms available on a given date.
      *
@@ -829,5 +833,19 @@ public class Hotel {
         }
 
         this.baseRate = baseRate;
+    }
+
+    public void addRoom(Room room) {
+        rooms.add(room);
+    }
+
+    public String getHotelInformation() {
+        StringBuilder info = new StringBuilder("Hotel Name: " + hotelName + "\nNumber of Rooms: " + this.nRooms + "\nBase Rate: " + this.baseRate + "\nEstimate Earnings: " + this.estimateEarnings);
+        /*
+        for (Room room : rooms) {
+            info.append(room.getRoomInformation()).append("\n");
+        }
+        */
+        return info.toString();
     }
 }
