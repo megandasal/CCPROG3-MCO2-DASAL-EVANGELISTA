@@ -160,6 +160,6 @@ public class Mainframe {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(HRS_GUI::new);
+        SwingUtilities.invokeLater(Mainframe::new);
     }
 }
