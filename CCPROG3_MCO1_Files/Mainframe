@@ -43,7 +43,6 @@ public class Mainframe {
     }
 
     private void createHotel() {
-
         while(true){
             String hotelName = JOptionPane.showInputDialog(frame, "Enter Hotel Name:");
             if (hotelName != null && !hotelName.trim().isEmpty()) {
@@ -51,35 +50,123 @@ public class Mainframe {
                 hotelList.add(hotel);
                 hotelCount++;
                 JOptionPane.showMessageDialog(frame, hotelName + " was created!");
-                // Add rooms to the hotel
+                // add rooms to the hotel
                 addRooms(hotel);
                 break;
             }
-            else{
-                JOptionPane.showMessageDialog(frame, "Please enter a hotel name");
+            else {
+                JOptionPane.showMessageDialog(frame, "No hotel created.",
+                        "Process cancelled", JOptionPane.INFORMATION_MESSAGE);
+                        break;
             }
         }
     }
 
     private void addRooms(Hotel hotel) {
-        String stdCountStr = JOptionPane.showInputDialog(frame, "Number of standard rooms to add:");
-        int stdCount = Integer.parseInt(stdCountStr);
-        for (int i = 0; i < stdCount; i++) {
-            hotel.addRoom(new StandardRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
-        }
+        int totalRooms = 0;
+        boolean validStdRooms = false;
+        boolean validDlxRooms = false;
+        boolean validExeRooms = false;
 
-        String dlxCountStr = JOptionPane.showInputDialog(frame, "Number of deluxe rooms to add:");
-        int dlxCount = Integer.parseInt(dlxCountStr);
-        for (int i = 0; i < dlxCount; i++) {
-            hotel.addRoom(new DeluxeRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+        while (!validStdRooms) {
+            String stdCountStr = JOptionPane.showInputDialog(frame, "Number of standard rooms to add:");
+            int stdCount = 0;
+            if (stdCountStr == null) {
+                // user clicked cancel or closed the dialog
+                JOptionPane.showMessageDialog(frame, 
+                "No standard rooms added.",
+                "Process cancelled",
+                JOptionPane.INFORMATION_MESSAGE);
+                break;
+            }
+            try {
+                stdCount = Integer.parseInt(stdCountStr);
+                if (stdCount >= 0 && stdCount <= 50 && totalRooms + stdCount <= 50) {
+                    for (int i = 0; i < stdCount; i++) {
+                        hotel.addRoom(new StandardRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+                        totalRooms++;
+                    }
+                    validStdRooms = true;
+                } else {
+                    JOptionPane.showMessageDialog(frame,
+                            "Invalid number of rooms.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Invalid input. Please enter a valid integer.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
-
-        String exeCountStr = JOptionPane.showInputDialog(frame, "Number of executive rooms to add:");
-        int exeCount = Integer.parseInt(exeCountStr);
-        for (int i = 0; i < exeCount; i++) {
-            hotel.addRoom(new ExecutiveRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+    
+        while (!validDlxRooms) {
+            String dlxCountStr = JOptionPane.showInputDialog(frame, "Number of deluxe rooms to add:");
+            int dlxCount = 0;
+            if (dlxCountStr == null) {
+                // user clicked cancel or closed the dialog
+                JOptionPane.showMessageDialog(frame, 
+                "No deluxe rooms added.",
+                "Process cancelled",
+                JOptionPane.INFORMATION_MESSAGE);
+                break;
+            }
+            try {
+                dlxCount = Integer.parseInt(dlxCountStr);
+                if (dlxCount >= 0 && dlxCount <= 50 && totalRooms + dlxCount <= 50) {
+                    for (int i = 0; i < dlxCount; i++) {
+                        hotel.addRoom(new DeluxeRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+                        totalRooms++;
+                    }
+                    validDlxRooms = true;
+                } else {
+                    JOptionPane.showMessageDialog(frame,
+                            "Invalid number of rooms.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Invalid input. Please enter a valid integer.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }
+    
+        while (!validExeRooms) {
+            String exeCountStr = JOptionPane.showInputDialog(frame, "Number of executive rooms to add:");
+            int exeCount = 0;
+            if (exeCountStr == null) {
+                // user clicked cancel or closed the dialog
+                JOptionPane.showMessageDialog(frame, 
+                "No executive rooms added.",
+                "Process cancelled",
+                JOptionPane.INFORMATION_MESSAGE);
+                break;
+            }
+            try {
+                exeCount = Integer.parseInt(exeCountStr);
+                if (exeCount >= 0 && exeCount <= 50 && totalRooms + exeCount <= 50) {
+                    for (int i = 0; i < exeCount; i++) {
+                        hotel.addRoom(new ExecutiveRoom(hotel.getNRooms() + 1, hotel.getBaseRate()));
+                        totalRooms++;
+                    }
+                    validExeRooms = true;
+                } else {
+                    JOptionPane.showMessageDialog(frame,
+                            "Invalid number of rooms.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Invalid input. Please enter a valid integer.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }  
+}
 
     private void viewHotel() {
         if (hotelCount > 0) {
