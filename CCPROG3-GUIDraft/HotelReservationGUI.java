@@ -7,10 +7,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
+//import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -49,25 +52,49 @@ public class HotelReservationGUI extends JFrame {
     private JButton removeHotelBtn;
     private JDialog hotelSelectionDialog;
     private JButton selectHotelFinBtn;
-    private JDialog changeHotelNameDialog;
-    JComboBox<String> hotelComboBox;
-    private JButton submitNewHotelNameBtn;
-    private JTextField newHotelNameTf;
-    private JDialog addRoomsDialog;
-    private JButton submitNewRoomsBtn;
-    private JTextField newStdRoomsTf;
-    private JTextField newDlxRoomsTf;
-    private JTextField newExecRoomsTf;
+
+        // change hotel name
+        private JDialog changeHotelNameDialog;
+        JComboBox<String> hotelComboBox;
+        private JButton submitNewHotelNameBtn;
+        private JTextField newHotelNameTf;
+
+        // add rooms
+        private JDialog addRoomsDialog;
+        private JButton submitNewRoomsBtn;
+        private JTextField newStdRoomsTf;
+        private JTextField newDlxRoomsTf;
+        private JTextField newExecRoomsTf;
+
+        // remove rooms
+        private JFrame removeRoomsFrame;
+        private JButton removeRoomsFinBtn;
+        private JComboBox<String> removeRoomsCBox; // combo box for selecting rooms to remove
+
+        // update room base price
+        private JDialog updRoomPriceDialog;
+        private JTextField newRoomPriceTf;
+        private JButton submitNewRoomPriceBtn;
+
+        // date price modifier
+
+        // remove reservation
+        private JDialog removeReservationDialog;
+        private JTextField removeReservationTf;
+        private JButton submitRemoveReservationBtn;
+
+        // remove hotel
+        private JDialog removeHotelDialog;
+        private JButton submitRemoveHotelBtn;
+        private JButton cancelRemoveHotelBtn;
 
     private ArrayList<Hotel> hotelList;
-    private IntWrapper hotelCount;
 
-    public HotelReservationGUI(ArrayList<Hotel> hotelList, IntWrapper hotelCount) {
+    public HotelReservationGUI(ArrayList<Hotel> hotelList) {
         super("Hotel Reservation System");
         setSize(600, 400);
     
-        this.hotelList = (hotelList != null) ? hotelList : new ArrayList<>();
-        this.hotelCount = (hotelCount != null) ? hotelCount : new IntWrapper(0);
+        this.hotelList = hotelList;
 
         // initialize main menu
         init();
@@ -81,9 +108,14 @@ public class HotelReservationGUI extends JFrame {
         hotelSelectionDialog();
         changeHotelNameDialog();
         addRoomsDialog();
+        removeRoomsFrame();
+        updateRoomPriceDialog();
+        // updateRoomPriceDialog();
+        removeReservationDialog();
+        removeHotelDialog();
     
-        HRSController controller = new HRSController(this, hotelList, hotelCount);
-        setActionListener(controller); 
+        // HRSController controller = new HRSController(this, hotelList, hotelCount);
+        // setActionListener(controller); 
     
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -94,9 +126,9 @@ public class HotelReservationGUI extends JFrame {
         mainMenuPanel.setLayout(new GridBagLayout());
         this.setLocationRelativeTo(null);
 
-        String hex = "#ADD8E6";
-        Color bgColor = Color.decode(hex);
-        mainMenuPanel.setBackground(bgColor);
+        // String hex = "#ADD8E6";
+        // Color bgColor = Color.decode(hex);
+        // mainMenuPanel.setBackground(bgColor);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -202,7 +234,7 @@ public class HotelReservationGUI extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER; 
         gbc.insets = new Insets(10, 10, 10, 10);
     
-        // Title Label "Create a Hotel"
+        // title label
         JLabel titleLabel = new JLabel("Create a Hotel!");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20)); 
         createHotelMainPanel.add(titleLabel, gbc);
@@ -287,14 +319,14 @@ public class HotelReservationGUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         manageHotelMenuPanel.setLayout(new GridBagLayout());
 
-        // change hex code later
-        String hex = "#ADD8E6";
-        Color bgColor = Color.decode(hex);
-        manageHotelMenuPanel.setBackground(bgColor);
+        // // change hex code later
+        // String hex = "#ADD8E6";
+        // Color bgColor = Color.decode(hex);
+        // manageHotelMenuPanel.setBackground(bgColor);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTH; // align the component to the top of its space
+        gbc.anchor = GridBagConstraints.NORTH;
 
         JLabel manageHotelLbl = new JLabel("Manage Hotel");
         manageHotelLbl.setFont(new Font("Arial", Font.BOLD, 28));
@@ -346,7 +378,7 @@ public class HotelReservationGUI extends JFrame {
 
         manageHotelMenuPanel.add(removeHotelBtn, gbc);
 
-        // reset gbc.insets to avoid affecting other components added later
+        // reset gbc.insets
         gbc.insets = new Insets(0, 0, 0, 0);
 
         // adjust button sizes
@@ -475,7 +507,7 @@ public class HotelReservationGUI extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2; // Span across two columns
+        gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(titleLabel, gbc);
 
@@ -489,11 +521,11 @@ public class HotelReservationGUI extends JFrame {
         JLabel stdRoomsLbl = new JLabel("Standard Rooms:");
         newStdRoomsTf = new JTextField(10);
         gbc.gridy = 2;
-        gbc.gridwidth = 1; // Single column width for label
-        gbc.anchor = GridBagConstraints.EAST; // Align label to the right
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.EAST;
         mainPanel.add(stdRoomsLbl, gbc);
         gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.CENTER; // Center text field in column
+        gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(newStdRoomsTf, gbc);
 
         //deluxe Rooms
@@ -501,10 +533,10 @@ public class HotelReservationGUI extends JFrame {
         newDlxRoomsTf = new JTextField(10);
         gbc.gridy = 3;
         gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.EAST; // Align label to the right
+        gbc.anchor = GridBagConstraints.EAST;
         mainPanel.add(dlxRoomsLbl, gbc);
         gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.CENTER; // Center text field in column
+        gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(newDlxRoomsTf, gbc);
 
         // executive Rooms
@@ -512,10 +544,10 @@ public class HotelReservationGUI extends JFrame {
         newExecRoomsTf = new JTextField(10);
         gbc.gridy = 4;
         gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.EAST; // Align label to the right
+        gbc.anchor = GridBagConstraints.EAST;
         mainPanel.add(execRoomsLbl, gbc);
         gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.CENTER; // Center text field in column
+        gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(newExecRoomsTf, gbc);
 
         // submit btn
@@ -523,13 +555,244 @@ public class HotelReservationGUI extends JFrame {
         submitNewRoomsBtn.setActionCommand("Submit New Rooms");
         gbc.gridy = 5;
         gbc.gridx = 0;
-        gbc.gridwidth = 2; // Span across two columns
-        gbc.anchor = GridBagConstraints.CENTER; // Center button in column
+        gbc.gridwidth = 2; 
+        gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(submitNewRoomsBtn, gbc);
 
         addRoomsDialog.getContentPane().add(mainPanel);
         addRoomsDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
+
+    public void removeRoomsFrame() {
+        removeRoomsFrame = new JFrame("Remove Rooms");
+        removeRoomsFrame.setSize(400, 500);
+        removeRoomsFrame.setLocationRelativeTo(null);
+    
+        JPanel removeRoomsPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // padding
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+    
+        // title
+        JLabel removeRoomsLabel = new JLabel("Remove Rooms");
+        removeRoomsLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        removeRoomsLabel.setHorizontalAlignment(JLabel.CENTER);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        removeRoomsPanel.add(removeRoomsLabel, gbc);
+        
+        // text area for displaying rooms
+        JTextArea removeRoomsTA = new JTextArea(10, 40);
+        removeRoomsTA.setEditable(false); // text area for display only
+        removeRoomsTA.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JScrollPane scrollPane = new JScrollPane(removeRoomsTA);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        removeRoomsPanel.add(scrollPane, gbc);
+    
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel noReservationLabel = new JLabel("[ - ]  no reservation   |   ");
+        noReservationLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        JLabel hasReservationLabel = new JLabel("[ * ]  has reservation");
+        hasReservationLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        statusPanel.add(noReservationLabel);
+        statusPanel.add(hasReservationLabel);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        removeRoomsPanel.add(statusPanel, gbc);
+    
+        JLabel selectRoomLabel = new JLabel("Select Room to Remove:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        removeRoomsPanel.add(selectRoomLabel, gbc);
+    
+        removeRoomsCBox = new JComboBox<>();
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        removeRoomsPanel.add(removeRoomsCBox, gbc);
+    
+        removeRoomsFinBtn = new JButton("Remove Selected Room");
+        removeRoomsFinBtn.setActionCommand("Remove Selected Room");
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        removeRoomsPanel.add(removeRoomsFinBtn, gbc);
+    
+        removeRoomsFrame.add(removeRoomsPanel);
+        removeRoomsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        removeRoomsFrame.setVisible(true);
+    }
+    
+    public void updateRoomPriceDialog() {
+        updRoomPriceDialog = new JDialog();
+        updRoomPriceDialog.setTitle("Update Room Base Price");
+        updRoomPriceDialog.setSize(500, 300);
+    
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // padding
+
+        // title
+        JLabel titleLabel = new JLabel("Update Room Base Price");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(titleLabel, gbc);
+    
+        // sub title
+        JLabel subTitleLbl = new JLabel("Please enter a new base price for the hotel rooms.");
+        subTitleLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(subTitleLbl, gbc);
+    
+        // current room price label
+        JLabel subTitleLbl2 = new JLabel("Current room base price:");
+        subTitleLbl2.setFont(new Font("Arial", Font.ITALIC, 12));
+        subTitleLbl2.setForeground(Color.BLUE);
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        mainPanel.add(subTitleLbl2, gbc);
+    
+        /* enter code for displaying current room base price? */
+    
+        // new room price label
+        JLabel newRoomPriceLbl = new JLabel("New Room Price:");
+        newRoomPriceLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        mainPanel.add(newRoomPriceLbl, gbc);
+    
+        // new room price text field
+        newRoomPriceTf = new JTextField(10);
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
+        mainPanel.add(newRoomPriceTf, gbc);
+    
+        // submit new room price button
+        submitNewRoomPriceBtn = new JButton("Submit");
+        submitNewRoomPriceBtn.setActionCommand("Submit New Room Price");
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(submitNewRoomPriceBtn, gbc);
+    
+        updRoomPriceDialog.add(mainPanel);
+        updRoomPriceDialog.setLocationRelativeTo(null);
+        updRoomPriceDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        updRoomPriceDialog.setVisible(true);
+    }
+
+    private void removeReservationDialog() {
+        removeReservationDialog = new JDialog();
+        removeReservationDialog.setTitle("Remove Reservation");
+        removeReservationDialog.setSize(400, 150);
+        removeReservationDialog.setLocationRelativeTo(null);
+    
+        JPanel removeReservationPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
+    
+        // label for reservation ID
+        JLabel removeReservationLbl = new JLabel("Enter your unique reservation ID:");
+        removeReservationLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        removeReservationPanel.add(removeReservationLbl, gbc);
+    
+        // text field for reservation ID
+        removeReservationTf = new JTextField(10);
+        gbc.gridy = 1; // Move to the next row
+        gbc.gridwidth = 2; // Span across both columns
+        gbc.anchor = GridBagConstraints.WEST;
+        removeReservationPanel.add(removeReservationTf, gbc);
+    
+        // remove reservation button
+        submitRemoveReservationBtn = new JButton("Remove Reservation");
+        submitRemoveReservationBtn.setActionCommand("Submit Remove Reservation");
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        removeReservationPanel.add(submitRemoveReservationBtn, gbc);
+    
+        removeReservationDialog.add(removeReservationPanel);
+        removeReservationDialog.setVisible(true);
+        removeReservationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
+    
+    public void removeHotelDialog() {
+        removeHotelDialog = new JDialog();
+        removeHotelDialog.setTitle("Remove Hotel");
+        removeHotelDialog.setSize(400, 150);
+        removeHotelDialog.setLocationRelativeTo(null); 
+    
+        JPanel removeHotelPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); 
+        
+        // main label
+        JLabel removeHotelLbl = new JLabel("Are you sure you want to remove this hotel?");
+        removeHotelLbl.setFont(new Font("Arial", Font.BOLD, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        removeHotelPanel.add(removeHotelLbl, gbc);
+    
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        removeHotelPanel.add(new JLabel(), gbc);
+    
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        submitRemoveHotelBtn = new JButton("Remove");
+        submitRemoveHotelBtn.setActionCommand("Submit Remove Hotel"); // set action cmds
+        cancelRemoveHotelBtn = new JButton("Cancel");
+        cancelRemoveHotelBtn.setActionCommand("Cancel Remove Hotel");
+        buttonPanel.add(submitRemoveHotelBtn);
+        buttonPanel.add(cancelRemoveHotelBtn);
+    
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        removeHotelPanel.add(buttonPanel, gbc);
+    
+        removeHotelDialog.add(removeHotelPanel);
+        removeHotelDialog.setVisible(true);
+        removeHotelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
+    
+
 
     /* listeners */
     public void setActionListener (ActionListener listener) {
@@ -540,7 +803,9 @@ public class HotelReservationGUI extends JFrame {
 
         createHotelFinBtn.addActionListener(listener);
         selectHotelFinBtn.addActionListener(listener);
+        submitNewRoomsBtn.addActionListener(listener);
         submitNewHotelNameBtn.addActionListener(listener);
+        removeRoomsFinBtn.addActionListener(listener);
         
         changeHotelNameBtn.addActionListener(listener);
         addRoomsBtn.addActionListener(listener);
@@ -617,7 +882,17 @@ public class HotelReservationGUI extends JFrame {
         execRoomsTf.setText("");
     }
 
-    public String getSelectedHotel() {
+    public void clearAddRoomsTf() {
+        newStdRoomsTf.setText("");
+        newDlxRoomsTf.setText("");
+        newExecRoomsTf.setText("");
+    }
+
+    public void clearChangeHotelNameTF() {
+        newHotelNameTf.setText("");
+    }
+
+    public String getSelectedHotelFromComboBox() {
         return (String) hotelComboBox.getSelectedItem();
     }
 
