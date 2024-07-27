@@ -7,30 +7,17 @@ import javax.swing.event.DocumentListener;
 public class HRSController implements ActionListener, DocumentListener {
     private HotelReservationGUI gui;
     private ArrayList<Hotel> hotelList;
-    private IntWrapper hotelCount;
-    private Hotel selectedHotel; // Track selected hotel
+    private int hotelCount;
+    private String currentOperation = "";
 
-    public HRSController(HotelReservationGUI gui, ArrayList<Hotel> hotelList, IntWrapper hotelCount) {
+    public HRSController(HotelReservationGUI gui, ArrayList<Hotel> hotelList, int hotelCount) {
         this.gui = gui;
         this.hotelList = hotelList;
         this.hotelCount = hotelCount;
+        this.currentOperation = "";
         
         gui.setActionListener(this);
         gui.setDocumentListener(this);
-    }
-
-    // Checks if the hotel name is unique
-    public boolean isUniqueName(String hotelName) {
-        return hotelList.stream().noneMatch(hotel -> hotel.getHotelName().equals(hotelName));
-    }
-
-    // Method for parsing string inputs to integers for room counts
-    public int parseRoomCount(String roomCount) {
-        try {
-            return Integer.parseInt(roomCount);
-        } catch (NumberFormatException ex) {
-            return -999; // if invalid integer
-        }
     }
 
     @Override
@@ -44,41 +31,94 @@ public class HRSController implements ActionListener, DocumentListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Create Hotel":
-                gui.toggleCreateHotelDialog(true);
-                break;
-                
-            case "Finish Create Hotel":
-                processFinishCreateHotel();
-                break;
-                
+            gui.toggleCreateHotelDialog(true);
+            break;
+            
+            case "Finish Create Hotel": // confirm hotel creation
+            processFinishCreateHotel();
+            break;
+
             case "Manage Hotel":
-                processManageHotel();
-                break;
-                
+            if (hotelList.isEmpty()) {
+                gui.showErrorMessage("No hotels to manage.");
+                return;
+            }
+            gui.toggleManageHotelMenu(true);
+            break;
+
             case "Change Hotel Name":
+            currentOperation = "Change Hotel Name";
+            gui.toggleManageHotelMenu(false);
+            gui.toggleHotelSelectionDialog(true);
+            break;
+
+            case "Submit New Hotel Name":
+            System.out.println("submit new rooms clicked"); // debugging
+            String newHotelName = gui.getNewHotelName();
+            renameHotel(newHotelName);
+            gui.toggleChangeHotelNameDialog(false);
+            gui.clearChangeHotelNameTF();
+            break;
+
+            case "Add Rooms":
+            currentOperation = "Add Rooms";
+            gui.toggleManageHotelMenu(false);
+            gui.toggleHotelSelectionDialog(true);
+            break;
+
+            case "Select Hotel":
+            switch (currentOperation) {
+                case "Change Hotel Name":
+                gui.toggleHotelSelectionDialog(false);
                 gui.toggleChangeHotelNameDialog(true);
                 break;
-                
-            case "Select Hotel":
-                processSelectHotel();
-                break;
-                
-            case "Submit New Hotel Name":
-                processSubmitNewHotelName();
-                break;
-                
-            case "Add Rooms":
+
+                case "Add Rooms":
+                gui.toggleHotelSelectionDialog(false);
                 gui.toggleAddRoomsDialog(true);
                 break;
-                
-            default:
-                break;
+            }
+           
+            break;
+
+            case "Submit New Rooms":
+            System.out.println("submit new rooms button clicked");
+            processNewRooms();
+            break;
+        }
+    }
+
+    // checks if the hotel name is unique
+    public boolean isUniqueName(String hotelName) {
+        return hotelList.stream().noneMatch(hotel -> hotel.getHotelName().equals(hotelName));
+    }
+
+    public boolean isUniqueHotelName(String hotelName) {
+        for (Hotel hotel : hotelList) {
+            if (hotel.getHotelName().equals(hotelName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int parseRoomCount(String roomCount) {
+
+        if (roomCount.trim().isEmpty()) {
+            return 0; // zero rooms for that type
+        }
+
+        try {
+            int count = Integer.parseInt(roomCount.trim());
+            return count;
+        } catch (NumberFormatException ex) {
+            return -1;
         }
     }
 
     private void processFinishCreateHotel() {
         System.out.println("button clicked!"); // debugging
-        System.out.println("Hotel count: " + hotelCount.value); // debugging
+        System.out.println("Hotel count: " + hotelCount); // debugging
         
         String hotelName = gui.getHotelName();
         String stdRoomsStr = gui.getStdRooms();
@@ -95,7 +135,7 @@ public class HRSController implements ActionListener, DocumentListener {
         int dlxRooms = parseRoomCount(dlxRoomsStr);
         int execRooms = parseRoomCount(execRoomsStr);
         
-        if (stdRooms == -999 || dlxRooms == -999 || execRooms == -999) {
+        if (stdRooms == -1 || dlxRooms == -1 || execRooms == -1) {
             gui.showErrorMessage("Please enter valid integers for the room amounts.");
             return;
         }
@@ -114,8 +154,8 @@ public class HRSController implements ActionListener, DocumentListener {
         Hotel newHotel = new Hotel(hotelName);
         hotelList.add(newHotel);
         gui.updateHotelComboBox(hotelList);
-        hotelCount.value++;
-        System.out.println("Hotel count: " + hotelCount.value); // debugging
+        hotelCount++;
+        System.out.println("Hotel count: " + hotelCount); // debugging
         System.out.println("Total room count after adding: " + totalRooms); // debugging
         
         newHotel.addRoomToHotel(totalRooms, stdRooms, dlxRooms, execRooms);
@@ -124,48 +164,52 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.clearCreateHotelTF();
     }
 
-    private void processSelectHotel() {
-        String selectedHotelName = gui.getSelectedHotel();
-        if (selectedHotelName == null) {
-            gui.showErrorMessage("Please select a hotel.");
-            return;
+    private void renameHotel(String hotelName) {
+        for (Hotel hotel : hotelList) {
+            if (isUniqueHotelName(hotelName) == false)
+                gui.showErrorMessage("This hotel name already exists.");
+            else {
+                hotel.setHotelName(hotelName);
+                gui.updateHotelComboBox(hotelList);
+                gui.showConfirmationMessage("Hotel name changed to " + hotelName + ".");
+            }
         }
-        
-        selectedHotel = hotelList.stream()
-                .filter(hotel -> hotel.getHotelName().equals(selectedHotelName))
-                .findFirst()
-                .orElse(null);
-
-        if (selectedHotel != null) {
-            gui.toggleHotelSelectionDialog(false);
-            gui.toggleChangeHotelNameDialog(true);
-        }
+        gui.clearChangeHotelNameTF();
     }
 
-    private void processSubmitNewHotelName() {
-        String newHotelName = gui.getNewHotelName();
-        System.out.println("Submit button clicked"); // debugging
-        
-        if (newHotelName.trim().isEmpty()) {
-            gui.showErrorMessage("Please enter a new hotel name.");
-            return;
-        }
-        
-        if (!isUniqueName(newHotelName)) {
-            gui.showErrorMessage("Hotel name already exists.");
-            return;
-        }
-        
-        if (selectedHotel != null) {
-            selectedHotel.setHotelName(newHotelName);
-            gui.showConfirmationMessage("Hotel name updated successfully.");
-            gui.updateHotelComboBox(hotelList);
-            gui.toggleChangeHotelNameDialog(false);
-        }
-    }
+    private void processNewRooms() {
+        String selectedHotel = gui.getSelectedHotelFromComboBox();
+            for (Hotel hotel : hotelList) {
+                if (hotel.getHotelName().equals(selectedHotel)) {
+                    String stdRoomsStr = gui.getStdRooms();
+                    String dlxRoomsStr = gui.getDlxRooms();
+                    String execRoomsStr = gui.getExecRooms();
 
-    private void processManageHotel() {
-        gui.toggleHotelSelectionDialog(true);
-        gui.getSelectedHotel();
+                    // if a field is not filled out, it means no rooms are to be added to that room type
+                    int stdRooms = parseRoomCount(stdRoomsStr);
+                    int dlxRooms = parseRoomCount(dlxRoomsStr);
+                    int execRooms = parseRoomCount(execRoomsStr);
+
+                    if (stdRooms == -1 || dlxRooms == -1 || execRooms == -1) {
+                        gui.showErrorMessage("Please enter valid integers for the room amounts.");
+                        return;
+                    }
+
+                    int totalRoomsToAdd = stdRooms + dlxRooms + execRooms;
+                    int newTotalRooms = hotel.getNRooms() + totalRoomsToAdd;
+
+                    if (newTotalRooms > 50) {
+                        gui.showErrorMessage("Total number of rooms cannot exceed 50.");
+                        return;
+                    } else {
+                        hotel.addRoomToHotel(totalRoomsToAdd, stdRooms, dlxRooms, execRooms);
+                        gui.showConfirmationMessage(selectedHotel + " now has " + newTotalRooms + " rooms.");
+                        System.out.println("Total rooms after adding: " + newTotalRooms); // debugging
+                        gui.toggleAddRoomsDialog(false);
+                        gui.clearAddRoomsTf();
+                    }
+                    break;
+                }
+            }
     }
 }
