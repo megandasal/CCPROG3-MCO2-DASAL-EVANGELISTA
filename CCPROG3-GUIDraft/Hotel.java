@@ -216,8 +216,8 @@ public class Hotel {
                 execRooms--;
             }
             roomCtr++;
-            this.nRooms++;
         }
+        this.nRooms += totalRooms;
     }
 
     /**
