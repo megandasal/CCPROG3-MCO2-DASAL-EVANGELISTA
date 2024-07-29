@@ -1081,7 +1081,7 @@ public class HotelReservationGUI extends JFrame {
         viewReservationTextArea = new JTextArea();
         viewReservationTextArea.setEditable(false);
         viewReservationTextArea.setMargin(new Insets(5, 5, 5, 5));
-        viewReservationTextArea.setPreferredSize(new Dimension(300, 200));
+        viewReservationTextArea.setPreferredSize(new Dimension(200, 200));
     
         JScrollPane reservationScrollPane = new JScrollPane(viewReservationTextArea);
         gbc.gridx = 0;
