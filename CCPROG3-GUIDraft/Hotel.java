@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class Hotel {
 
@@ -204,6 +205,18 @@ public class Hotel {
 
     // controller implementation
     public void addRoomToHotel(int totalRooms, int stdRooms, int dlxRooms, int execRooms) {
+        // Ensure the sum of room types matches the totalRooms
+        if (stdRooms + dlxRooms + execRooms != totalRooms) {
+            System.out.println("The total number of rooms does not match the sum of room types provided.");
+            return;
+        }
+        
+        // Check if adding these rooms would exceed the hotel's capacity
+        if (this.nRooms + totalRooms > 50) {
+            System.out.println("Adding these rooms would exceed the hotel's capacity of 50 rooms.");
+            return;
+        }
+        
         for (int i = 0; i < totalRooms; i++) {
             if (stdRooms > 0) {
                 rooms.add(new StandardRoom(roomCtr, this.baseRate));
@@ -219,6 +232,39 @@ public class Hotel {
         }
         this.nRooms += totalRooms;
     }
+
+    public void addHotelRooms(int totalRooms, int stdRooms, int dlxRooms, int execRooms) {
+        // Ensure the sum of room types matches the totalRooms
+        if (stdRooms + dlxRooms + execRooms != totalRooms) {
+            System.out.println("The total number of rooms does not match the sum of room types provided.");
+            return;
+        }
+    
+        // Check if adding these rooms would exceed the hotel's capacity
+        if (this.nRooms + totalRooms > 50) {
+            System.out.println("Adding these rooms would exceed the hotel's capacity of 50 rooms.");
+            return;
+        }
+    
+        for (int i = 0; i < totalRooms; i++) {
+            if (stdRooms > 0) {
+                rooms.add(new StandardRoom(roomCtr, this.baseRate));
+                stdRooms--;
+            } else if (dlxRooms > 0) {
+                rooms.add(new DeluxeRoom(roomCtr, this.baseRate));
+                dlxRooms--;
+            } else if (execRooms > 0) {
+                rooms.add(new ExecutiveRoom(roomCtr, this.baseRate));
+                execRooms--;
+            }
+            roomCtr++;
+        }
+        this.nRooms += totalRooms;
+        System.out.println("Updated nRooms to: " + this.nRooms); // Debugging
+    }
+    
+
+
 
     /**
      * Checks the availability of a room for reservation given a check-in and
@@ -431,6 +477,45 @@ public class Hotel {
         }
     }
 
+    public int bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode) {
+        if (checkInDate >= checkOutDate) {
+            return -1; // invalid date range
+        }
+        else {
+            ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate); // room availability is
+            for (Room room : availableRooms) { // checks if room exists in available rooms array list and room availability
+                // array is updated
+                if (room.getRoomName().equals(roomToBook)) { // checks if room exists
+                    if (room.isReservationStartingEndingOn(checkInDate, false) || checkInDate == 1) { // checks if it
+                                                                                                      // overlaps with
+                        // an existing reservation,
+                        // then marks the day as
+                        // unavailable
+                        room.setRoomAvailability(checkInDate, false);
+                    }
+                    if (room.isReservationStartingEndingOn(checkOutDate, true) || checkOutDate == 31) { // checks if it
+                                                                                                        // overlaps
+                        // with an existing
+                        // reservation, then marks
+                        // the day as unavailable
+                        room.setRoomAvailability(checkOutDate, false);
+                    }
+    
+                    for (int day = checkInDate + 1; day < checkOutDate; day++) { // marks the days in between as unavailable
+                        room.setRoomAvailability(day, false);
+                    }
+                    room.updateNDaysAvailable(); // updates the number of days available in the room
+                    Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room, multiplierDatabase);
+                    reservation.applyDiscount(discountCode);
+                    updateEstimateEarnings(reservation.getTotalPrice(), true); // updates the hotel's estimated earnings
+                    this.allHotelReservations();
+                    return 1; // room booked successfully
+                }
+            }
+            return 0; // room not found/error booking room
+        }
+    }
+
     /**
      * Collects and adds all reservations across all rooms in a hotel.
      */
@@ -524,6 +609,23 @@ public class Hotel {
             System.out.println("Room does not exist.");
         }
     }
+
+    // gui implementation
+    public int removeRoomFromHotel (String roomName) {
+        Iterator<Room> iterator = rooms.iterator();
+        while (iterator.hasNext()) {
+            Room room = iterator.next();
+            if (room.getRoomName().equals(roomName)) { // if room exists in hotel
+                if (room.getNReservations() == 0) { // if room doesnt have a reservation
+                    iterator.remove(); // safely remove the room using iterator
+                    this.nRooms--;
+                    return 1; // exit after removing the first matching room
+                }
+            }
+        }
+        return -1; // room not found or has an active reservation
+    }
+    
 
     /**
      * Removes a reservation from the hotel by asking the user for their
@@ -868,12 +970,92 @@ public class Hotel {
     }
 
     public String getHotelInformation() {
-        StringBuilder info = new StringBuilder("Hotel Name: " + hotelName + "\nNumber of Rooms: " + this.nRooms + "\nBase Rate: " + this.baseRate + "\nEstimate Earnings: " + this.estimateEarnings);
+        StringBuilder info = new StringBuilder("\n     Hotel Name: " + hotelName + "\n     Number of Rooms: " + this.nRooms + "\n     Base Rate: " + this.baseRate + "\n     Estimate Earnings: " + this.estimateEarnings);
         /*
         for (Room room : rooms) {
             info.append(room.getRoomInformation()).append("\n");
         }
         */
         return info.toString();
+    }
+
+    // will be used for remove rooms functionality
+    public String getRoomInfoForRemoval() {
+        StringBuilder sb = new StringBuilder();
+        
+        // Append header
+        sb.append("\n                   .------------------------------------------.\n");
+        sb.append("                   |                     ROOMS                   |\n");
+        sb.append("                   .------------------------------------------.\n");
+        
+        // Append room details
+        for (Room room : rooms) {
+            if (room.getNReservations() == 0) {
+                sb.append(String.format("                   |              [-][ROOM %s]              |\n", room.getRoomName()));
+            } else {
+                sb.append(String.format("                   |              [*][ROOM %s]              |\n", room.getRoomName()));
+            }
+        }
+        
+        // Append footer
+        sb.append("                   .------------------------------------------.\n");
+
+        return sb.toString();
+    }
+
+    public String getRoomInfoForViewing(Room room) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nRoom Name: " + room.getRoomName() + "\nRoom Type: " + room.getRoomType() + "\nCost per Night: " + room.getRoomPrice() + "\nNumber of Days Available: " + room.getNDaysAvailable());
+        return sb.toString();
+    }
+
+    // will be used for viewing room info - view hotel -> view room
+    public String getRoomAvailabilityForViewing(Room room) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("                    .------------------------------------------------------.\n");
+        sb.append("                   |                 Day            |              Status           |\n");
+        sb.append("                    .------------------------------------------------------.\n");
+    
+        boolean[] availability = room.getAvailability();
+    
+        for (int day = 0; day < 31; day++) {
+            String dayStr = String.format("%2d", day + 1);
+            String status = availability[day] ? "Available" : "Reserved";
+            
+            if (day < 9) {
+                sb.append(String.format("                    |                %-2s               |            %-13s     |\n", dayStr, status));
+            } else {
+                sb.append(String.format("                    |                 %-2s             |            %-13s     |\n", dayStr, status));
+            }
+        }
+    
+        sb.append("                    .------------------------------------------------------.\n");
+        return sb.toString();
+    }
+    
+
+    // will be used in simulate booking gui
+    // specifically, in the text area of the eastern part of the frame
+    public String printAvailableRoomsToBook() {
+        StringBuilder sb = new StringBuilder();
+        // Append header
+        sb.append("\n                   .------------------------------------------.\n");
+        sb.append("                   |                     ROOMS                   |\n");
+        sb.append("                   .------------------------------------------.\n");
+        
+        // Append room details
+        for (Room room : rooms) {
+            if (room.getNReservations() == 0) {
+                sb.append(String.format("                   |              [-][ROOM %s]              |\n", room.getRoomName()));
+            }
+        }
+        // Append footer
+        sb.append("                   .------------------------------------------.\n");
+
+        return sb.toString();
+    }
+
+    public ArrayList<Room> getRooms() {
+        return this.rooms;
     }
 }
