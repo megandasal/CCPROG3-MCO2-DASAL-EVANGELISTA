@@ -412,19 +412,22 @@ public class HotelReservationGUI extends JFrame {
         gbc.insets = new Insets(5, 0, 5, 0); // add 5 spaces between the buttons
 
         manageHotelMenuPanel.add(changeHotelNameBtn, gbc);
-        gbc.gridy = 3;
+        gbc.gridy = 2;
 
         manageHotelMenuPanel.add(addRoomsBtn, gbc);
-        gbc.gridy = 5;
+        gbc.gridy = 3;
 
         manageHotelMenuPanel.add(removeRoomsBtn, gbc);
-        gbc.gridy = 7;
+        gbc.gridy = 4;
+
+        manageHotelMenuPanel.add(updRoomPriceBtn, gbc);
+        gbc.gridy = 5;
 
         manageHotelMenuPanel.add(dpmBtn, gbc);
-        gbc.gridy = 9;
+        gbc.gridy = 6;
 
         manageHotelMenuPanel.add(removeReservationBtn, gbc);
-        gbc.gridy = 11;
+        gbc.gridy = 7;
 
         manageHotelMenuPanel.add(removeHotelBtn, gbc);
 
@@ -1286,6 +1289,14 @@ public class HotelReservationGUI extends JFrame {
 
     public void toggleAddRoomsDialog(boolean show) {
         addRoomsDialog.setVisible(show);
+    }
+
+    public void toggleRemoveRoomsFrame(boolean show) {
+        removeRoomsFrame.setVisible(show);
+    }
+
+    public void toggleUpdateRoomPriceDialog(boolean show) {
+        updRoomPriceDialog.setVisible(show);
     }
 
     public void toggleManageHotelMenu(boolean show) {
