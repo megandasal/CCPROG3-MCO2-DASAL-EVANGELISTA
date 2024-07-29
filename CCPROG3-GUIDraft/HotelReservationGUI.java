@@ -90,6 +90,7 @@ public class HotelReservationGUI extends JFrame {
         private JButton cancelRemoveHotelBtn;
 
     // view hotel
+    private JFrame viewHotelFrame;
     private JTextArea highLevelTextArea;
     private JButton dateBtn;
     private JButton roomBtn;
@@ -285,7 +286,7 @@ public class HotelReservationGUI extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
     
         // title label
-        JLabel titleLabel = new JLabel("Create a Hotel!");
+        JLabel titleLabel = new JLabel("Create a Hotel");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20)); 
         createHotelMainPanel.add(titleLabel, gbc);
     
@@ -886,7 +887,7 @@ public class HotelReservationGUI extends JFrame {
         mainPanel.add(highLevelPanel, BorderLayout.CENTER);
         mainPanel.add(lowLevelPanel, BorderLayout.SOUTH);
 
-        JFrame viewHotelFrame = new JFrame("View Hotel");
+        viewHotelFrame = new JFrame("View Hotel");
         viewHotelFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         viewHotelFrame.add(mainPanel);
         viewHotelFrame.setSize(550, 300);
@@ -1299,8 +1300,44 @@ public class HotelReservationGUI extends JFrame {
         updRoomPriceDialog.setVisible(show);
     }
 
+    public void toggleRemoveReservationDialog(boolean show) {
+        removeReservationDialog.setVisible(show);
+    }
+
+    public void toggleRemoveHotelDialog(boolean show) {
+        removeHotelDialog.setVisible(show);
+    }
+
+    public void toggleViewHotelMenu(boolean show) {
+        viewHotelFrame.setVisible(show);
+    }
+
     public void toggleManageHotelMenu(boolean show) {
         manageHotelFrame.setVisible(show);
+    }
+
+    public void toggleSelectRoomDialog(boolean show){
+        selectRoomDialog.setVisible(show);
+    }
+
+    public void toggleViewDateDialog(boolean show) {
+        viewDateDialog.setVisible(show);
+    }
+
+    public void toggleViewRoomsFrame(boolean show) {
+        viewRoomFrame.setVisible(show);
+    }
+
+    public void toggleViewReservationMenu(boolean show) {
+        reservationMenuDialog.setVisible(show);
+    }
+
+    public void toggleViewReservationDialog(boolean show) {
+        viewReservationDialog.setVisible(show);
+    }
+    
+    public void toggleSimulateBookingDialog(boolean show) {
+        simulateBookingFrame.setVisible(show);
     }
 
     public void showErrorMessage(String message) {
