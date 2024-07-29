@@ -441,6 +441,10 @@ public class Hotel {
         }
     }
 
+    public ArrayList<Reservation> getAllReservations() {
+        return allReservations;
+    }
+
     /**
      * Handles the process of removing rooms in a hotel. Prompts the user to enter
      * the room number they wish to remove and removes it if the room exists and
