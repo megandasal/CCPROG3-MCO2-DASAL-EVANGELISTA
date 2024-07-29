@@ -16,16 +16,18 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 
 public class HotelReservationGUI extends JFrame {
     // main menu buttons
@@ -54,6 +56,11 @@ public class HotelReservationGUI extends JFrame {
     private JDialog hotelSelectionDialog;
     private JButton selectHotelFinBtn;
 
+    // confirmation dialogs for hotel modifications
+    private JDialog confirmModificationDialog;
+    private JButton confirmModificationBtn;
+    private JButton cancelModificationBtn;
+
         // change hotel name
         private JDialog changeHotelNameDialog;
         JComboBox<String> hotelComboBox;
@@ -71,6 +78,7 @@ public class HotelReservationGUI extends JFrame {
         private JFrame removeRoomsFrame;
         private JButton removeRoomsFinBtn;
         private JComboBox<String> removeRoomsCBox; // combo box for selecting rooms to remove
+        private JTextArea removeRoomsTA; // text area for displaying rooms
 
         // update room base price
         private JDialog updRoomPriceDialog;
@@ -123,8 +131,8 @@ public class HotelReservationGUI extends JFrame {
     // simulate booking
     private JFrame simulateBookingFrame;
     private JTextField guestNameTf;
-    private JTextField checkInTf;
-    private JTextField checkOutTf;
+    private JComboBox<Integer> checkInCBox;
+    private JComboBox<Integer> checkOutCBox;
     private JComboBox<String> roomToBookCBox;
     private JTextField discountCodeTf;
     private JTextArea availableRoomsTA; // available rooms for booking
@@ -138,7 +146,7 @@ public class HotelReservationGUI extends JFrame {
         setSize(600, 400);
     
         this.hotelList = hotelList;
-    
+        
         // initialize main menu
         init();
         initComponents();
@@ -168,6 +176,7 @@ public class HotelReservationGUI extends JFrame {
         // simulate booking
         simulateBookingFrame();
     
+        confirmModificationDialog();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -638,7 +647,7 @@ public class HotelReservationGUI extends JFrame {
         removeRoomsPanel.add(removeRoomsLabel, gbc);
         
         // text area for displaying rooms
-        JTextArea removeRoomsTA = new JTextArea(10, 40);
+        removeRoomsTA = new JTextArea(10, 20);
         removeRoomsTA.setEditable(false); // text area for display only
         removeRoomsTA.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -721,7 +730,7 @@ public class HotelReservationGUI extends JFrame {
         mainPanel.add(subTitleLbl, gbc);
     
         // current room price label
-        JLabel subTitleLbl2 = new JLabel("Current room base price:");
+        JLabel subTitleLbl2 = new JLabel("Current room base price: ");
         subTitleLbl2.setFont(new Font("Arial", Font.ITALIC, 12));
         subTitleLbl2.setForeground(Color.BLUE);
         gbc.gridy = 2;
@@ -843,56 +852,68 @@ public class HotelReservationGUI extends JFrame {
     }
 
     public void viewHotelMenu() {
-        //String hotelInfo = hotel.getHotelInformation();
-        JPanel highLevelPanel = new JPanel(new BorderLayout());
-        JLabel highLevelLabel = new JLabel("HIGH LEVEL INFORMATION");
-        Font font = new Font("Arial",Font.BOLD,16);
-        highLevelLabel.setFont(font);
-        highLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        highLevelTextArea = new JTextArea();
-        highLevelTextArea.setEditable(false);
-        JScrollPane highLevelScrollPane = new JScrollPane(highLevelTextArea);
-        highLevelPanel.add(highLevelLabel, BorderLayout.NORTH);
-        highLevelPanel.add(highLevelScrollPane, BorderLayout.CENTER);
-        
-        // Create buttons panel with 3 buttons horizontally
-        JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
+    // High-level information panel
+    JPanel highLevelPanel = new JPanel();
+    highLevelPanel.setLayout(new BoxLayout(highLevelPanel, BoxLayout.Y_AXIS));
+    
+    JLabel highLevelLabel = new JLabel("HIGH LEVEL HOTEL INFORMATION");
+    Font font = new Font("Arial", Font.BOLD, 16);
+    highLevelLabel.setFont(font);
+    highLevelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    
+    highLevelTextArea = new JTextArea();
+    highLevelTextArea.setEditable(false);
+    JScrollPane highLevelScrollPane = new JScrollPane(highLevelTextArea);
+    
+    // Add components to high-level panel with spacing
+    highLevelPanel.add(highLevelLabel);
+    highLevelPanel.add(Box.createVerticalStrut(10)); // Add vertical space
+    highLevelPanel.add(highLevelScrollPane);
+    highLevelPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding
 
-        /* SET ACTION COMMANDS */
-        dateBtn = new JButton("DATE");
-        dateBtn.setActionCommand("View Date");
+    // Create buttons panel with 3 buttons horizontally
+    JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); // Add horizontal space between buttons
 
-        roomBtn = new JButton("ROOM");
-        roomBtn.setActionCommand("View Room");
+    /* SET ACTION COMMANDS */
+    dateBtn = new JButton("DATE");
+    dateBtn.setActionCommand("View Date");
 
-        reservationBtn = new JButton("RESERVATION");
-        reservationBtn.setActionCommand("View Reservation");
+    roomBtn = new JButton("ROOM");
+    roomBtn.setActionCommand("View Room");
 
-        buttonsPanel.add(dateBtn);
-        buttonsPanel.add(roomBtn);
-        buttonsPanel.add(reservationBtn);
-        
-        // Create a JPanel for low-level information (including buttons)
-        JPanel lowLevelPanel = new JPanel(new BorderLayout());
-        JLabel lowLevelLabel = new JLabel("LOW LEVEL INFORMATION");
-        lowLevelLabel.setFont(font);
-        lowLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        // Add buttons panel to the bottom of low-level information panel
-        lowLevelPanel.add(lowLevelLabel, BorderLayout.NORTH);
-        lowLevelPanel.add(buttonsPanel, BorderLayout.SOUTH); // Adding buttons here
-        
-        // Combine high-level and low-level information panels
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(highLevelPanel, BorderLayout.CENTER);
-        mainPanel.add(lowLevelPanel, BorderLayout.SOUTH);
+    reservationBtn = new JButton("RESERVATION");
+    reservationBtn.setActionCommand("View Reservation");
 
-        viewHotelFrame = new JFrame("View Hotel");
-        viewHotelFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        viewHotelFrame.add(mainPanel);
-        viewHotelFrame.setSize(550, 300);
-        viewHotelFrame.setLocationRelativeTo(null);
-    }
+    buttonsPanel.add(dateBtn);
+    buttonsPanel.add(roomBtn);
+    buttonsPanel.add(reservationBtn);
+
+    // Low-level information panel
+    JPanel lowLevelPanel = new JPanel();
+    lowLevelPanel.setLayout(new BoxLayout(lowLevelPanel, BoxLayout.Y_AXIS));
+    
+    JLabel lowLevelLabel = new JLabel("LOW LEVEL HOTEL INFORMATION");
+    lowLevelLabel.setFont(font);
+    lowLevelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    lowLevelPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding
+    
+    // Add components to low-level panel with spacing
+    lowLevelPanel.add(lowLevelLabel);
+    lowLevelPanel.add(Box.createVerticalStrut(20)); // Add vertical space
+    lowLevelPanel.add(buttonsPanel);
+
+    // Combine high-level and low-level information panels
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.add(highLevelPanel, BorderLayout.CENTER);
+    mainPanel.add(lowLevelPanel, BorderLayout.SOUTH);
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding
+
+    viewHotelFrame = new JFrame("View Hotel");
+    viewHotelFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    viewHotelFrame.add(mainPanel);
+    viewHotelFrame.setSize(550, 300);
+    viewHotelFrame.setLocationRelativeTo(null);
+}
 
     public void viewDateDialog() {
         viewDateDialog = new JDialog();
@@ -1096,7 +1117,6 @@ public class HotelReservationGUI extends JFrame {
         viewReservationPanel.add(reservationScrollPane, gbc);
     
         viewReservationDialog.add(viewReservationPanel);
-        viewReservationDialog.setVisible(true);
         viewReservationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
@@ -1104,6 +1124,7 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingFrame = new JFrame("Simulate Booking");
         simulateBookingFrame.setSize(750, 500);
         simulateBookingFrame.setLayout(new BorderLayout());
+        simulateBookingFrame.setLocationRelativeTo(null);
     
         JPanel bookingInfoPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -1139,10 +1160,11 @@ public class HotelReservationGUI extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         bookingInfoPanel.add(checkInLbl, gbc);
     
-        checkInTf = new JTextField(10);
+        checkInCBox = new JComboBox<Integer>();
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        bookingInfoPanel.add(checkInTf, gbc);
+        checkInCBox.setPreferredSize(new Dimension(115, 20));
+        bookingInfoPanel.add(checkInCBox, gbc);
     
         // check out date
         JLabel checkOutLbl = new JLabel("Check-out Date:");
@@ -1151,10 +1173,11 @@ public class HotelReservationGUI extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         bookingInfoPanel.add(checkOutLbl, gbc);
     
-        checkOutTf = new JTextField(10);
+        checkOutCBox = new JComboBox<Integer>();
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        bookingInfoPanel.add(checkOutTf, gbc);
+        checkOutCBox.setPreferredSize(new Dimension(115, 20));
+        bookingInfoPanel.add(checkOutCBox, gbc);
     
         // room to book
         JLabel roomLbl = new JLabel("Room to book:");
@@ -1208,6 +1231,48 @@ public class HotelReservationGUI extends JFrame {
     
         simulateBookingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
+
+    // to display for when user makes modifications through manage hotel menu
+    public void confirmModificationDialog() {
+        confirmModificationDialog = new JDialog();
+        confirmModificationDialog.setTitle("Confirm Modification");
+        confirmModificationDialog.setSize(400, 250);
+        confirmModificationDialog.setLocationRelativeTo(null);
+
+        JPanel confirmModificationPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        JLabel confirmModificationLbl = new JLabel("Are you sure you want to make this modification?");
+        confirmModificationLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        confirmModificationPanel.add(confirmModificationLbl, gbc);
+
+        confirmModificationBtn = new JButton("Confirm");
+        confirmModificationBtn.setActionCommand("Confirm Modification");
+
+        cancelModificationBtn = new JButton("Cancel");
+        cancelModificationBtn.setActionCommand("Cancel Modification");
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        buttonPanel.add(confirmModificationBtn);
+        buttonPanel.add(cancelModificationBtn);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        confirmModificationPanel.add(buttonPanel, gbc);
+
+        confirmModificationDialog.add(confirmModificationPanel);
+        confirmModificationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
     
 
 
@@ -1243,6 +1308,9 @@ public class HotelReservationGUI extends JFrame {
         selectRoomBtn.addActionListener(listener);
         selectReservationBtn.addActionListener(listener);
         submitBookingBtn.addActionListener(listener);
+
+        confirmModificationBtn.addActionListener(listener);
+        cancelModificationBtn.addActionListener(listener);
     }
 
     public void setDocumentListener(DocumentListener listener) {
@@ -1268,8 +1336,8 @@ public class HotelReservationGUI extends JFrame {
 
         // for booking a room
         guestNameTf.getDocument().addDocumentListener(listener);
-        checkInTf.getDocument().addDocumentListener(listener);
-        checkOutTf.getDocument().addDocumentListener(listener);
+        // checkInCBox.getDocument().addDocumentListener(listener);
+        // checkOutCBox.getDocument().addDocumentListener(listener);
         discountCodeTf.getDocument().addDocumentListener(listener);
     }
 
@@ -1340,6 +1408,10 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingFrame.setVisible(show);
     }
 
+    public void toggleConfirmModificationDialog(boolean show) {
+        confirmModificationDialog.setVisible(show);
+    }
+
     public void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -1356,6 +1428,7 @@ public class HotelReservationGUI extends JFrame {
         return newHotelNameTf.getText();
     }
 
+    // for hotel creation!!
     public String getStdRooms() {
         return stdRoomsTf.getText(); // text fields get strings. convert to int in controller
     }
@@ -1366,6 +1439,19 @@ public class HotelReservationGUI extends JFrame {
 
     public String getExecRooms() {
         return execRoomsTf.getText();
+    }
+
+    // for adding rooms!!!
+    public String getNewStdRooms() {
+        return newStdRoomsTf.getText();
+    }
+
+    public String getNewDlxRooms() {
+        return newDlxRoomsTf.getText();
+    }
+
+    public String getNewExecRooms() {
+        return newExecRoomsTf.getText();
     }
 
     public void clearCreateHotelTF() {
@@ -1385,8 +1471,54 @@ public class HotelReservationGUI extends JFrame {
         newHotelNameTf.setText("");
     }
 
+    // for removing rooms
+    public void setRoomRemovalTextArea(String roomInfo) {
+        System.out.println("Setting room removal text area with: " + roomInfo); // debug
+        removeRoomsTA.setText(roomInfo);
+    }
+
+    public String getRoomToRemove() {
+        return (String) removeRoomsCBox.getSelectedItem();
+    }
+
+    public JComboBox<String> getRemoveRoomsCBox() {
+        return removeRoomsCBox;
+    }
+
+    public String getNewRoomBasePrice() {
+        return newRoomPriceTf.getText();
+    }
+
+    public void clearUpdateRoomPriceTf() {
+        newRoomPriceTf.setText("");
+    }
+
     public String getSelectedHotelFromComboBox() {
         return (String) hotelComboBox.getSelectedItem();
+    }
+
+    public void setViewHotelTA(String hotelInfo) {
+        highLevelTextArea.setText(hotelInfo);
+    }
+
+    public JComboBox<String> getDateComboBox() {
+        return dateComboBox;
+    }
+
+    public String getSelectedDate() { // for viewing date in "view hotel"
+        return (String) dateComboBox.getSelectedItem();
+    }
+
+    public String getSelectedRoomToView() {
+        return (String) roomComboBox.getSelectedItem();
+    }
+
+    public void setViewRoomInfoTA(String roomInfo) {
+        viewRoomTextArea.setText(roomInfo);
+    }
+
+    public void setViewRoomAvailabilityTA(String roomInfo) {
+        viewRoomTextArea2.setText(roomInfo);
     }
 
     public void updateHotelComboBox(ArrayList<Hotel> hotelList) {
@@ -1395,4 +1527,58 @@ public class HotelReservationGUI extends JFrame {
             hotelComboBox.addItem(hotel.getHotelName());
         }
     }
+
+    public void addRoomToViewComboBox(String roomName) {
+        roomComboBox.addItem(roomName);
+    }
+
+    public void clearSimulateBookingTF() {
+        guestNameTf.setText("");
+        discountCodeTf.setText("");
+    }
+
+    public void addRoomToBookingComboBox(String roomName) {
+        roomToBookCBox.addItem(roomName);
+    }
+
+    public String getGuestName() {
+        return guestNameTf.getText();
+    }
+
+    public int getCheckInDate() {
+        return (int) checkInCBox.getSelectedItem();
+    }
+
+    public int getCheckOutDate() {
+        return (int) checkOutCBox.getSelectedItem();
+    }
+
+    public String getDiscountCode() {
+        return discountCodeTf.getText();
+    }
+
+    public void setAvailableRoomsTA(String roomInfo) {
+        availableRoomsTA.setText(roomInfo);
+    }
+
+    public JComboBox<String> getRoomToBookCBox() {
+        return roomToBookCBox;
+    }
+
+    public String getRoomToBook() {
+        return (String) roomToBookCBox.getSelectedItem();
+    }
+
+    public JComboBox<Integer> getCheckInComboBox() {
+        return checkInCBox;
+    }
+
+    public JComboBox<Integer> getCheckOutComboBox() {
+        return checkOutCBox;
+    }
+
+    public void setSimBookingTextArea(String bookingInfo) {
+        availableRoomsTA.setText(bookingInfo);
+    }
+
 }
