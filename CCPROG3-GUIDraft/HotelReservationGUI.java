@@ -1117,7 +1117,7 @@ public class HotelReservationGUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
     
-        JLabel simulateBookingLbl = new JLabel("Book a Room");
+        JLabel simulateBookingLbl = new JLabel("Simulate Booking");
         simulateBookingLbl.setFont(new Font("Arial", Font.BOLD, 20));
         simulateBookingLbl.setHorizontalAlignment(JLabel.CENTER);
     
@@ -1174,7 +1174,7 @@ public class HotelReservationGUI extends JFrame {
         roomToBookCBox = new JComboBox<>();
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        roomToBookCBox.setPreferredSize(new Dimension(115, 25));
+        roomToBookCBox.setPreferredSize(new Dimension(115, 20));
         bookingInfoPanel.add(roomToBookCBox, gbc);
     
         // discount code
@@ -1197,7 +1197,7 @@ public class HotelReservationGUI extends JFrame {
         availableRoomsTA = new JTextArea();
         availableRoomsTA.setEditable(false);
         availableRoomsTA.setMargin(new Insets(5, 5, 5, 5));
-        availableRoomsTA.setPreferredSize(new Dimension(300, 200));
+        availableRoomsTA.setPreferredSize(new Dimension(200, 200));
         JScrollPane availableRoomsSP = new JScrollPane(availableRoomsTA);
         textAreaPanel.add(availableRoomsSP, BorderLayout.CENTER);
     
