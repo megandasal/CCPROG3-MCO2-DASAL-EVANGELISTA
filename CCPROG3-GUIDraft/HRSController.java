@@ -9,6 +9,7 @@ public class HRSController implements ActionListener, DocumentListener {
     private ArrayList<Hotel> hotelList;
     private int hotelCount;
     private String currentOperation = "";
+    private String viewHotelOperation = "";
 
     public HRSController(HotelReservationGUI gui, ArrayList<Hotel> hotelList, int hotelCount) {
         this.gui = gui;
@@ -29,64 +30,157 @@ public class HRSController implements ActionListener, DocumentListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
+        String command = e.getActionCommand();
+        System.out.println("Action Command: " + command); // Debugging
+    
+        switch (command) {
             case "Create Hotel":
-            gui.toggleCreateHotelDialog(true);
-            break;
-            
-            case "Finish Create Hotel": // confirm hotel creation
-            processFinishCreateHotel();
-            break;
-
+                gui.toggleCreateHotelDialog(true);
+                break;
+    
+            case "Finish Create Hotel":
+                processFinishCreateHotel();
+                break;
+    
             case "Manage Hotel":
-            if (hotelList.isEmpty()) {
-                gui.showErrorMessage("No hotels to manage.");
-                return;
-            }
-            gui.toggleManageHotelMenu(true);
-            break;
-
+                if (hotelList.isEmpty()) {
+                    gui.showErrorMessage("No hotels to manage.");
+                    return;
+                }
+                gui.toggleManageHotelMenu(true);
+                break;
+    
             case "Change Hotel Name":
-            currentOperation = "Change Hotel Name";
-            gui.toggleManageHotelMenu(false);
-            gui.toggleHotelSelectionDialog(true);
-            break;
-
+                currentOperation = "Change Hotel Name";
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
+                break;
+    
             case "Submit New Hotel Name":
-            System.out.println("submit new rooms clicked"); // debugging
-            String newHotelName = gui.getNewHotelName();
-            renameHotel(newHotelName);
-            gui.toggleChangeHotelNameDialog(false);
-            gui.clearChangeHotelNameTF();
-            break;
-
+                System.out.println("Submit new hotel name clicked"); // Debugging
+                String newHotelName = gui.getNewHotelName();
+                renameHotel(newHotelName);
+                gui.toggleChangeHotelNameDialog(false);
+                gui.clearChangeHotelNameTF();
+                break;
+    
             case "Add Rooms":
-            currentOperation = "Add Rooms";
-            gui.toggleManageHotelMenu(false);
-            gui.toggleHotelSelectionDialog(true);
-            break;
-
-            case "Select Hotel":
-            switch (currentOperation) {
-                case "Change Hotel Name":
-                gui.toggleHotelSelectionDialog(false);
-                gui.toggleChangeHotelNameDialog(true);
+                currentOperation = "Add Rooms";
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
                 break;
-
-                case "Add Rooms":
-                gui.toggleHotelSelectionDialog(false);
-                gui.toggleAddRoomsDialog(true);
-                break;
-            }
-           
-            break;
-
+    
             case "Submit New Rooms":
-            System.out.println("submit new rooms button clicked");
-            processNewRooms();
-            break;
+                System.out.println("Submit new rooms button clicked"); // Debugging
+                processNewRooms();
+                break;
+    
+            case "Remove Rooms":
+                currentOperation = "Remove Rooms";
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
+                break;
+    
+            case "Update Room Price":
+                currentOperation = "Update Room Price";
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
+                break;
+    
+            case "Remove Reservation":
+                currentOperation = "Remove Reservation";
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
+                break;
+    
+            case "Remove Hotel":
+                currentOperation = "Remove Hotel";
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
+                break;
+    
+            case "View Hotel":
+                if (hotelList.isEmpty()) {
+                    gui.showErrorMessage("No hotels to view.");
+                    return;
+                }
+                currentOperation = "View Hotel";
+                gui.toggleHotelSelectionDialog(true);
+                break;
+    
+            case "Simulate Booking":
+                if (hotelList.isEmpty()) {
+                    gui.showErrorMessage("No hotels available for booking.");
+                    return;
+                }
+                gui.toggleSimulateBookingDialog(true);
+                break;
+    
+            case "Select Hotel":
+                switch (currentOperation) {
+                    case "Change Hotel Name":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleChangeHotelNameDialog(true);
+                        break;
+    
+                    case "Add Rooms":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleAddRoomsDialog(true);
+                        break;
+    
+                    case "Remove Rooms":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleRemoveRoomsFrame(true);
+                        break;
+    
+                    case "Update Room Price":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleUpdateRoomPriceDialog(true);
+                        break;
+    
+                    case "Remove Reservation":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleRemoveReservationDialog(true);
+                        break;
+    
+                    case "Remove Hotel":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleRemoveHotelDialog(true);
+                        break;
+    
+                    case "View Hotel":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleViewHotelMenu(true);
+    
+                    default:
+                        System.out.println("Unknown currentOperation: " + currentOperation); // Debugging
+                        break;
+                }
+                break;
+
+                case "View Date":
+                gui.toggleViewHotelMenu(false);
+                gui.toggleViewDateDialog(true);
+                break;
+    
+                case "View Room":
+                viewHotelOperation = "View Rooms";
+                gui.toggleViewHotelMenu(false);
+                gui.toggleViewRoomsFrame(true);
+                break;
+        
+                case "View Reservation":
+                viewHotelOperation = "View Reservations";
+                gui.toggleViewHotelMenu(false);
+                gui.toggleViewReservationDialog(true);
+                break;
+                
+            default:
+                System.out.println("Unknown action command: " + command); // Debugging
+                break;
         }
     }
+    
 
     // checks if the hotel name is unique
     public boolean isUniqueName(String hotelName) {
