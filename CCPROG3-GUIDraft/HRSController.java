@@ -9,7 +9,6 @@ public class HRSController implements ActionListener, DocumentListener {
     private ArrayList<Hotel> hotelList;
     private int hotelCount;
     private String currentOperation = "";
-    private String viewHotelOperation = "";
 
     public HRSController(HotelReservationGUI gui, ArrayList<Hotel> hotelList, int hotelCount) {
         this.gui = gui;
@@ -164,13 +163,11 @@ public class HRSController implements ActionListener, DocumentListener {
                 break;
     
                 case "View Room":
-                viewHotelOperation = "View Rooms";
                 gui.toggleViewHotelMenu(false);
                 gui.toggleViewRoomsFrame(true);
                 break;
         
                 case "View Reservation":
-                viewHotelOperation = "View Reservations";
                 gui.toggleViewHotelMenu(false);
                 gui.toggleViewReservationDialog(true);
                 break;
