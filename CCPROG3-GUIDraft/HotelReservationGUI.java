@@ -686,7 +686,6 @@ public class HotelReservationGUI extends JFrame {
     
         removeRoomsFrame.add(removeRoomsPanel);
         removeRoomsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        removeRoomsFrame.setVisible(true);
     }
     
     public void updateRoomPriceDialog() {
@@ -756,7 +755,6 @@ public class HotelReservationGUI extends JFrame {
         updRoomPriceDialog.add(mainPanel);
         updRoomPriceDialog.setLocationRelativeTo(null);
         updRoomPriceDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        updRoomPriceDialog.setVisible(true);
     }
 
     private void removeReservationDialog() {
@@ -795,7 +793,6 @@ public class HotelReservationGUI extends JFrame {
         removeReservationPanel.add(submitRemoveReservationBtn, gbc);
     
         removeReservationDialog.add(removeReservationPanel);
-        removeReservationDialog.setVisible(true);
         removeReservationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
     
@@ -838,7 +835,6 @@ public class HotelReservationGUI extends JFrame {
         removeHotelPanel.add(buttonPanel, gbc);
     
         removeHotelDialog.add(removeHotelPanel);
-        removeHotelDialog.setVisible(true);
         removeHotelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
@@ -892,7 +888,6 @@ public class HotelReservationGUI extends JFrame {
         viewHotelFrame.add(mainPanel);
         viewHotelFrame.setSize(550, 300);
         viewHotelFrame.setLocationRelativeTo(null);
-        viewHotelFrame.setVisible(true);
     }
 
     public void viewDateDialog() {
@@ -930,8 +925,6 @@ public class HotelReservationGUI extends JFrame {
 
         viewDateDialog.add(viewDatePanel);
         viewDateDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        viewDateDialog.setVisible(true);
     }
     
     public void selectRoomDialog() {
@@ -973,7 +966,6 @@ public class HotelReservationGUI extends JFrame {
         selectRoomDialog.add(selectRoomPanel);
         selectRoomDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        selectRoomDialog.setVisible(true);
     }
 
     public void viewRoomFrame() {
@@ -1021,7 +1013,6 @@ public class HotelReservationGUI extends JFrame {
         viewRoomFrame.add(roomInfoPanel, BorderLayout.NORTH);
         viewRoomFrame.add(availabilityPanel, BorderLayout.CENTER);
 
-        viewRoomFrame.setVisible(true);
         viewRoomFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
@@ -1064,14 +1055,12 @@ public class HotelReservationGUI extends JFrame {
 
         reservationMenuDialog.add(reservationMenuPanel);
         reservationMenuDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        reservationMenuDialog.setVisible(true);
     }
 
     public void viewReservationDialog() {
         viewReservationDialog = new JDialog();
         viewReservationDialog.setTitle("Reservation Details");
-        viewReservationDialog.setSize(500, 400);
+        viewReservationDialog.setSize(300, 400);
         viewReservationDialog.setLocationRelativeTo(null);
     
         JPanel viewReservationPanel = new JPanel(new GridBagLayout());
@@ -1103,9 +1092,8 @@ public class HotelReservationGUI extends JFrame {
         viewReservationPanel.add(reservationScrollPane, gbc);
     
         viewReservationDialog.add(viewReservationPanel);
-        viewReservationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    
         viewReservationDialog.setVisible(true);
+        viewReservationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
     public void simulateBookingFrame() {
@@ -1215,7 +1203,6 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingFrame.add(buttonPanel, BorderLayout.SOUTH);
     
         simulateBookingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        simulateBookingFrame.setVisible(true);
     }
     
 
@@ -1255,16 +1242,31 @@ public class HotelReservationGUI extends JFrame {
     }
 
     public void setDocumentListener(DocumentListener listener) {
+        // for creating a hotel
         hotelNameTf.getDocument().addDocumentListener(listener);
         stdRoomsTf.getDocument().addDocumentListener(listener);
         dlxRoomsTf.getDocument().addDocumentListener(listener);
         execRoomsTf.getDocument().addDocumentListener(listener);
+
+        // for changing the hotel's name
         newHotelNameTf.getDocument().addDocumentListener(listener);
+
+        // for adding rooms to the hotel
         newStdRoomsTf.getDocument().addDocumentListener(listener);
         newDlxRoomsTf.getDocument().addDocumentListener(listener);
         newExecRoomsTf.getDocument().addDocumentListener(listener);
+
+        // for setting a new room base price
         newRoomPriceTf.getDocument().addDocumentListener(listener);
+
+        // for removing a reservation
         removeReservationTf.getDocument().addDocumentListener(listener);
+
+        // for booking a room
+        guestNameTf.getDocument().addDocumentListener(listener);
+        checkInTf.getDocument().addDocumentListener(listener);
+        checkOutTf.getDocument().addDocumentListener(listener);
+        discountCodeTf.getDocument().addDocumentListener(listener);
     }
 
 
