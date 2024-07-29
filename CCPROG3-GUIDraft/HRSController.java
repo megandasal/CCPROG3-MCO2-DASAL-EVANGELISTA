@@ -163,7 +163,18 @@ public class HRSController implements ActionListener, DocumentListener {
                 break;
     
                 case "View Room":
+                for (Hotel hotel : hotelList) {
+                    if (hotel.getNRooms() == 0) {
+                        gui.showErrorMessage("No rooms available for viewing.");
+                        return;
+                    }
+                }
                 gui.toggleViewHotelMenu(false);
+                gui.toggleSelectRoomDialog(true);
+                break;
+
+                case "Select Room":
+                gui.toggleSelectRoomDialog(false);
                 gui.toggleViewRoomsFrame(true);
                 break;
         
