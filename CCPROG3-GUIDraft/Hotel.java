@@ -309,7 +309,6 @@ public class Hotel {
                 availableRooms.add(room);
             }
         }
-
         return availableRooms;
     }
 
@@ -477,44 +476,52 @@ public class Hotel {
         }
     }
 
-    public int bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode) {
+    public int isValidReservationGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, ArrayList<Room> avaiableRooms) {
+
         if (checkInDate >= checkOutDate) {
             return -1; // invalid date range
         }
-        else {
-            ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate); // room availability is
-            for (Room room : availableRooms) { // checks if room exists in available rooms array list and room availability
-                // array is updated
-                if (room.getRoomName().equals(roomToBook)) { // checks if room exists
-                    if (room.isReservationStartingEndingOn(checkInDate, false) || checkInDate == 1) { // checks if it
-                                                                                                      // overlaps with
-                        // an existing reservation,
-                        // then marks the day as
-                        // unavailable
-                        room.setRoomAvailability(checkInDate, false);
-                    }
-                    if (room.isReservationStartingEndingOn(checkOutDate, true) || checkOutDate == 31) { // checks if it
-                                                                                                        // overlaps
-                        // with an existing
-                        // reservation, then marks
-                        // the day as unavailable
-                        room.setRoomAvailability(checkOutDate, false);
-                    }
-    
-                    for (int day = checkInDate + 1; day < checkOutDate; day++) { // marks the days in between as unavailable
-                        room.setRoomAvailability(day, false);
-                    }
-                    room.updateNDaysAvailable(); // updates the number of days available in the room
-                    Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room, multiplierDatabase);
-                    reservation.applyDiscount(discountCode);
-                    updateEstimateEarnings(reservation.getTotalPrice(), true); // updates the hotel's estimated earnings
-                    this.allHotelReservations();
-                    return 1; // room booked successfully
-                }
-            }
-            return 0; // room not found/error booking room
+        else if (guestName == null || guestName.equals("")) {
+            return -2; // invalid guest name
         }
+        else if (discountCode == null || discountCode.equals("")) {
+            return -3; // no discount code used
+        }
+        else if (!discountCode.equals("I_WORK_HERE") || !discountCode.equals("STAY4_GET1") || !discountCode.equals("PAYDAY")) {
+            return -4; // invalid discount code
+        }
+        else {
+            return -5; // room not found
+        } 
     }
+
+        public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode) {
+            ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
+            for (Room room : availableRooms) {
+                if (room.isReservationStartingEndingOn(checkInDate, false) || checkInDate == 1) {
+                    room.setRoomAvailability(checkInDate, false);
+                }
+                if (room.isReservationStartingEndingOn(checkOutDate, true) || checkOutDate == 31) {
+                    room.setRoomAvailability(checkOutDate, false);
+                }
+        
+                for (int day = checkInDate + 1; day < checkOutDate; day++) {
+                    room.setRoomAvailability(day, false);
+                }
+        
+                room.updateNDaysAvailable();
+                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room, multiplierDatabase);
+                reservation.applyDiscount(discountCode);
+                room.addReservation(reservation);
+                updateEstimateEarnings(reservation.getTotalPrice(), true);
+                this.allHotelReservations();
+                
+                // Generate and return the booking receipt
+                String bookingReceipt = printBookingReceipt(reservation);
+                return bookingReceipt;
+            }
+            return ""; // Return empty string if booking fails
+        }
 
     /**
      * Collects and adds all reservations across all rooms in a hotel.
@@ -685,6 +692,36 @@ public class Hotel {
         if (!reservationFound) {
             System.out.println("This reservation does not exist.");
         }
+    }
+
+    public int removeReservationGUI(String bookingID, int checkInDate, int checkOutDate) {
+        for (Room room : rooms) {
+            for (int i = 0; i < room.getReservations().size(); i++) {
+                if (room.getReservations().get(i).getBookingID().equals(bookingID)) { // check if booking ID matches a
+                    // reservation made by iterating through
+                    // reservation array
+                    checkInDate = room.getReservations().get(i).getCheckInDate(); // retrieve check-in date
+                    checkOutDate = room.getReservations().get(i).getCheckOutDate(); // retrieve check-out date
+
+                    this.updateEstimateEarnings(room.getReservations().get(i).getTotalPrice(), false); // removes
+                                                                                                           // reservation
+                    // total price from
+                    // earnings
+                    for (int day = checkInDate; day <= checkOutDate; day++) { // sets back the days in between to
+                                                                                // available
+                        room.setRoomAvailability(day, true); // updates room availability on dates
+                    }
+
+                    room.updateNDaysAvailable(); // updates room days available
+
+                    room.removeReservation(i); // removes the reservation instance
+                    this.allHotelReservations(); // updates reservation list
+                    System.out.println("Your reservation has been successfully removed.");
+                    return 1; // reservation removed successfully
+                }
+            }
+        }
+        return -1; // reservation not found
     }
 
     /**
@@ -1021,6 +1058,32 @@ public class Hotel {
         }
         // Append footer
         sb.append("                   .------------------------------------------.\n");
+
+        return sb.toString();
+    }
+
+    // used in to simulate a booking - the booking receipt display
+    public String printBookingReceipt(Reservation reservation) {
+        if (reservation == null) {
+            return "No booking found.";
+        }
+    
+        // Debugging statements
+        System.out.println("Guest Name: " + reservation.getGuestName());
+        System.out.println("Room Number: " + reservation.getRoomName());
+        System.out.println("Check-In Date: " + reservation.getCheckInDate());
+        System.out.println("Check-Out Date: " + reservation.getCheckOutDate());
+        System.out.println("Total Price: " + reservation.getTotalPrice());
+        System.out.println("Booking ID: " + reservation.getBookingID());
+    
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Guest Name: %-17s\n", reservation.getGuestName()));
+        sb.append(String.format("Check-in Date: %-14d\n", reservation.getCheckInDate()));
+        sb.append(String.format("Check-out Date: %-13d\n", reservation.getCheckOutDate()));
+        sb.append(String.format("Room Number: %-16s\n", reservation.getRoomName()));
+        sb.append(String.format("Total Price: %-15.2f\n", reservation.getTotalPrice()));
+        sb.append(String.format("Booking ID: %-16s\n", reservation.getBookingID()));
 
         return sb.toString();
     }
