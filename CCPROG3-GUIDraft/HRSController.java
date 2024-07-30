@@ -696,6 +696,7 @@ public class HRSController implements ActionListener, DocumentListener {
         int checkInDate = gui.getCheckInDate();
         int checkOutDate = gui.getCheckOutDate();
         String discountCode = gui.getDiscountCode();
+        int isValidDiscount = 0;
     
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
@@ -723,7 +724,7 @@ public class HRSController implements ActionListener, DocumentListener {
                             gui.showErrorMessage("Please enter a guest name for the booking.");
                             break;
                         case -3:
-                            String bookingReceipt1 = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode);
+                            String bookingReceipt1 = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode, isValidDiscount);
                             JOptionPane.showMessageDialog(null, "No discount code used. Proceeding with booking...");
                             gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
                             gui.setBookingReceiptTextArea(bookingReceipt1);
@@ -738,13 +739,16 @@ public class HRSController implements ActionListener, DocumentListener {
                             gui.showErrorMessage("Error: Room " + selectedRoom + " not found.");
                             break;
                         case 1:
-                            String bookingReceipt = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode);
-                            gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
-                            gui.setBookingReceiptTextArea(bookingReceipt);
-                            gui.toggleBookingReceiptDialog(true);
-                            gui.toggleSimulateBookingDialog(false);
-                            System.out.println("Booking receipt: " + bookingReceipt); // debugging
-                            break;
+                            String bookingReceipt = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode, isValidDiscount);
+                            if (isValidDiscount != -1) {
+                                gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
+                                gui.setBookingReceiptTextArea(bookingReceipt);
+                                gui.toggleBookingReceiptDialog(true);
+                                gui.toggleSimulateBookingDialog(false);
+                                System.out.println("Booking receipt: " + bookingReceipt); // debugging
+                                break;
+                            }
+                        break;          
                     }
                 }
             }
