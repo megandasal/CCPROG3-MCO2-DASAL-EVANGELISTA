@@ -497,12 +497,15 @@ public class Hotel {
     }
 
     public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, int isValidDiscount) {
+        
+
         // get available rooms for the specified date range
-        ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
+        this.availableRooms.clear();
+        this.availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
     
         // check if the selected room is available
         Room roomToBookObject = null;
-        for (Room room : availableRooms) {
+        for (Room room : this.availableRooms) {
             if (room.getRoomName().equals(roomToBook)) {
                 roomToBookObject = room;
                 break;
@@ -514,13 +517,25 @@ public class Hotel {
         }
     
         // book the room
-        for (int day = checkInDate; day < checkOutDate; day++) {
+
+        if (roomToBookObject.isReservationStartingEndingOn(checkInDate, false) || checkInDate == 1) { // checks if it
+            // overlaps with an existing reservation, then marks the day as unavailable
+            roomToBookObject.setRoomAvailability(checkInDate, false);
+        }
+        if (roomToBookObject.isReservationStartingEndingOn(checkOutDate, true) || checkOutDate == 31) { // checks if it
+            // overlaps with an existing reservation, then marks the day as unavailable
+            roomToBookObject.setRoomAvailability(checkOutDate, false);
+        }
+
+        for (int day = checkInDate + 1; day < checkOutDate; day++) { // marks the days in between as unavailable
             roomToBookObject.setRoomAvailability(day, false);
         }
+
+
+        roomToBookObject.updateNDaysAvailable(); // updates the number of days available in the room
     
-        roomToBookObject.updateNDaysAvailable();
         Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, roomToBookObject, multiplierDatabase);
-        isValidDiscount = reservation.applyDiscount(discountCode);
+        isValidDiscount = reservation.applyDiscount(discountCode); 
         roomToBookObject.addReservation(reservation);
         updateEstimateEarnings(reservation.getTotalPrice(), true);
         this.allHotelReservations();
@@ -529,7 +544,7 @@ public class Hotel {
         String bookingReceipt = printBookingReceipt(reservation);
         return bookingReceipt;
     }
-
+    
     /**
      * Collects and adds all reservations across all rooms in a hotel.
      */
