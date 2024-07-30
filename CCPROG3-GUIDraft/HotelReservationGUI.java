@@ -154,6 +154,7 @@ public class HotelReservationGUI extends JFrame {
     // booking receipt components
     private JDialog bookingReceiptDialog;
     private JTextArea bookingReceiptTA;
+    private JLabel hotelNameBooked;
 
     private ArrayList<Hotel> hotelList;
 
@@ -1404,24 +1405,25 @@ public class HotelReservationGUI extends JFrame {
     }
 
     public void bookingReceiptDialog() {
-        // Initialize and configure the JDialog
         bookingReceiptDialog = new JDialog();
         bookingReceiptDialog.setTitle("Booking Receipt");
-        bookingReceiptDialog.setSize(300, 200); 
+        bookingReceiptDialog.setSize(300, 250); 
         bookingReceiptDialog.setLocationRelativeTo(null); 
-
-        // Create the main panel with GridBagLayout
+    
         JPanel bookingReceiptPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
+    
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.BOTH;
-
+    
+        hotelNameBooked = new JLabel("");
+        hotelNameBooked.setFont(new Font("Arial", Font.BOLD, 12));
+        
         bookingReceiptTA = new JTextArea();
         bookingReceiptTA.setEditable(false);
         bookingReceiptTA.setMargin(new Insets(5, 5, 5, 5));
         bookingReceiptTA.setPreferredSize(new Dimension(200, 100));
-
+    
         JPanel textAreaPanel = new JPanel(new BorderLayout());
         textAreaPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.BLACK), 
@@ -1433,20 +1435,21 @@ public class HotelReservationGUI extends JFrame {
         ));
         textAreaPanel.setOpaque(false); 
         textAreaPanel.add(new JScrollPane(bookingReceiptTA), BorderLayout.CENTER);
-
+    
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weighty = 0.0; // No extra space allocated for the label
         gbc.anchor = GridBagConstraints.CENTER;
-
+        bookingReceiptPanel.add(hotelNameBooked, gbc);
+    
+        gbc.gridy = 1;
+        gbc.weighty = 1.0; 
         bookingReceiptPanel.add(textAreaPanel, gbc);
-
-        // Add the main panel to the JDialog
+    
         bookingReceiptDialog.add(bookingReceiptPanel);
-
-        // Set the default close operation and make the dialog visible
+    
         bookingReceiptDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
@@ -1829,5 +1832,9 @@ public class HotelReservationGUI extends JFrame {
 
     public JComboBox<Integer> getDateCBox() {
         return dateCBox;
+    }
+
+    public void setHotelNameBooked(String hotelName) {
+        hotelNameBooked.setText(hotelName);
     }
 }
