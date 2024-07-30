@@ -713,38 +713,54 @@ public class HRSController implements ActionListener, DocumentListener {
 
     public void setRoomInfoTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
-        String selectedRoom = gui.getSelectedRoomToView();
+        String selectedRoom = gui.getSelectedRoom();
+        System.out.println("Selected hotel: " + selectedHotel); // debugging
+        System.out.println("Selected room: " + selectedRoom); // debugging
+    
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
+                System.out.println("Found hotel: " + hotel.getHotelName()); // debugging
                 for (Room room : hotel.getRooms()) {
                     if (room.getRoomName().equals(selectedRoom)) {
+                        System.out.println("Found room: " + room.getRoomName()); // debugging
                         String roomInfo = room.getRoomInfoForViewing();
                         gui.setViewRoomInfoTA(roomInfo);
                         System.out.println("Room info: " + roomInfo); // debugging
                         return;
                     }
                 }
+                System.out.println("Room not found: " + selectedRoom); // debugging
+                return;
             }
         }
-        System.out.println("unsuccessful room info retrieval"); // debugging 
+        System.out.println("Hotel not found: " + selectedHotel); // debugging
+        System.out.println("Unsuccessful room info retrieval"); // debugging
     }
-
+    
     public void setRoomToViewTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
-        String selectedRoom = gui.getSelectedRoomToView();
+        String selectedRoom = gui.getSelectedRoom();
+        System.out.println("Selected hotel: " + selectedHotel); // debugging
+        System.out.println("Selected room: " + selectedRoom); // debugging
+    
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
+                System.out.println("Found hotel: " + hotel.getHotelName()); // debugging
                 for (Room room : hotel.getRooms()) {
                     if (room.getRoomName().equals(selectedRoom)) {
+                        System.out.println("Found room: " + room.getRoomName()); // debugging
                         String roomInfo = room.getRoomAvailabilityForViewing();
                         gui.setViewRoomAvailabilityTA(roomInfo);
                         System.out.println("Room info: " + roomInfo); // debugging
                         return;
                     }
                 }
+                System.out.println("Room not found: " + selectedRoom); // debugging
+                return;
             }
         }
-        System.out.println("unsuccessful room info retrieval"); // debugging 
+        System.out.println("Hotel not found: " + selectedHotel); // debugging
+        System.out.println("Unsuccessful room info retrieval"); // debugging
     }
 
     public void setReservationToViewTA() {
