@@ -314,7 +314,9 @@ public class HotelReservationGUI extends JFrame {
         gbc.anchor = GridBagConstraints.EAST;
         createHotelMainPanel.add(hotelNameLbl, gbc);
     
-        hotelNameTf = new JTextField(10);
+        hotelNameTf = new JTextField();
+        hotelNameTf.setMinimumSize(new Dimension(300, 30));
+        hotelNameTf.setPreferredSize(new Dimension(300, 30));
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         createHotelMainPanel.add(hotelNameTf, gbc);
@@ -329,6 +331,8 @@ public class HotelReservationGUI extends JFrame {
         createHotelMainPanel.add(stdRoomsLbl, gbc);
     
         stdRoomsTf = new JFormattedTextField();
+        stdRoomsTf.setMinimumSize(new Dimension(50, 30));
+        stdRoomsTf.setPreferredSize(new Dimension(50, 30));
         stdRoomsTf.setColumns(10);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -341,6 +345,8 @@ public class HotelReservationGUI extends JFrame {
         createHotelMainPanel.add(dlxRoomsLbl, gbc);
     
         dlxRoomsTf = new JFormattedTextField();
+        dlxRoomsTf.setMinimumSize(new Dimension(50, 30));
+        dlxRoomsTf.setPreferredSize(new Dimension(50, 30));
         dlxRoomsTf.setColumns(10);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -353,6 +359,8 @@ public class HotelReservationGUI extends JFrame {
         createHotelMainPanel.add(execRoomsLbl, gbc);
     
         execRoomsTf = new JFormattedTextField();
+        execRoomsTf.setMinimumSize(new Dimension(50, 30));
+        execRoomsTf.setPreferredSize(new Dimension(50, 30));
         execRoomsTf.setColumns(10);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
