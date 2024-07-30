@@ -173,12 +173,15 @@ public class HRSController implements ActionListener, DocumentListener {
                                     gui.toggleHotelSelectionDialog(false);
                                     return;
                                 }
+                                else {
+                                    gui.setRoomBasePriceLabel(hotel.getBaseRate());
+                                    gui.toggleHotelSelectionDialog(false);
+                                    gui.toggleUpdateRoomPriceDialog(true);
+                                    break;
+                                }
                             }
                         }
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleUpdateRoomPriceDialog(true);
                         break;
-    
                     case "Remove Reservation":
                         for (Hotel hotel : hotelList) {
                             if (hotel.getAllReservations().isEmpty()) {
