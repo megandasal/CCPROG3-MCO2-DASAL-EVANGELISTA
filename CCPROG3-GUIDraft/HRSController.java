@@ -570,7 +570,7 @@ public class HRSController implements ActionListener, DocumentListener {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 for (Room room : hotel.getRooms()) {
                     if (room.getRoomName().equals(selectedRoom)) {
-                        String roomInfo = hotel.getRoomInfoForViewing(room);
+                        String roomInfo = room.getRoomInfoForViewing();
                         gui.setViewRoomInfoTA(roomInfo);
                     }
                 }
@@ -585,7 +585,7 @@ public class HRSController implements ActionListener, DocumentListener {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 for (Room room : hotel.getRooms()) {
                     if (room.getRoomName().equals(selectedRoom)) {
-                        String roomInfo = hotel.getRoomAvailabilityForViewing(room);
+                        String roomInfo = room.getRoomAvailabilityForViewing();
                         gui.setViewRoomAvailabilityTA(roomInfo);
                     }
                 }
