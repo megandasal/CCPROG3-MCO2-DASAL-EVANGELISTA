@@ -91,7 +91,12 @@ public class HRSController implements ActionListener, DocumentListener {
                 gui.toggleManageHotelMenu(false);
                 gui.toggleHotelSelectionDialog(true);
                 break;
-    
+
+            case "Date Price Modifier":
+                currentOperation = "Date Price Modifier"; 
+                gui.toggleManageHotelMenu(false);
+                gui.toggleHotelSelectionDialog(true);
+                break;
             case "Remove Reservation":
                 currentOperation = "Remove Reservation";
                 gui.toggleManageHotelMenu(false);
@@ -126,7 +131,7 @@ public class HRSController implements ActionListener, DocumentListener {
 
             case "Submit Booking Info 1":
                 gui.toggleSimulateBookingDialog2(true);
-            break;
+                break;
 
             case "Submit Booking Info 2":
                 gui.toggleSimulateBookingDialog(true);
@@ -182,6 +187,12 @@ public class HRSController implements ActionListener, DocumentListener {
                             }
                         }
                         break;
+                    case "Date Price Modifier":
+                        setMDPTextArea();
+                        populateDPMComboBox();
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleModifyDatePriceFrame(true);
+                        break;
                     case "Remove Reservation":
                         for (Hotel hotel : hotelList) {
                             if (hotel.getAllReservations().isEmpty()) {
@@ -215,6 +226,11 @@ public class HRSController implements ActionListener, DocumentListener {
                 processRoomPriceUpdate();
                 break;
 
+                case "Modify Date Price":
+                processDPM();
+                gui.toggleModifyDatePriceFrame(false);
+                break;
+
                 case "View Date":
                 for (Hotel hotel : hotelList) {
                     if (hotel.getNRooms() == 0) {
@@ -241,7 +257,7 @@ public class HRSController implements ActionListener, DocumentListener {
 
                 case "Select Room":
                 gui.toggleSelectRoomDialog(false);
-                setRoomInfoTA();
+                setRoomInfoTA();// display room information
                 setRoomToViewTA();
                 gui.toggleViewRoomsFrame(true);
                 break;
@@ -283,7 +299,7 @@ public class HRSController implements ActionListener, DocumentListener {
                 case "Select Date":
                 int availableRooms = getAvailableRoomsOnDate();
                 if (availableRooms == 0) {
-                    gui.showErrorMessage("No rooms available on this date.");
+                    gui.showErrorMessage("No rooms are available on this date.");
                     return;
                 }
                 else {
@@ -450,7 +466,6 @@ public class HRSController implements ActionListener, DocumentListener {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 String roomInfo = hotel.getRoomInfoForRemoval();
                 gui.setRoomRemovalTextArea(roomInfo);
-                
             }
         }
     }
@@ -528,6 +543,62 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    public void setMDPTextArea() {
+        String selectedHotel = gui.getSelectedHotelFromComboBox();
+        for (Hotel hotel : hotelList) {
+            if (hotel.getHotelName().equals(selectedHotel)) {
+                String mdpInfo = hotel.getMultiplierDatabaseToString();
+                gui.setModifyDatePriceTextArea(mdpInfo);
+            }
+        }
+    }
+
+    public int parseInteger(String intInput) {
+        try {
+            intInput = intInput.trim();
+            int num = Integer.parseInt(intInput);
+            if (num < 50 || num > 150) {
+                return -1;
+            }
+            return num;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    public void populateDPMComboBox() {
+        JComboBox<Integer> dateComboBox = gui.getDateCBox();
+        dateComboBox.removeAllItems();
+        for (int i = 1; i <= 30; i++) {
+            dateComboBox.addItem(i);
+        }
+    }
+
+    public void processDPM() {
+        String selectedHotel = gui.getSelectedHotelFromComboBox();
+        for (Hotel hotel : hotelList) {
+            if (selectedHotel.equals(hotel.getHotelName())) {
+                // convert sting input from % TA to double
+                String newMultiplierStr = gui.getPercentageMDP();
+                int newMultiplier = parseInteger(newMultiplierStr);
+
+                // get input from starting date combo box
+                int startDate = gui.getSelectedDateMDP();
+
+                // check if the input is valid
+                if (newMultiplier == -1) {
+                    gui.showErrorMessage("Invalid percentage. Please enter a value from 50 - 150.");
+                    return;
+                }
+                else {
+                    hotel.datePriceModifierGUI(startDate, newMultiplier);
+                    setMDPTextArea();
+                    gui.showConfirmationMessage("Price modifier on Days " + startDate + " - " + (startDate + 1) + " updated to " + newMultiplier + "% for Hotel " + selectedHotel + ".");
+                }
+            }
+        }
+    }
+
     public void processRemoveReservation() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -548,11 +619,11 @@ public class HRSController implements ActionListener, DocumentListener {
                                 gui.showErrorMessage("An unknown error occurred.");
                                 break;
                         }
-                        return; // Exit after processing the reservation
+                        return; // exit after processing the reservation
                     }
                 }
                 gui.showErrorMessage("Reservation " + reservationToRemove + " not found in the selected hotel.");
-                return; // Exit if reservation is not found in the current hotel
+                return; // exit if reservation is not found in the current hotel
             }
         }
         gui.showErrorMessage("Selected hotel not found.");
@@ -643,10 +714,13 @@ public class HRSController implements ActionListener, DocumentListener {
                     if (room.getRoomName().equals(selectedRoom)) {
                         String roomInfo = room.getRoomInfoForViewing();
                         gui.setViewRoomInfoTA(roomInfo);
+                        System.out.println("Room info: " + roomInfo); // debugging
+                        return;
                     }
                 }
             }
         }
+        System.out.println("unsuccessful room info retrieval"); // debugging 
     }
 
     public void setRoomToViewTA() {
@@ -658,15 +732,17 @@ public class HRSController implements ActionListener, DocumentListener {
                     if (room.getRoomName().equals(selectedRoom)) {
                         String roomInfo = room.getRoomAvailabilityForViewing();
                         gui.setViewRoomAvailabilityTA(roomInfo);
+                        System.out.println("Room info: " + roomInfo); // debugging
+                        return;
                     }
                 }
             }
         }
+        System.out.println("unsuccessful room info retrieval"); // debugging 
     }
 
     public void setReservationToViewTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
-        String selectedRoom = gui.getSelectedRoomToView();
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 for (Room room : hotel.getRooms()) {
