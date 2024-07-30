@@ -553,12 +553,17 @@ public class HRSController implements ActionListener, DocumentListener {
     }
 
     public void populateRoomsToViewCBox() {
-        String selectedHotel = gui.getSelectedHotelFromComboBox();
+        // clear existing items in the combo box
+        gui.clearRoomComboBox();
+
+        // populate the combo box with available rooms
         for (Hotel hotel : hotelList) {
-            if (hotel.getHotelName().equals(selectedHotel)) {
-                for (Room room : hotel.getRooms()) {
+            if (hotel.getHotelName().equals(gui.getSelectedHotelFromComboBox())) {
+                List<Room> availableRooms = hotel.getRooms();
+                for (Room room : availableRooms) {
                     gui.addRoomToViewComboBox(room.getRoomName());
                 }
+                break; // exit after updating the combo box for the selected hotel
             }
         }
     }
