@@ -33,7 +33,7 @@ public class Hotel {
         this.baseRate = 1299.0;
         rooms.add(new StandardRoom(0, this.baseRate)); // add 1 room to the hotel upon instantiation
         this.estimateEarnings = 0;
-        this.roomCtr = 0; // count rooms created, this is only used for naming purposes
+        this.roomCtr = 1; // count rooms created, this is only used for naming purposes
         Arrays.fill(multiplierDatabase, 100); //makes price for all dates 100%
 
         
@@ -799,9 +799,31 @@ public class Hotel {
         }
         System.out.println("|                                                      |");
         System.out.println(".------------------------------------------------------.");
-
-        
     }
+
+    public String getMultiplierDatabaseToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(".------------------------------------------------------.");
+        sb.append("\n|                   DATE ROOM RATES                    |");
+        sb.append("\n.------------------------------------------------------.");
+        sb.append("\n|           Day             |           Rate           |");
+        sb.append("\n.------------------------------------------------------.");
+
+        for (int i = 0; i < 30; i++) {
+            if (i <= 8) {
+                sb.append(String.format("\n|          %2d - %-2d            |           %3d%%           |", i + 1, i + 2, multiplierDatabase[i]));
+            } else if (i == 9 || i == 10) {
+                sb.append(String.format("\n|          %2d - %-2d          |           %3d%%           |", i + 1, i + 2, multiplierDatabase[i]));
+            } else {
+                sb.append(String.format("\n|          %2d - %-2d          |           %3d%%           |", i + 1, i + 2, multiplierDatabase[i]));
+            }
+            }    
+        sb.append("\n|                                                      |");
+        sb.append("\n.------------------------------------------------------.");
+
+        return sb.toString();
+    }
+
 
     public void datePriceModifier(){
 
@@ -816,6 +838,10 @@ public class Hotel {
 
         multiplierDatabase[userChoice-1] = newRate;
         
+    }
+
+    public void datePriceModifierGUI(int startDay, int newRate){
+        multiplierDatabase[startDay-1] = newRate;
     }
 
     /*
