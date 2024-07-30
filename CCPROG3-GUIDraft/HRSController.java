@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -118,8 +121,18 @@ public class HRSController implements ActionListener, DocumentListener {
                 gui.toggleManageHotelMenu(false);
                 populateCheckInOutCb();
                 populateAvailableRoomsToBookCBox();
-                setSimBookingTA();
                 gui.toggleSimulateBookingDialog(true);
+                break;
+
+            case "Submit Booking Info 1":
+                gui.toggleSimulateBookingDialog2(true);
+            break;
+
+            case "Submit Booking Info 2":
+                gui.toggleSimulateBookingDialog(true);
+                processSimulateBooking();
+                gui.toggleSimulateBookingDialog2(false);
+                gui.clearSimBookingTextFields();
                 break;
     
             case "Select Hotel":
@@ -185,8 +198,9 @@ public class HRSController implements ActionListener, DocumentListener {
     
                     case "View Hotel":
                         gui.toggleHotelSelectionDialog(false);
-                        setHotelInfoTA();
+                        setHotelInfoTA(); // set the text area with the hotel information
                         gui.toggleViewHotelMenu(true);
+                        break;
     
                     default:
                         System.out.println("Unknown currentOperation: " + currentOperation); // Debugging
@@ -236,13 +250,26 @@ public class HRSController implements ActionListener, DocumentListener {
                         return;
                     }
                 }
+                populateReservationCBox();
                 gui.toggleViewHotelMenu(false);
+                gui.toggleViewReservationMenu(true);
+                break;
+
+                case "Select Reservation":
+                gui.toggleViewReservationMenu(false);
+                gui.toggleViewReservationDialog(true);
+                setReservationToViewTA();
                 gui.toggleViewReservationDialog(true);
                 break;
 
                 case "Remove Selected Room":
                 processRoomRemoval();
                 gui.toggleRemoveRoomsFrame(false);
+                break;
+
+                case "Submit Remove Reservation":
+                processRemoveReservation();
+                gui.toggleRemoveReservationDialog(false);
                 break;
 
                 case "Submit Remove Hotel":
@@ -260,15 +287,6 @@ public class HRSController implements ActionListener, DocumentListener {
                     gui.showConfirmationMessage("There are " + availableRooms + " rooms available on this date.");
                     gui.toggleViewDateDialog(false);
                 }
-                break;
-
-                case "Submit View Reservation":
-                break;
-
-                case "Book Room":
-                processSimulateBooking();
-                gui.toggleSimulateBookingDialog(false);
-                gui.clearSimulateBookingTF();
                 break;
 
             default:
@@ -507,6 +525,36 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    public void processRemoveReservation() {
+        String selectedHotel = gui.getSelectedHotelFromComboBox();
+        for (Hotel hotel : hotelList) {
+            if (hotel.getHotelName().equals(selectedHotel)) {
+                ArrayList<Reservation> reservationList = hotel.getAllReservations();
+                String reservationToRemove = gui.getBookingID();
+                for (Reservation reservation : reservationList) {
+                    if (reservationToRemove.equals(reservation.getBookingID())) {
+                        int successfulBookingRemoval = hotel.removeReservationGUI(reservationToRemove, reservation.getCheckInDate(), reservation.getCheckOutDate());
+                        switch (successfulBookingRemoval) {
+                            case 1:
+                                gui.showConfirmationMessage("Reservation " + reservationToRemove + " has been removed.");
+                                break;
+                            case -1:
+                                gui.showErrorMessage("Reservation " + reservationToRemove + " not found.");
+                                break;
+                            default:
+                                gui.showErrorMessage("An unknown error occurred.");
+                                break;
+                        }
+                        return; // Exit after processing the reservation
+                    }
+                }
+                gui.showErrorMessage("Reservation " + reservationToRemove + " not found in the selected hotel.");
+                return; // Exit if reservation is not found in the current hotel
+            }
+        }
+        gui.showErrorMessage("Selected hotel not found.");
+    }
+
     public void processRemoveHotel() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         Iterator<Hotel> hotelIterator = hotelList.iterator(); // ensure no concurrent modification error occurs
@@ -568,6 +616,21 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    public void populateReservationCBox() {
+        gui.clearReservationComboBox();
+
+        for (Hotel hotel : hotelList) {
+            if (hotel.getHotelName().equals(gui.getSelectedHotelFromComboBox())) {
+                List<Reservation> reservations = hotel.getAllReservations();
+                for (Reservation reservation : reservations) {
+                    String reservationInfo = "[" + reservation.getRoomName() + "] " + reservation.getGuestName();
+                    gui.addReservationToComboBox(reservationInfo);
+                }
+                break;
+            }
+        }
+    }
+
     public void setRoomInfoTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         String selectedRoom = gui.getSelectedRoomToView();
@@ -598,23 +661,22 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
-    public void populateAvailableRoomsToBookCBox() {
+    public void setReservationToViewTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
-        JComboBox<String> roomToBookCBox = gui.getRoomToBookCBox();
-        roomToBookCBox.removeAllItems();
-    
+        String selectedRoom = gui.getSelectedRoomToView();
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
-                for (int i = 1; i <= hotel.getNRooms(); i++) { 
-                    Room room = hotel.getRooms().get(i - 1); 
-                    if (room.isAvailable(i)) {
-                        roomToBookCBox.addItem(room.getRoomName());
+                for (Room room : hotel.getRooms()) {
+                    ArrayList<Reservation> reservations = room.getReservations();
+                    String reservationInfo;
+                    for (Reservation reservation : reservations) {
+                        reservationInfo = reservation.reservationInformationGUI();
+                        gui.setViewReservationTA(reservationInfo);
                     }
                 }
             }
         }
     }
-    
 
     public void populateCheckInOutCb() {
         JComboBox<Integer> checkInCb = gui.getCheckInComboBox();
@@ -627,43 +689,82 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
-    public void setSimBookingTA() {
-        String selectedHotel = gui.getSelectedHotelFromComboBox();
-        for (Hotel hotel : hotelList) {
-            if (hotel.getHotelName().equals(selectedHotel)) {
-                String roomInfo = hotel.printAvailableRoomsToBook();
-                gui.setSimBookingTextArea(roomInfo);
-            }
-        }
-    }
-    
-
     public void processSimulateBooking() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         String selectedRoom = gui.getRoomToBook();
-
         String guestName = gui.getGuestName();
         int checkInDate = gui.getCheckInDate();
         int checkOutDate = gui.getCheckOutDate();
         String discountCode = gui.getDiscountCode();
+    
+        for (Hotel hotel : hotelList) {
+            if (hotel.getHotelName().equals(selectedHotel)) {
+                ArrayList<Room> availableRooms = hotel.checkRoomAvailability(checkInDate, checkOutDate);
+                boolean roomAvailable = false;
+                for (Room room : availableRooms) {
+                    if (selectedRoom.equals(room.getRoomName())) {
+                        roomAvailable = true;
+                        break;
+                    } // how do i know if selectedroom is in availablerooms??
+                }
+                if (!roomAvailable) {
+                    gui.showErrorMessage("Room " + selectedRoom + " is not available on the selected dates.");
+                }
+                else {
+                    int result = hotel.isValidReservationGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode, availableRooms);
+                    System.out.println("Result: " + result); // debugging
+
+                    switch(result) {
+                        case -1:
+                            gui.showErrorMessage("Invalid date range. Check-in date must be before check-out date.");
+                            break;
+                        case 0:
+                            gui.showErrorMessage("Booking failed. This room has an active reservation at the entered dates.");
+                            break;
+                        case 1:
+                            String bookingReceipt = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode);
+                            gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
+                            gui.setBookingReceiptTextArea(bookingReceipt);
+                            gui.toggleBookingReceiptDialog(true);
+                            gui.toggleSimulateBookingDialog(false);
+                            System.out.println("Booking receipt: " + bookingReceipt); // debugging
+                            break;
+                        case -2:
+                            gui.showErrorMessage("Please enter a guest name for the booking.");
+                            break;
+                        case -3:
+                            String bookingReceipt1 = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode);
+                            JOptionPane.showMessageDialog(null, "No discount code used. Proceeding with booking...");
+                            gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
+                            gui.setBookingReceiptTextArea(bookingReceipt1);
+                            gui.toggleBookingReceiptDialog(true);
+                            gui.toggleSimulateBookingDialog(false);
+                            System.out.println("Booking receipt: " + bookingReceipt1); // debugging
+                            break;
+                        case -4:
+                            gui.showErrorMessage("Invalid discount code. Please enter a valid discount code.");
+                            break;
+                        case -5:
+                            gui.showErrorMessage("Error: Room " + selectedRoom + " not found.");
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void populateAvailableRoomsToBookCBox() {
+        String selectedHotel = gui.getSelectedHotelFromComboBox();
+        JComboBox<String> roomCBox = gui.getRoomToBookCBox();
+        roomCBox.removeAllItems();
 
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
-                int result = hotel.bookRoomGUI(guestName, checkInDate, checkOutDate, selectedRoom, discountCode);
-
-                switch (result) {
-                    case -1:
-                        gui.showErrorMessage("Invalid date range. Check-in date must be before check-out date.");
-                        break;
-                    case 0:
-                        gui.showErrorMessage("Booking failed. Please check the room number and availability.");
-                        break;
-                    case 1:
-                        gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
-                        break;
+                for (Room room : hotel.getRooms()) {
+                    if (room.getNReservations() < 31) {
+                        roomCBox.addItem(room.getRoomName());
+                    }
                 }
-
-                return; // Exit after processing the selected hotel
             }
         }
     }
