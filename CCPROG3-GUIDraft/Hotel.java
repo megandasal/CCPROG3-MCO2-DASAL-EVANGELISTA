@@ -476,7 +476,7 @@ public class Hotel {
         }
     }
 
-    public int isValidReservationGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, ArrayList<Room> avaiableRooms) {
+    public int isValidReservationGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, ArrayList<Room> availableRooms) {
 
         if (checkInDate >= checkOutDate) {
             return -1; // invalid date range
@@ -487,41 +487,48 @@ public class Hotel {
         else if (discountCode == null || discountCode.equals("")) {
             return -3; // no discount code used
         }
-        else if (!discountCode.equals("I_WORK_HERE") || !discountCode.equals("STAY4_GET1") || !discountCode.equals("PAYDAY")) {
+        else if (!discountCode.equals("I_WORK_HERE") && !discountCode.equals("STAY4_GET1") && !discountCode.equals("PAYDAY")) {
             return -4; // invalid discount code
         }
-        else {
+        else if (!availableRooms.stream().anyMatch(room -> room.getRoomName().equals(roomToBook))) {
             return -5; // room not found
         } 
+        return 1; // valid reservation
     }
 
-        public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode) {
-            ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
-            for (Room room : availableRooms) {
-                if (room.isReservationStartingEndingOn(checkInDate, false) || checkInDate == 1) {
-                    room.setRoomAvailability(checkInDate, false);
-                }
-                if (room.isReservationStartingEndingOn(checkOutDate, true) || checkOutDate == 31) {
-                    room.setRoomAvailability(checkOutDate, false);
-                }
-        
-                for (int day = checkInDate + 1; day < checkOutDate; day++) {
-                    room.setRoomAvailability(day, false);
-                }
-        
-                room.updateNDaysAvailable();
-                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room, multiplierDatabase);
-                reservation.applyDiscount(discountCode);
-                room.addReservation(reservation);
-                updateEstimateEarnings(reservation.getTotalPrice(), true);
-                this.allHotelReservations();
-                
-                // Generate and return the booking receipt
-                String bookingReceipt = printBookingReceipt(reservation);
-                return bookingReceipt;
+    public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode) {
+        // get available rooms for the specified date range
+        ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
+    
+        // check if the selected room is available
+        Room roomToBookObject = null;
+        for (Room room : availableRooms) {
+            if (room.getRoomName().equals(roomToBook)) {
+                roomToBookObject = room;
+                break;
             }
-            return ""; // Return empty string if booking fails
         }
+    
+        if (roomToBookObject == null) {
+            return ""; // room not found or not available
+        }
+    
+        // book the room
+        for (int day = checkInDate; day < checkOutDate; day++) {
+            roomToBookObject.setRoomAvailability(day, false);
+        }
+    
+        roomToBookObject.updateNDaysAvailable();
+        Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, roomToBookObject, multiplierDatabase);
+        reservation.applyDiscount(discountCode);
+        roomToBookObject.addReservation(reservation);
+        updateEstimateEarnings(reservation.getTotalPrice(), true);
+        this.allHotelReservations();
+        
+        // return booking receipt for display after a successful reservation
+        String bookingReceipt = printBookingReceipt(reservation);
+        return bookingReceipt;
+    }
 
     /**
      * Collects and adds all reservations across all rooms in a hotel.
