@@ -119,6 +119,7 @@ public class HRSController implements ActionListener, DocumentListener {
                 break;
     
             case "Simulate Booking":
+                currentOperation = "Simulate Booking";
                 if (hotelList.isEmpty()) {
                     gui.showErrorMessage("No hotels available for booking.");
                     return;
@@ -126,7 +127,7 @@ public class HRSController implements ActionListener, DocumentListener {
                 gui.toggleManageHotelMenu(false);
                 populateCheckInOutCb();
                 populateAvailableRoomsToBookCBox();
-                gui.toggleSimulateBookingDialog(true);
+                gui.toggleHotelSelectionDialog(true);
                 break;
 
             case "Submit Booking Info 1":
@@ -214,6 +215,11 @@ public class HRSController implements ActionListener, DocumentListener {
                         gui.toggleHotelSelectionDialog(false);
                         setHotelInfoTA(); // set the text area with the hotel information
                         gui.toggleViewHotelMenu(true);
+                        break;
+
+                    case "Simulate Booking":
+                        gui.toggleHotelSelectionDialog(false);
+                        gui.toggleSimulateBookingDialog(true);
                         break;
     
                     default:
@@ -807,6 +813,7 @@ public class HRSController implements ActionListener, DocumentListener {
                             JOptionPane.showMessageDialog(null, "No discount code used. Proceeding with booking...");
                             gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
                             gui.setBookingReceiptTextArea(bookingReceipt1);
+                            gui.setHotelNameBooked(selectedHotel);
                             gui.toggleBookingReceiptDialog(true);
                             gui.toggleSimulateBookingDialog(false);
                             System.out.println("Booking receipt: " + bookingReceipt1); // debugging
@@ -822,6 +829,8 @@ public class HRSController implements ActionListener, DocumentListener {
                             if (isValidDiscount != -1) {
                                 gui.showConfirmationMessage("Successfully booked Room " + selectedRoom + " for " + guestName + "!");
                                 gui.setBookingReceiptTextArea(bookingReceipt);
+                                String receiptTitle = "Hotel " + selectedHotel;
+                                gui.setHotelNameBooked(receiptTitle);
                                 gui.toggleBookingReceiptDialog(true);
                                 gui.toggleSimulateBookingDialog(false);
                                 System.out.println("Booking receipt: " + bookingReceipt); // debugging
