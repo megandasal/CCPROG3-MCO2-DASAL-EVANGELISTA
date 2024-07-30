@@ -15,6 +15,7 @@ public class HRSController implements ActionListener, DocumentListener {
     private ArrayList<Hotel> hotelList;
     private int hotelCount;
     private String currentOperation = "";
+    private String currentModification = "";
 
     public HRSController(HotelReservationGUI gui, ArrayList<Hotel> hotelList, int hotelCount) {
         this.gui = gui;
@@ -27,299 +28,319 @@ public class HRSController implements ActionListener, DocumentListener {
     }
 
     @Override
-    public void insertUpdate(DocumentEvent e) {}
-    @Override
-    public void removeUpdate(DocumentEvent e) {}
-    @Override
-    public void changedUpdate(DocumentEvent e) {}
-
-    @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         System.out.println("Action Command: " + command); // Debugging
+        
+        SwingUtilities.invokeLater(() -> { // Ensure GUI updates are on EDT
+            // Hide all frames/dialogs initially if needed
+            hideAllDialogs();
+            
+            switch (command) {
+                // main menu buttons
+                case "Create Hotel":
+                    gui.toggleCreateHotelDialog(true);
+                    break;
     
-        switch (command) {
-            case "Create Hotel":
-                gui.toggleCreateHotelDialog(true);
-                break;
+                case "Finish Create Hotel":
+                    processFinishCreateHotel();
+                    break;
     
-            case "Finish Create Hotel":
-                processFinishCreateHotel();
-                break;
+                case "Manage Hotel":
+                    if (hotelList.isEmpty()) {
+                        gui.showErrorMessage("No hotels to manage.");
+                    } else {
+                        gui.toggleManageHotelMenu(true);
+                    }
+                    break;
     
-            case "Manage Hotel":
-                if (hotelList.isEmpty()) {
-                    gui.showErrorMessage("No hotels to manage.");
-                    return;
-                }
-                gui.toggleManageHotelMenu(true);
-                break;
+                case "View Hotel":
+                    if (hotelList.isEmpty()) {
+                        gui.showErrorMessage("No hotels to view.");
+                    } else {
+                        currentOperation = "View Hotel";
+                        gui.toggleHotelSelectionDialog(true);
+                    }
+                    break;
     
-            case "Change Hotel Name":
-                currentOperation = "Change Hotel Name";
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
-                break;
+                case "Simulate Booking":
+                    currentOperation = "Simulate Booking";
+                    if (hotelList.isEmpty()) {
+                        gui.showErrorMessage("No hotels available for booking.");
+                    } else {
+                        populateCheckInOutCb();
+                        populateAvailableRoomsToBookCBox();
+                        gui.toggleHotelSelectionDialog(true);
+                    }
+                    break;
     
+                case "Submit Booking Info 1":
+                    gui.toggleSimulateBookingDialog2(true);
+                    break;
+    
+                case "Submit Booking Info 2":
+                    gui.toggleSimulateBookingDialog(true);
+                    processSimulateBooking();
+                    gui.toggleSimulateBookingDialog2(false);
+                    gui.clearSimBookingTextFields();
+                    break;
+    
+                // manage hotel buttons
+                case "Change Hotel Name":
+                case "Add Rooms":
+                case "Remove Rooms":
+                case "Update Room Price":
+                case "Date Price Modifier":
+                case "Remove Reservation":
+                case "Remove Hotel":
+                    currentOperation = command;
+                    gui.toggleManageHotelMenu(false);
+                    gui.toggleHotelSelectionDialog(true);
+                    break;
+    
+                // hotel selection dialog buttons
+                case "Select Hotel":
+                    handleHotelSelection();
+                    break;
+    
+                case "Submit New Hotel Name":
+                case "Submit New Rooms":
+                case "Remove Selected Room":
+                case "Submit New Room Price":
+                case "Modify Date Price":
+                case "Submit Remove Reservation":
+                case "Submit Remove Hotel":
+                    currentModification = command;
+                    gui.toggleConfirmModificationDialog(true);
+                    break;
+    
+                case "Confirm Modification":
+                    handleConfirmModification();
+                    break;
+    
+                case "Cancel Modification":
+                    handleCancelModification();
+                    break;
+    
+                // other buttons
+                case "View Date":
+                    if (hotelList.isEmpty()) {
+                        gui.showErrorMessage("There are currently no rooms in this hotel.");
+                    } else {
+                        populateDateComboBox();
+                        gui.toggleViewHotelMenu(false);
+                        gui.toggleViewDateDialog(true);
+                    }
+                    break;
+    
+                case "View Room":
+                    if (hotelList.isEmpty()) {
+                        gui.showErrorMessage("No rooms available for viewing.");
+                    } else {
+                        populateRoomsToViewCBox();
+                        gui.toggleViewHotelMenu(false);
+                        gui.toggleSelectRoomDialog(true);
+                    }
+                    break;
+    
+                case "Select Room":
+                    setRoomInfoTA(); // display room information
+                    setRoomToViewTA();
+                    gui.toggleSelectRoomDialog(false);
+                    gui.toggleViewRoomsFrame(true);
+                    break;
+    
+                case "View Reservation":
+                    if (hotelList.isEmpty()) {
+                        gui.showErrorMessage("No reservations available for viewing.");
+                    } else {
+                        populateReservationCBox();
+                        gui.toggleViewHotelMenu(false);
+                        gui.toggleViewReservationMenu(true);
+                    }
+                    break;
+    
+                case "Select Reservation":
+                    gui.toggleViewReservationMenu(false);
+                    gui.toggleViewReservationDialog(true);
+                    setReservationToViewTA();
+                    break;
+    
+                case "Select Date":
+                    int availableRooms = getAvailableRoomsOnDate();
+                    if (availableRooms == 0) {
+                        gui.showErrorMessage("No rooms are available on this date.");
+                    } else {
+                        gui.showConfirmationMessage("There are " + availableRooms + " rooms available on this date.");
+                        gui.toggleViewDateDialog(false);
+                    }
+                    break;
+    
+                default:
+                    System.out.println("Unknown action command: " + command); // Debugging
+                    break;
+            }
+        });
+    }
+
+    public void handleHotelSelection() {
+        String selectedHotel = gui.getSelectedHotelFromComboBox();
+        System.out.println("Selected hotel: " + selectedHotel); // debugging
+
+        for (Hotel hotel : hotelList) {
+            switch (currentOperation) {
+                case "View Hotel":
+                    setHotelInfoTA();
+                    gui.toggleHotelSelectionDialog(false);
+                    gui.toggleViewHotelMenu(true);
+                    break;
+        
+                case "Change Hotel Name":
+                    gui.toggleChangeHotelNameDialog(true);
+                    break;
+        
+                case "Add Rooms":
+                    gui.toggleAddRoomsDialog(true);
+                    break;
+        
+                case "Remove Rooms":
+                    gui.setRoomRemovalTextArea(hotel.getRoomInfoForRemoval());
+                    populateRemoveRoomsComboBox();
+                    gui.toggleRemoveRoomsFrame(true);
+                    break;
+        
+                case "Update Room Price":
+                    gui.toggleUpdateRoomPriceDialog(true);
+                    break;
+        
+                case "Date Price Modifier":
+                    setMDPTextArea();
+                    populateDPMComboBox();
+                    gui.toggleModifyDatePriceFrame(true);
+                    break;
+        
+                case "Remove Reservation":
+                    gui.toggleRemoveReservationDialog(true);
+                    break;
+        
+                case "Remove Hotel":
+                    gui.toggleRemoveHotelDialog(true);
+                    break;
+        
+                case "Simulate Booking":
+                    gui.toggleSimulateBookingDialog(true);
+                    break;
+        
+                default:
+                    System.out.println("Unknown operation command: " + currentOperation); // Debugging
+                    break;
+            }
+        }
+    }
+    
+    private void hideAllDialogs() {
+        // Hide all dialogs or frames if necessary
+        gui.toggleCreateHotelDialog(false);
+        gui.toggleManageHotelMenu(false);
+        gui.toggleHotelSelectionDialog(false);
+        gui.toggleSimulateBookingDialog(false);
+        gui.toggleSimulateBookingDialog2(false);
+        gui.toggleChangeHotelNameDialog(false);
+        gui.toggleAddRoomsDialog(false);
+        gui.toggleRemoveRoomsFrame(false);
+        gui.toggleUpdateRoomPriceDialog(false);
+        gui.toggleModifyDatePriceFrame(false);
+        gui.toggleRemoveReservationDialog(false);
+        gui.toggleRemoveHotelDialog(false);
+        gui.toggleViewHotelMenu(false);
+        gui.toggleSelectRoomDialog(false);
+        gui.toggleViewRoomsFrame(false);
+        gui.toggleViewReservationMenu(false);
+        gui.toggleViewReservationDialog(false);
+        gui.toggleViewDateDialog(false);
+    }
+
+    private void clearAllTextFields() {
+        gui.clearCreateHotelTF();
+        gui.clearChangeHotelNameTF();
+        gui.clearAddRoomsTf();
+        gui.clearUpdateRoomPriceTf();
+        gui.clearPercentageMDP();
+        gui.clearRemoveReservationTf();
+    }
+    
+    public void handleConfirmModification() {
+        switch (currentModification) {
             case "Submit New Hotel Name":
-                System.out.println("Submit new hotel name clicked"); // Debugging
                 String newHotelName = gui.getNewHotelName();
-                renameHotel(newHotelName);
-                gui.toggleChangeHotelNameDialog(false);
-                gui.clearChangeHotelNameTF();
-                break;
-    
-            case "Add Rooms":
-                currentOperation = "Add Rooms";
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
+                if (newHotelName.trim().isEmpty()) {
+                    gui.showErrorMessage("Please enter a new hotel name.");
+                } else {
+                    renameHotel(newHotelName);
+                    gui.toggleConfirmModificationDialog(false);
+                }
                 break;
     
             case "Submit New Rooms":
-                System.out.println("Submit new rooms button clicked"); // Debugging
                 processNewRooms();
+                gui.toggleConfirmModificationDialog(false);
+                gui.clearAddRoomsTf();
                 break;
     
-            case "Remove Rooms":
-                currentOperation = "Remove Rooms";
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
-                break;
-    
-            case "Update Room Price":
-                currentOperation = "Update Room Price";
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
-                break;
-
-            case "Date Price Modifier":
-                currentOperation = "Date Price Modifier"; 
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
-                break;
-            case "Remove Reservation":
-                currentOperation = "Remove Reservation";
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
-                break;
-    
-            case "Remove Hotel":
-                currentOperation = "Remove Hotel";
-                gui.toggleManageHotelMenu(false);
-                gui.toggleHotelSelectionDialog(true);
-                break;
-    
-            case "View Hotel":
-                if (hotelList.isEmpty()) {
-                    gui.showErrorMessage("No hotels to view.");
-                    return;
-                }
-                currentOperation = "View Hotel";
-                gui.toggleHotelSelectionDialog(true);
-                break;
-    
-            case "Simulate Booking":
-                currentOperation = "Simulate Booking";
-                if (hotelList.isEmpty()) {
-                    gui.showErrorMessage("No hotels available for booking.");
-                    return;
-                }
-                gui.toggleManageHotelMenu(false);
-                populateCheckInOutCb();
-                populateAvailableRoomsToBookCBox();
-                gui.toggleHotelSelectionDialog(true);
-                break;
-
-            case "Submit Booking Info 1":
-                gui.toggleSimulateBookingDialog2(true);
-                break;
-
-            case "Submit Booking Info 2":
-                gui.toggleSimulateBookingDialog(true);
-                processSimulateBooking();
-                gui.toggleSimulateBookingDialog2(false);
-                gui.clearSimBookingTextFields();
-                break;
-    
-            case "Select Hotel":
-                switch (currentOperation) {
-                    case "Change Hotel Name":
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleChangeHotelNameDialog(true);
-                        break;
-    
-                    case "Add Rooms":
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleAddRoomsDialog(true);
-                        break;
-    
-                    case "Remove Rooms":
-                        String selectedHotel = gui.getSelectedHotelFromComboBox();
-                        for (Hotel hotel : hotelList) {
-                            if (hotel.getHotelName().equals(selectedHotel)) {
-                                if (hotel.getNRooms() == 0) {
-                                    gui.showErrorMessage("There are currently no rooms in this hotel.");
-                                    gui.toggleHotelSelectionDialog(false);
-                                    return;
-                                }
-                            }
-                        }
-                        displayRoomRemovalInfo();
-                        populateRemoveRoomsComboBox();
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleRemoveRoomsFrame(true);
-                        break;
-    
-                    case "Update Room Price":
-                        String selectedHotel1 = gui.getSelectedHotelFromComboBox();
-                        for (Hotel hotel : hotelList) {
-                            if (hotel.getHotelName().equals(selectedHotel1)) {
-                                if (hotel.getNRooms() == 0) {
-                                    gui.showErrorMessage("There are currently no rooms in this hotel.");
-                                    gui.toggleHotelSelectionDialog(false);
-                                    return;
-                                }
-                                else {
-                                    gui.setRoomBasePriceLabel(hotel.getBaseRate());
-                                    gui.toggleHotelSelectionDialog(false);
-                                    gui.toggleUpdateRoomPriceDialog(true);
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    case "Date Price Modifier":
-                        setMDPTextArea();
-                        populateDPMComboBox();
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleModifyDatePriceFrame(true);
-                        break;
-                    case "Remove Reservation":
-                        for (Hotel hotel : hotelList) {
-                            if (hotel.getAllReservations().isEmpty()) {
-                                gui.showErrorMessage("There are currently no reservations in this hotel.");
-                                gui.toggleHotelSelectionDialog(false);
-                                return;
-                            }
-                        }
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleRemoveReservationDialog(true);
-                        break;
-    
-                    case "Remove Hotel":
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleRemoveHotelDialog(true);
-                        break;
-    
-                    case "View Hotel":
-                        gui.toggleHotelSelectionDialog(false);
-                        setHotelInfoTA(); // set the text area with the hotel information
-                        gui.toggleViewHotelMenu(true);
-                        break;
-
-                    case "Simulate Booking":
-                        gui.toggleHotelSelectionDialog(false);
-                        gui.toggleSimulateBookingDialog(true);
-                        break;
-    
-                    default:
-                        System.out.println("Unknown currentOperation: " + currentOperation); // Debugging
-                        break;
-                }
-                break;
-
-                case "Submit New Room Price":
-                processRoomPriceUpdate();
-                break;
-
-                case "Modify Date Price":
-                processDPM();
-                gui.toggleModifyDatePriceFrame(false);
-                break;
-
-                case "View Date":
-                for (Hotel hotel : hotelList) {
-                    if (hotel.getNRooms() == 0) {
-                        gui.showErrorMessage("There are currently no rooms in this hotel.");
-                        return;
-                    }
-                }
-                populateDateComboBox();
-                gui.toggleViewHotelMenu(false);
-                gui.toggleViewDateDialog(true);
-                break;
-    
-                case "View Room":
-                for (Hotel hotel : hotelList) {
-                    if (hotel.getNRooms() == 0) {
-                        gui.showErrorMessage("No rooms available for viewing.");
-                        return;
-                    }
-                }
-                gui.toggleViewHotelMenu(false);
-                populateRoomsToViewCBox();
-                gui.toggleSelectRoomDialog(true);
-                break;
-
-                case "Select Room":
-                gui.toggleSelectRoomDialog(false);
-                setRoomInfoTA();// display room information
-                setRoomToViewTA();
-                gui.toggleViewRoomsFrame(true);
-                break;
-        
-                case "View Reservation":
-                for (Hotel hotel : hotelList) {
-                    if (hotel.getAllReservations().isEmpty()) {
-                        gui.showErrorMessage("No reservations available for viewing.");
-                        return;
-                    }
-                }
-                populateReservationCBox();
-                gui.toggleViewHotelMenu(false);
-                gui.toggleViewReservationMenu(true);
-                break;
-
-                case "Select Reservation":
-                gui.toggleViewReservationMenu(false);
-                gui.toggleViewReservationDialog(true);
-                setReservationToViewTA();
-                gui.toggleViewReservationDialog(true);
-                break;
-
-                case "Remove Selected Room":
+            case "Remove Selected Room":
                 processRoomRemoval();
-                gui.toggleRemoveRoomsFrame(false);
+                gui.toggleConfirmModificationDialog(false);
                 break;
-
-                case "Submit Remove Reservation":
+    
+            case "Submit New Room Price":
+                processRoomPriceUpdate();
+                gui.toggleConfirmModificationDialog(false);
+                gui.clearUpdateRoomPriceTf();
+                break;
+    
+            case "Modify Date Price":
+                processDPM();
+                gui.toggleConfirmModificationDialog(false);
+                gui.clearPercentageMDP();
+                break;
+    
+            case "Submit Remove Reservation":
                 processRemoveReservation();
-                gui.toggleRemoveReservationDialog(false);
+                gui.toggleConfirmModificationDialog(false);
+                gui.clearRemoveReservationTf();
                 break;
-
-                case "Submit Remove Hotel":
+    
+            case "Submit Remove Hotel":
                 processRemoveHotel();
-                gui.toggleRemoveHotelDialog(false);
+                gui.toggleConfirmModificationDialog(false);
                 break;
-
-                case "Select Date":
-                int availableRooms = getAvailableRoomsOnDate();
-                if (availableRooms == 0) {
-                    gui.showErrorMessage("No rooms are available on this date.");
-                    return;
-                }
-                else {
-                    gui.showConfirmationMessage("There are " + availableRooms + " rooms available on this date.");
-                    gui.toggleViewDateDialog(false);
-                }
-                break;
-
+    
             default:
-                System.out.println("Unknown action command: " + command); // Debugging
+                System.out.println("Unknown modification command: " + currentModification); // Debugging
                 break;
         }
     }
 
+    public void handleCancelModification() {
+        switch (currentOperation) {
+            case "Change Hotel Name":
+            case "Add Rooms":
+            case "Remove Rooms":
+            case "Update Room Price":
+            case "Date Price Modifier":
+            case "Remove Reservation":
+            case "Remove Hotel":
+                gui.toggleHotelSelectionDialog(false);
+                gui.toggleManageHotelMenu(true);
+                clearAllTextFields();
+                break;
+    
+            default:
+                System.out.println("Unknown operation command: " + currentOperation); // Debugging
+                break;
+        }
+    }
+    
     // checks if the hotel name is unique
     public boolean isUniqueName(String hotelName) {
         for (Hotel hotel : hotelList) {
@@ -885,5 +906,23 @@ public class HRSController implements ActionListener, DocumentListener {
                 }
             }
         }
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        // // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'insertUpdate'");
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        // // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'removeUpdate'");
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        // // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'changedUpdate'");
     }
 }
