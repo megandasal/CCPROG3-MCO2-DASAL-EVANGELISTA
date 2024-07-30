@@ -1054,7 +1054,11 @@ public class Hotel {
     }
 
     public String getHotelInformation() {
-        StringBuilder info = new StringBuilder("\n     Hotel Name: " + hotelName + "\n     Number of Rooms: " + this.nRooms + "\n     Base Rate: " + this.baseRate + "\n     Estimate Earnings: " + this.estimateEarnings);
+        String formattedBaseRate = String.format("%.2f", this.baseRate);
+        StringBuilder info = new StringBuilder("\n     Hotel Name: " + hotelName +
+                                               "\n     Number of Rooms: " + this.nRooms +
+                                               "\n     Base Rate: " + formattedBaseRate +
+                                               "\n     Estimate Earnings: " + this.estimateEarnings);
         /*
         for (Room room : rooms) {
             info.append(room.getRoomInformation()).append("\n");
