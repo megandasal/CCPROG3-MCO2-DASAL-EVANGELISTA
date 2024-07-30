@@ -73,6 +73,23 @@ public class Reservation {
         System.out.println(".-------------------------------.");
     }
 
+    // for gui implementation
+    public String reservationInformationGUI() {
+        StringBuilder sb = new StringBuilder();
+        
+        
+        sb.append(String.format("Guest Name: %-17s\n", this.guestName));
+        sb.append(String.format("Booking ID: %-17s\n", this.bookingID));
+        sb.append(String.format("Room: %-23s\n", this.roomName));
+        sb.append(String.format("Check In: %-19d\n", this.checkInDate));
+        sb.append(String.format("Check Out: %-18d\n", this.checkOutDate));
+        sb.append(String.format("Cost per night: $%-12.2f\n", this.roomPrice));
+        sb.append(String.format("Discount Code: $%-14s\n", this.coupon));
+        sb.append(String.format("Total Price: $%-15.2f\n", this.totalPrice));
+        
+        return sb.toString();
+    }
+
     /**
      * Generates a random booking ID for a successful reservation.
      * 
@@ -229,5 +246,9 @@ public class Reservation {
      */
     public String getBookingID() {
         return bookingID;
+    }
+
+    public int[] getMultiplierDatabase() {
+        return this.priceModifierDatabase;
     }
 }
