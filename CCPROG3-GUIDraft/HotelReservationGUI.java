@@ -82,6 +82,7 @@ public class HotelReservationGUI extends JFrame {
         private JDialog updRoomPriceDialog;
         private JTextField newRoomPriceTf;
         private JButton submitNewRoomPriceBtn;
+        private JLabel subTitleLbl2; // displays the current room base price
 
         // date price modifier
 
@@ -743,7 +744,7 @@ public class HotelReservationGUI extends JFrame {
         mainPanel.add(subTitleLbl, gbc);
     
         // current room price label
-        JLabel subTitleLbl2 = new JLabel("Current room base price: ");
+        subTitleLbl2 = new JLabel("Current room base price: ");
         subTitleLbl2.setFont(new Font("Arial", Font.ITALIC, 12));
         subTitleLbl2.setForeground(Color.BLUE);
         gbc.gridy = 2;
@@ -1665,6 +1666,10 @@ public class HotelReservationGUI extends JFrame {
 
     public String getNewRoomBasePrice() {
         return newRoomPriceTf.getText();
+    }
+
+    public void setRoomBasePriceLabel(double roomPrice) {
+        subTitleLbl2.setText("Current room base price: " + roomPrice);
     }
 
     public void clearUpdateRoomPriceTf() {
