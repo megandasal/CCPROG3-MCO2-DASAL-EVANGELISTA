@@ -144,7 +144,7 @@ public class Reservation {
         System.out.println(".-----------------------------------------------.");
     }
 
-    public void applyDiscount(String discountCode) {
+    public int applyDiscount(String discountCode) {
         // 1. check for validity
         // 2. apply discount and reflect changes on reservation receipt
 
@@ -160,17 +160,18 @@ public class Reservation {
                 this.totalPrice = this.totalPrice * .90;
                 System.out.println("Discount code applied!");
                 this.coupon = "I_WORK_HERE";
-                break;
+                return 1;
 
             case "STAY4_GET1":
                 if (this.checkOutDate - this.checkInDate >= 4) { // 5 days or 4 nights
                     this.totalPrice = this.totalPrice - roomPrice;
                     System.out.println("You have 5 days or more to stay. Your first day is free!");
                     this.coupon = "STAY4_GET1";
-                    return;
+                    break;
                 } else
                     System.out.println("Your reservation doesn't qualify for this discount code.");
-                break;
+                    return -1;
+
             case "PAYDAY":
                 boolean valid = false;
                 for (int i = this.checkInDate; i < this.checkOutDate; i++) {
@@ -182,15 +183,16 @@ public class Reservation {
                     this.totalPrice = this.totalPrice * .93;
                     System.out.println("It's Payday! You have a 7% discount on your total price!");
                     this.coupon = "PAYDAY";
-                    return;
+                    break;
                 } else {
                     System.out.println("Your reservation doesn't qualify for this discount code.");
+                    return -1;
                 }
-                break;
             default:
                 System.out.println("This is an invalid discount code.");
                 break;
         }
+        return 0; // no discount code used
 
     }
 
