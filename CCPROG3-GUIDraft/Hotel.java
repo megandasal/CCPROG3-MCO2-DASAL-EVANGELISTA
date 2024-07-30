@@ -500,12 +500,11 @@ public class Hotel {
         
 
         // get available rooms for the specified date range
-        this.availableRooms.clear();
-        this.availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
+        ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
     
         // check if the selected room is available
         Room roomToBookObject = null;
-        for (Room room : this.availableRooms) {
+        for (Room room : availableRooms) {
             if (room.getRoomName().equals(roomToBook)) {
                 roomToBookObject = room;
                 break;
