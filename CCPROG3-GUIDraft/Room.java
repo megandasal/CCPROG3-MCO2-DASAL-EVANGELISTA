@@ -200,4 +200,35 @@ public abstract class Room {
         return "Room Name: " + roomName + ", Room Type: " + roomType + ", Room Price: " + roomPrice + ", Availability: " + (isAvailable ? "Available" : "Not Available");
     }
 
+    public String getRoomInfoForViewing() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nRoom Name: " + this.roomName + "\nRoom Type: " + this.roomType + "\nCost per Night: " + this.roomPrice + "\nNumber of Days Available: " + this.nDaysAvailable);
+        return sb.toString();
+    }
+
+    // will be used for viewing room info - view hotel -> view room
+    public String getRoomAvailabilityForViewing() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("                    .------------------------------------------------------.\n");
+        sb.append("                   |                 Day            |              Status           |\n");
+        sb.append("                    .------------------------------------------------------.\n");
+    
+        boolean[] availability = this.availability;
+    
+        for (int day = 0; day < 31; day++) {
+            String dayStr = String.format("%2d", day + 1);
+            String status = availability[day] ? "Available" : "Reserved";
+            
+            if (day < 9) {
+                sb.append(String.format("                    |                %-2s               |            %-13s     |\n", dayStr, status));
+            } else {
+                sb.append(String.format("                    |                 %-2s             |            %-13s     |\n", dayStr, status));
+            }
+        }
+    
+        sb.append("                    .------------------------------------------------------.\n");
+        return sb.toString();
+    }
+    
+
 }
