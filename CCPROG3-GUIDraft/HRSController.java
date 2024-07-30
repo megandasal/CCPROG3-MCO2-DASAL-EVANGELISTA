@@ -771,8 +771,11 @@ public class HRSController implements ActionListener, DocumentListener {
                     ArrayList<Reservation> reservations = room.getReservations();
                     String reservationInfo;
                     for (Reservation reservation : reservations) {
-                        reservationInfo = reservation.reservationInformationGUI();
-                        gui.setViewReservationTA(reservationInfo);
+                        String chosenReservation = "[" + reservation.getRoomName() + "] " + reservation.getGuestName();
+                        if (chosenReservation.equals(gui.getSelectedReservation())) {
+                            reservationInfo = reservation.reservationInformationGUI();
+                            gui.setViewReservationTA(reservationInfo);
+                        }
                     }
                 }
             }
