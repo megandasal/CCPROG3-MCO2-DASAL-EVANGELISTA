@@ -1712,6 +1712,10 @@ public class HotelReservationGUI extends JFrame {
         return (String) roomCBox.getSelectedItem();
     }
 
+    public String getSelectedRoom() {
+        return (String) roomComboBox.getSelectedItem();
+    }
+
     public void setViewRoomInfoTA(String roomInfo) {
         viewRoomTextArea.setText(roomInfo);
     }
@@ -1833,6 +1837,7 @@ public class HotelReservationGUI extends JFrame {
     public JComboBox<Integer> getDateCBox() {
         return dateCBox;
     }
+    
 
     public void setHotelNameBooked(String hotelName) {
         hotelNameBooked.setText(hotelName);
