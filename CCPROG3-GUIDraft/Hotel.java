@@ -496,7 +496,7 @@ public class Hotel {
         return 1; // valid reservation
     }
 
-    public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode) {
+    public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, int isValidDiscount) {
         // get available rooms for the specified date range
         ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
     
@@ -520,7 +520,7 @@ public class Hotel {
     
         roomToBookObject.updateNDaysAvailable();
         Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, roomToBookObject, multiplierDatabase);
-        reservation.applyDiscount(discountCode);
+        isValidDiscount = reservation.applyDiscount(discountCode);
         roomToBookObject.addReservation(reservation);
         updateEstimateEarnings(reservation.getTotalPrice(), true);
         this.allHotelReservations();
