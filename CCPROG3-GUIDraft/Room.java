@@ -219,10 +219,16 @@ public abstract class Room {
             String dayStr = String.format("%2d", day + 1);
             String status = availability[day] ? "Available" : "Reserved";
             
-            if (day < 9) {
+            if (day < 9 && status.equals("Available")) {
                 sb.append(String.format("                    |                %-2s               |            %-13s     |\n", dayStr, status));
-            } else {
+            } else if (day < 9 && status.equals("Reserved")) {
+                sb.append(String.format("                    |                %-2s               |            %-13s   |\n", dayStr, status));
+            }
+            else if (day >= 10 && status.equals("Available")) {
                 sb.append(String.format("                    |                 %-2s             |            %-13s     |\n", dayStr, status));
+            }
+            else {
+                sb.append(String.format("                    |                %-2s               |            %-13s   |\n", dayStr, status));
             }
         }
     
