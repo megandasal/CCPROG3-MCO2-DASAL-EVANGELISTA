@@ -527,7 +527,7 @@ public class Hotel {
     }
 
     public ArrayList<Reservation> getAllReservations() {
-        return allReservations;
+        return this.allReservations;
     }
 
     /**
@@ -1000,36 +1000,6 @@ public class Hotel {
         // Append footer
         sb.append("                   .------------------------------------------.\n");
 
-        return sb.toString();
-    }
-
-    public String getRoomInfoForViewing(Room room) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nRoom Name: " + room.getRoomName() + "\nRoom Type: " + room.getRoomType() + "\nCost per Night: " + room.getRoomPrice() + "\nNumber of Days Available: " + room.getNDaysAvailable());
-        return sb.toString();
-    }
-
-    // will be used for viewing room info - view hotel -> view room
-    public String getRoomAvailabilityForViewing(Room room) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("                    .------------------------------------------------------.\n");
-        sb.append("                   |                 Day            |              Status           |\n");
-        sb.append("                    .------------------------------------------------------.\n");
-    
-        boolean[] availability = room.getAvailability();
-    
-        for (int day = 0; day < 31; day++) {
-            String dayStr = String.format("%2d", day + 1);
-            String status = availability[day] ? "Available" : "Reserved";
-            
-            if (day < 9) {
-                sb.append(String.format("                    |                %-2s               |            %-13s     |\n", dayStr, status));
-            } else {
-                sb.append(String.format("                    |                 %-2s             |            %-13s     |\n", dayStr, status));
-            }
-        }
-    
-        sb.append("                    .------------------------------------------------------.\n");
         return sb.toString();
     }
     
