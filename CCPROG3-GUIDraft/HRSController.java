@@ -607,12 +607,19 @@ public class HRSController implements ActionListener, DocumentListener {
 
     public void processRemoveReservation() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
+        System.out.println("Selected hotel: " + selectedHotel); // debugging
+    
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
+                System.out.println("Found hotel: " + hotel.getHotelName()); // debugging
                 ArrayList<Reservation> reservationList = hotel.getAllReservations();
                 String reservationToRemove = gui.getBookingID();
+                System.out.println("Reservation to remove: " + reservationToRemove); // debugging
+    
                 for (Reservation reservation : reservationList) {
+                    System.out.println("Checking reservation: " + reservation.getBookingID()); // debugging
                     if (reservationToRemove.equals(reservation.getBookingID())) {
+                        System.out.println("Found reservation: " + reservation.getBookingID()); // debugging
                         int successfulBookingRemoval = hotel.removeReservationGUI(reservationToRemove, reservation.getCheckInDate(), reservation.getCheckOutDate());
                         switch (successfulBookingRemoval) {
                             case 1:
@@ -625,14 +632,16 @@ public class HRSController implements ActionListener, DocumentListener {
                                 gui.showErrorMessage("An unknown error occurred.");
                                 break;
                         }
-                        return; // exit after processing the reservation
+                        return; // exit after processing reservation removal
                     }
                 }
-                gui.showErrorMessage("Reservation " + reservationToRemove + " not found in the selected hotel.");
-                return; // exit if reservation is not found in the current hotel
+                System.out.println("Reservation not found: " + reservationToRemove); // debugging
+                gui.showErrorMessage("Reservation " + reservationToRemove + " not found.");
+                return;
             }
         }
-        gui.showErrorMessage("Selected hotel not found.");
+        System.out.println("Hotel not found: " + selectedHotel); // debugging
+        gui.showErrorMessage("Hotel " + selectedHotel + " not found.");
     }
 
     public void processRemoveHotel() {
