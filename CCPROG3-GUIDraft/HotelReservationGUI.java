@@ -86,9 +86,10 @@ public class HotelReservationGUI extends JFrame {
 
         // date price modifier
         private JFrame datePriceModifierFrame;
-        private JTextField dateTf;
+        private JComboBox<Integer> dateCBox;
         private JTextField percentageTf;
         private JButton commitChangesButton;
+        private JTextArea datePriceModifierTA;
 
         // remove reservation
         private JDialog removeReservationDialog;
@@ -797,88 +798,111 @@ public class HotelReservationGUI extends JFrame {
     }
 
     public void datePriceModifierFrame() {
-
         datePriceModifierFrame = new JFrame("Date Price Modifier");
-        datePriceModifierFrame.setSize(750,500);
-        datePriceModifierFrame.setLayout(new BorderLayout());
+        datePriceModifierFrame.setSize(600, 750);
         datePriceModifierFrame.setLocationRelativeTo(null);
-
-        JPanel datePriceModifierInfoPanel = new JPanel(new GridBagLayout());
+        
+        JPanel datePriceModifierPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        JLabel datePriceModifierLbl = new JLabel("Simulate Booking");
-        datePriceModifierLbl.setFont(new Font("Arial", Font.BOLD, 20));
-        datePriceModifierLbl.setHorizontalAlignment(JLabel.CENTER);
-
-        gbc.gridx = 0;
+        gbc.insets = new Insets(10, 10, 10, 10); 
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
         gbc.gridy = 0;
         gbc.gridwidth = 2;
+        gbc.weighty = 0.1;
+        datePriceModifierPanel.add(new JLabel(), gbc);
+    
+        // title
+        JLabel titleLabel = new JLabel("Date Price Modifier");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        gbc.gridy = 1;
+        gbc.weighty = 0;
         gbc.anchor = GridBagConstraints.CENTER;
-        datePriceModifierInfoPanel.add(datePriceModifierLbl, gbc);
-
-        //enter date (night) to change price
-        JLabel dateLbl = new JLabel("Date:"); //AIELLA CHANGE THIS TO A COMBO
+        datePriceModifierPanel.add(titleLabel, gbc);
+    
+        // sub title
+        JLabel subTitleLbl = new JLabel("Please select a date and enter a percentage to modify the room prices.");
+        subTitleLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        subTitleLbl.setHorizontalAlignment(JLabel.CENTER);
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        datePriceModifierPanel.add(subTitleLbl, gbc);
+    
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints inputGbc = new GridBagConstraints();
+        inputGbc.insets = new Insets(5, 5, 5, 5); // padding
+    
+        // date label
+        JLabel dateLbl = new JLabel("Select Date:");
+        inputGbc.gridx = 0;
+        inputGbc.gridy = 0;
+        inputGbc.anchor = GridBagConstraints.EAST;
+        inputPanel.add(dateLbl, inputGbc);
+    
+        // date combo box
+        dateCBox = new JComboBox<>();
+        dateCBox.setPreferredSize(new Dimension(150, 20));
+        inputGbc.gridx = 1;
+        inputGbc.anchor = GridBagConstraints.WEST;
+        inputPanel.add(dateCBox, inputGbc);
+    
+        // percentage label
+        JLabel percentageLbl = new JLabel("Percentage:");
+        inputGbc.gridx = 0;
+        inputGbc.gridy = 1;
+        inputGbc.anchor = GridBagConstraints.EAST;
+        inputPanel.add(percentageLbl, inputGbc);
+    
+        // percentage text field
+        percentageTf = new JTextField(13);
+        inputGbc.gridx = 1;
+        inputGbc.anchor = GridBagConstraints.WEST;
+        inputPanel.add(percentageTf, inputGbc);
+    
+        JLabel percentSignLbl = new JLabel("%");
+        inputGbc.gridx = 2;
+        inputGbc.anchor = GridBagConstraints.WEST;
+        inputPanel.add(percentSignLbl, inputGbc);
+    
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 3;
         gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        datePriceModifierInfoPanel.add(dateLbl, gbc);
-    
-        dateTf = new JTextField(10);
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        datePriceModifierInfoPanel.add(dateTf, gbc);
-        
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        datePriceModifierPanel.add(inputPanel, gbc);
 
-        //enter percentage
-        JLabel percentageLbl = new JLabel("Guest Name:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        datePriceModifierTA = new JTextArea(10, 20);
+        datePriceModifierTA.setEditable(false);
+        datePriceModifierTA.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JScrollPane scrollPane = new JScrollPane(datePriceModifierTA);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
         gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        datePriceModifierInfoPanel.add(percentageLbl, gbc);
-
-        percentageTf = new JTextField(10);
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        datePriceModifierInfoPanel.add(percentageTf, gbc);
-
-        //panel for the text area and label displaying dates and their matching rate 
-        //JPanel textAreaPanel = new JPanel(new BorderLayout()); HOW TO DO PANEL
-
-        /* 
-
-        //panel for the text area and label displaying dates and their matching rate 
-        JPanel textAreaPanel = new JPanel(new BorderLayout());
-        JLabel dateRate = new JLabel("Date and Rate Here");
-        textAreaPanel.add(availableRoomsLbl, BorderLayout.NORTH);
-    
-        availableRoomsTA = new JTextArea();
-        availableRoomsTA.setEditable(false);
-        availableRoomsTA.setMargin(new Insets(5, 5, 5, 5));
-        availableRoomsTA.setPreferredSize(new Dimension(200, 500));
-        JScrollPane availableRoomsSP = new JScrollPane(availableRoomsTA);
-        textAreaPanel.add(availableRoomsSP, BorderLayout.CENTER);
-    
-        //split pane to hold the booking info panel and text area panel
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, bookingInfoPanel, textAreaPanel);
-        splitPane.setDividerLocation(450); // Adjust as needed
-    
-        simulateBookingFrame.add(splitPane, BorderLayout.CENTER);
-    
-        */
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        datePriceModifierPanel.add(scrollPane, gbc);
 
         // commit changes button
-        commitChangesButton = new JButton("Modify");
-        commitChangesButton.setActionCommand("Modify"); 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(commitChangesButton);
-        datePriceModifierFrame.add(buttonPanel, BorderLayout.SOUTH);
-
+        commitChangesButton = new JButton("Finish");
+        commitChangesButton.setActionCommand("Modify Date Price");
+        commitChangesButton.setPreferredSize(new Dimension(100, 30));
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0;
+        gbc.weighty = 0; 
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        datePriceModifierPanel.add(commitChangesButton, gbc);
+    
+        datePriceModifierFrame.add(datePriceModifierPanel);
         datePriceModifierFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
     }
+    
+    
 
     private void removeReservationDialog() {
         removeReservationDialog = new JDialog();
@@ -1447,6 +1471,7 @@ public class HotelReservationGUI extends JFrame {
         removeReservationBtn.addActionListener(listener);
         removeHotelBtn.addActionListener(listener);
         submitNewRoomPriceBtn.addActionListener(listener);
+        commitChangesButton.addActionListener(listener);
         submitRemoveReservationBtn.addActionListener(listener);
         submitRemoveHotelBtn.addActionListener(listener);
         cancelRemoveHotelBtn.addActionListener(listener);
@@ -1482,6 +1507,9 @@ public class HotelReservationGUI extends JFrame {
         // for setting a new room base price
         newRoomPriceTf.getDocument().addDocumentListener(listener);
 
+        // modifying date price
+        percentageTf.getDocument().addDocumentListener(listener);
+        
         // for removing a reservation
         removeReservationTf.getDocument().addDocumentListener(listener);
 
@@ -1779,4 +1807,27 @@ public class HotelReservationGUI extends JFrame {
         discountCodeTf.setText("");
     }
 
+    public void toggleModifyDatePriceFrame(boolean show) {
+        datePriceModifierFrame.setVisible(show);
+    }
+
+    public void setModifyDatePriceTextArea(String datePriceInfo) {
+        datePriceModifierTA.setText(datePriceInfo);
+    }
+
+    public String getPercentageMDP() {
+        return percentageTf.getText();
+    }
+
+    public void clearPercentageMDP() {
+        percentageTf.setText("");
+    }
+
+    public int getSelectedDateMDP() {
+        return (int) dateCBox.getSelectedItem();
+    }
+
+    public JComboBox<Integer> getDateCBox() {
+        return dateCBox;
+    }
 }
