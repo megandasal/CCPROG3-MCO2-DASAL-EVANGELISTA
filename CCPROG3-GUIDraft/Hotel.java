@@ -29,9 +29,9 @@ public class Hotel {
      */
     public Hotel(String hotelName) {
         this.hotelName = hotelName;
-        this.nRooms = 0;
+        this.nRooms = 1;
         this.baseRate = 1299.0;
-        //rooms.add(new StandardRoom(0, this.baseRate)); // add 1 room to the hotel upon instantiation
+        rooms.add(new StandardRoom(0, this.baseRate)); // add 1 room to the hotel upon instantiation
         this.estimateEarnings = 0;
         this.roomCtr = 0; // count rooms created, this is only used for naming purposes
         Arrays.fill(multiplierDatabase, 100); //makes price for all dates 100%
