@@ -1381,6 +1381,8 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingPanel2.add(roomCBox, gbc);
 
         JLabel discountLbl = new JLabel("Discount Code (optional):");
+        discountLbl.setMinimumSize(new Dimension(150, 30));
+        discountLbl.setPreferredSize(new Dimension(150, 30));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
