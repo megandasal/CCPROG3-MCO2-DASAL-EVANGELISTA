@@ -1,6 +1,3 @@
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Reservation {
@@ -38,6 +35,10 @@ public class Reservation {
 
     }
 
+    /**
+     * Computes the total price of a reservation.
+     * @return total price of reservation
+     */
     private double computeTotalPrice() {
         double grossPrice = 0;
 
@@ -50,9 +51,7 @@ public class Reservation {
                     + ((double) this.priceModifierDatabase[i-1] / 100.0));
 
             grossPrice += this.roomPrice * ((double) this.priceModifierDatabase[i-1] / 100.0);
-
         }
-
         return grossPrice;
     }
 
@@ -76,6 +75,10 @@ public class Reservation {
     }
 
     // for gui implementation
+    /**
+     * Generates a string containing information about a reservation. Used for GUI display.
+     * @return string containing reservation information for GUI
+     */
     public String reservationInformationGUI() {
         StringBuilder sb = new StringBuilder();
         
@@ -94,7 +97,6 @@ public class Reservation {
 
     /**
      * Generates a random booking ID for a successful reservation.
-     * 
      * @return string of 6 random integers concatenated with the given room number
      */
     public String generateBookingID() {
@@ -118,11 +120,7 @@ public class Reservation {
      * 
      * @param hotelName name of hotel
      */
-    public void printReceipt(String hotelName) { // move
-        // to
-        // reservation
-        // class + NO LINK TO ROOM
-        // YET
+    public void printReceipt(String hotelName) {
         System.out.println(".-----------------------------------------------.");
         // Print the header
         System.out.printf("|          %7s HOTEL RECEIPT                |\n", hotelName); // change to hotel name
@@ -146,6 +144,11 @@ public class Reservation {
         System.out.println(".-----------------------------------------------.");
     }
 
+    /**
+     * Applies a discount code to a reservation.
+     * @param discountCode discount code to apply
+     * @return 1 if discount code is valid and applied, -1 if discount code is invalid, 0 if no discount code is used
+     */
     public int applyDiscount(String discountCode) {
         // 1. check for validity
         // 2. apply discount and reflect changes on reservation receipt
@@ -254,6 +257,10 @@ public class Reservation {
         return bookingID;
     }
 
+    /**
+     * Retrieves the multiplier database for a reservation.
+     * @return integer array of price modifiers
+     */
     public int[] getMultiplierDatabase() {
         return this.priceModifierDatabase;
     }
