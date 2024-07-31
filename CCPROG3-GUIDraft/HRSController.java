@@ -17,16 +17,25 @@ public class HRSController implements ActionListener, DocumentListener {
     private String currentOperation = "";
     private String currentModification = "";
 
+    /**
+     * Constructor for the HRSController class
+     * @param gui The GUI object
+     * @param hotelList The list of hotels
+     * @param hotelCount The number of hotels
+     */
     public HRSController(HotelReservationGUI gui, ArrayList<Hotel> hotelList, int hotelCount) {
         this.gui = gui;
         this.hotelList = hotelList;
         this.hotelCount = hotelCount;
         this.currentOperation = "";
         
-        gui.setActionListener(this);
+        gui.setActionListener(this); // connect listeners via gui class
         gui.setDocumentListener(this);
     }
 
+    /**
+     * Method to handle action events from the GUI
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -183,6 +192,9 @@ public class HRSController implements ActionListener, DocumentListener {
         });
     }
 
+    /**
+     * Handles the selection of a hotel from the combo box and opens the appropriate frame or dialog by toggling its visibility
+     */
     public void handleHotelSelection() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         System.out.println("Selected hotel: " + selectedHotel); // debugging
@@ -239,8 +251,10 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
     
+    /**
+     * Hides all dialogs and frames if necessary
+     */
     private void hideAllDialogs() {
-        // Hide all dialogs or frames if necessary
         gui.toggleCreateHotelDialog(false);
         gui.toggleManageHotelMenu(false);
         gui.toggleHotelSelectionDialog(false);
@@ -261,6 +275,9 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.toggleViewDateDialog(false);
     }
 
+    /**
+     * Clears all text fields in the GUI
+     */
     private void clearAllTextFields() {
         gui.clearCreateHotelTF();
         gui.clearChangeHotelNameTF();
@@ -270,6 +287,9 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.clearRemoveReservationTf();
     }
     
+    /**
+     * Handles the confirmation of a modification via Manage Hotel. The method processes the modification based on the current operation.
+     */
     public void handleConfirmModification() {
         switch (currentModification) {
             case "Submit New Hotel Name":
@@ -322,6 +342,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Handles the cancellation of a modification via Manage Hotel. The method toggles the visibility of the appropriate dialogs and frames and clears the appropriate input fields.
+     */
     public void handleCancelModification() {
         switch (currentOperation) {
             case "Change Hotel Name":
@@ -343,6 +366,11 @@ public class HRSController implements ActionListener, DocumentListener {
     }
     
     // checks if the hotel name is unique
+    /**
+     * Checks if the hotel name is unique
+     * @param hotelName The hotel name to check
+     * @return True if the hotel name is unique, false otherwise
+     */
     public boolean isUniqueName(String hotelName) {
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(hotelName)) {
@@ -352,15 +380,11 @@ public class HRSController implements ActionListener, DocumentListener {
         return true;
     }
 
-    public boolean isUniqueHotelName(String hotelName) {
-        for (Hotel hotel : hotelList) {
-            if (hotel.getHotelName().equals(hotelName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
+    /**
+     * Parses the room count from a string
+     * @param roomCount The number of rooms as a string
+     * @return The number of rooms as an integer, or -1 if the input is invalid
+     */
     public int parseRoomCount(String roomCount) {
         try {
             roomCount = roomCount.trim();
@@ -374,6 +398,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Processes the completion of creating a hotel by instantiating a new hotel object and adding it to the hotel list and adding the appropriate number of rooms to the hotel
+     */
     private void processFinishCreateHotel() {
         System.out.println("button clicked!"); // debugging
         System.out.println("Hotel count: " + hotelCount); // debugging
@@ -424,8 +451,12 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.clearCreateHotelTF();
     }
 
+    /**
+     * Renames a hotel
+     * @param hotelName The new hotel name
+     */
     private void renameHotel(String hotelName) {
-        if (isUniqueHotelName(hotelName) == false){
+        if (isUniqueName(hotelName) == false){
             gui.showErrorMessage("This hotel name already exists.");
         }
         else {
@@ -441,6 +472,9 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.showConfirmationMessage("Hotel name changed to " + hotelName + ".");
     }
 
+    /**
+     * Processes the addition of new rooms to a hotel
+     */
     private void processNewRooms() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -488,6 +522,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Displays the room removal information in the text area displaying rooms available for removal
+     */
     public void displayRoomRemovalInfo() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -498,6 +535,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Processes the removal of a room from a hotel
+     */
     public void processRoomRemoval() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         System.out.println("Selected Hotel: " + selectedHotel); // debugging
@@ -519,6 +559,9 @@ public class HRSController implements ActionListener, DocumentListener {
     }
     
 
+    /**
+     * Populates the combo box with available rooms for removal
+     */
     private void populateRemoveRoomsComboBox() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         JComboBox<String> removeRoomsComboBox = gui.getRemoveRoomsCBox();
@@ -536,6 +579,11 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Parses a string input to a double
+     * @param newPrice The string input to parse
+     * @return The parsed double value, or -1 if the input is invalid
+     */
     public double parseDouble(String newPrice) {
         try {
             newPrice = newPrice.trim();
@@ -549,6 +597,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Processes the update of a room's base price.
+     */
     public void processRoomPriceUpdate() {
         String newRoomBasePriceStr = gui.getNewRoomBasePrice();
         double newRoomBasePrice = parseDouble(newRoomBasePriceStr);
@@ -571,6 +622,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Sets the text area for the date price modifier, displaying the dates and their respective price multipliers
+     */
     public void setMDPTextArea() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -581,6 +635,11 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Parses a string input to an integer
+     * @param intInput The string input to parse
+     * @return The parsed integer value, or -1 if the input is invalid
+     */
     public int parseInteger(String intInput) {
         try {
             intInput = intInput.trim();
@@ -594,6 +653,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Populates the date price modifier combo box with dates from 1 to 30
+     */
     public void populateDPMComboBox() {
         JComboBox<Integer> dateComboBox = gui.getDateCBox();
         dateComboBox.removeAllItems();
@@ -602,6 +664,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Processes the modification of multipliers for a date range
+     */
     public void processDPM() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -627,6 +692,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Processes the removal of a reservation
+     */
     public void processRemoveReservation() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         System.out.println("Selected hotel: " + selectedHotel); // debugging
@@ -666,6 +734,9 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.showErrorMessage("Hotel " + selectedHotel + " not found.");
     }
 
+    /**
+     * Processes the removal of a hotel
+     */
     public void processRemoveHotel() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         Iterator<Hotel> hotelIterator = hotelList.iterator(); // ensure no concurrent modification error occurs
@@ -680,6 +751,9 @@ public class HRSController implements ActionListener, DocumentListener {
         gui.showErrorMessage("Hotel " + selectedHotel + " not found.");
     }
 
+    /**
+     * Populates the combo box with dates from 1 to 31
+     */
     public void populateDateComboBox() { // will add 1-31 as elements of the combo box for date selection
         JComboBox<String> dateComboBox = gui.getDateComboBox();
         dateComboBox.removeAllItems();
@@ -688,6 +762,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Sets the text area containing information of a hotel
+     */
     public void setHotelInfoTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -698,6 +775,10 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Populates the combo box with available rooms for viewing given a hotel name and date
+     * @return The number of available rooms on the selected date
+     */
     public int getAvailableRoomsOnDate() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         String selectedDateStr = gui.getSelectedDate();
@@ -711,6 +792,9 @@ public class HRSController implements ActionListener, DocumentListener {
         return -1;
     }
 
+    /**
+     * Populates the combo box with available rooms for viewing
+     */
     public void populateRoomsToViewCBox() {
         // clear existing items in the combo box
         gui.clearRoomComboBox();
@@ -727,6 +811,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Populates the combo box with reservations for viewing
+     */
     public void populateReservationCBox() {
         gui.clearReservationComboBox();
 
@@ -742,6 +829,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Sets the text area for viewing room information
+     */
     public void setRoomInfoTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         String selectedRoom = gui.getSelectedRoom();
@@ -768,6 +858,9 @@ public class HRSController implements ActionListener, DocumentListener {
         System.out.println("Unsuccessful room info retrieval"); // debugging
     }
     
+    /**
+     * Sets the text area for viewing room availability
+     */
     public void setRoomToViewTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         String selectedRoom = gui.getSelectedRoom();
@@ -794,6 +887,9 @@ public class HRSController implements ActionListener, DocumentListener {
         System.out.println("Unsuccessful room info retrieval"); // debugging
     }
 
+    /**
+     * Sets the text area for viewing a reservation
+     */
     public void setReservationToViewTA() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         for (Hotel hotel : hotelList) {
@@ -813,6 +909,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Populates the combo box with check in and check out dates
+     */
     public void populateCheckInOutCb() {
         JComboBox<Integer> checkInCb = gui.getCheckInComboBox();
         JComboBox<Integer> checkOutCb = gui.getCheckOutComboBox();
@@ -824,6 +923,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Processes a booking made by the user
+     */
     public void processSimulateBooking() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         String selectedRoom = gui.getRoomToBook();
@@ -893,6 +995,9 @@ public class HRSController implements ActionListener, DocumentListener {
         }
     }
 
+    /**
+     * Populates the combo box with available rooms for booking
+     */
     public void populateAvailableRoomsToBookCBox() {
         String selectedHotel = gui.getSelectedHotelFromComboBox();
         JComboBox<String> roomCBox = gui.getRoomToBookCBox();
