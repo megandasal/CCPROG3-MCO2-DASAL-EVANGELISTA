@@ -158,6 +158,10 @@ public class HotelReservationGUI extends JFrame {
 
     private ArrayList<Hotel> hotelList;
 
+    /**
+     * Constructor for the HotelReservationGUI class
+     * @param hotelList
+     */
     public HotelReservationGUI(ArrayList<Hotel> hotelList) {
         super("Hotel Reservation System");
         setSize(600, 400);
@@ -200,6 +204,9 @@ public class HotelReservationGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Initialize the main menu frame
+     */
     private void init() {
         JPanel mainMenuPanel = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -271,6 +278,9 @@ public class HotelReservationGUI extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Initialize the manage hotel components for the GUI
+     */
     private void initComponents() {
         // Initialize the buttons
         selectHotelFinBtn = new JButton("Select Hotel");
@@ -298,6 +308,9 @@ public class HotelReservationGUI extends JFrame {
         hotelSelectionDialog();
     }
 
+    /**
+     * Initialize the create hotel dialog
+     */
     void initCreateHotel() {
         roomTypeDialog = new JDialog(this);
         roomTypeDialog.setTitle("Create Hotel");
@@ -399,6 +412,9 @@ public class HotelReservationGUI extends JFrame {
         roomTypeDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
     
+    /**
+     * Initialize the manage hotel menu
+     */
     void initManageHotelMenu() {
         manageHotelFrame = new JFrame("Manage Hotel");
         manageHotelFrame.setSize(600, 400);
@@ -495,6 +511,9 @@ public class HotelReservationGUI extends JFrame {
         manageHotelFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the hotel selection dialog for manage and view hotel and simulate booking funcitonalities
+     */
     public void hotelSelectionDialog() {
         hotelSelectionDialog = new JDialog();
         hotelSelectionDialog.setTitle("Select a Hotel");
@@ -540,6 +559,9 @@ public class HotelReservationGUI extends JFrame {
         hotelSelectionDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /*
+     * Initialize the dialog for changing the hotel name
+     */
     public void changeHotelNameDialog() {
         changeHotelNameDialog = new JDialog();
         changeHotelNameDialog.setTitle("Change Hotel Name");
@@ -580,6 +602,9 @@ public class HotelReservationGUI extends JFrame {
         changeHotelNameDialog.getContentPane().add(changeHotelNamePanel);
     }
 
+    /**
+     * Initialize the dialog for adding rooms to the hotel
+     */
     public void addRoomsDialog() {
         addRoomsDialog = new JDialog();
         addRoomsDialog.setTitle("Add Rooms");
@@ -654,6 +679,9 @@ public class HotelReservationGUI extends JFrame {
         addRoomsDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the frame for removing rooms from the hotel
+     */
     public void removeRoomsFrame() {
         removeRoomsFrame = new JFrame("Remove Rooms");
         removeRoomsFrame.setSize(400, 500);
@@ -729,6 +757,9 @@ public class HotelReservationGUI extends JFrame {
         removeRoomsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     
+    /**
+     * Initialize the dialog for updating the room base price
+     */
     public void updateRoomPriceDialog() {
         updRoomPriceDialog = new JDialog();
         updRoomPriceDialog.setTitle("Update Room Base Price");
@@ -798,6 +829,9 @@ public class HotelReservationGUI extends JFrame {
         updRoomPriceDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the frame for the date price modifier
+     */
     public void datePriceModifierFrame() {
         datePriceModifierFrame = new JFrame("Date Price Modifier");
         datePriceModifierFrame.setSize(600, 750);
@@ -903,8 +937,9 @@ public class HotelReservationGUI extends JFrame {
         datePriceModifierFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     
-    
-
+    /**
+     * Initialize the dialog for removing a reservation
+     */
     private void removeReservationDialog() {
         removeReservationDialog = new JDialog();
         removeReservationDialog.setTitle("Remove Reservation");
@@ -944,6 +979,9 @@ public class HotelReservationGUI extends JFrame {
         removeReservationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
     
+    /**
+     * Initialize the dialog for removing a hotel
+     */
     public void removeHotelDialog() {
         removeHotelDialog = new JDialog();
         removeHotelDialog.setTitle("Remove Hotel");
@@ -986,6 +1024,9 @@ public class HotelReservationGUI extends JFrame {
         removeHotelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the view hotel frame, which displays high-level and low-level information about the hotel
+     */
     public void viewHotelMenu() {
     // High-level information panel
     JPanel highLevelPanel = new JPanel();
@@ -1050,6 +1091,9 @@ public class HotelReservationGUI extends JFrame {
     viewHotelFrame.setLocationRelativeTo(null);
 }
 
+    /**
+     * Initialize the dialog for viewing the number of rooms available on a specific date
+     */
     public void viewDateDialog() {
         viewDateDialog = new JDialog();
         viewDateDialog.setTitle("View Date");
@@ -1087,6 +1131,9 @@ public class HotelReservationGUI extends JFrame {
         viewDateDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
     
+    /**
+     * Initialize the dialog for selecting a room
+     */
     public void selectRoomDialog() {
         selectRoomDialog = new JDialog();
         selectRoomDialog.setTitle("Select a Room");
@@ -1128,6 +1175,9 @@ public class HotelReservationGUI extends JFrame {
 
     }
 
+    /**
+     * Initialize the frame for viewing a given room's information
+     */
     public void viewRoomFrame() {
         viewRoomFrame = new JFrame("Room Information");
         viewRoomFrame.setSize(400, 600);
@@ -1177,6 +1227,9 @@ public class HotelReservationGUI extends JFrame {
     }
 
     // for choosing a reservation to view
+    /**
+     * Initialize the dialog for selecting a reservation
+     */
     public void viewReservationMenu() {
         reservationMenuDialog = new JDialog();
         reservationMenuDialog.setTitle("Select a Reservation");
@@ -1217,6 +1270,9 @@ public class HotelReservationGUI extends JFrame {
         reservationMenuDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the dialog for viewing a reservation's details
+     */
     public void viewReservationDialog() {
         viewReservationDialog = new JDialog();
         viewReservationDialog.setTitle("Reservation Details");
@@ -1257,6 +1313,9 @@ public class HotelReservationGUI extends JFrame {
     }
 
     // to display for when user makes modifications through manage hotel menu
+    /**
+     * Initialize the dialog for confirming a modification to the hotel
+     */
     public void confirmModificationDialog() {
         confirmModificationDialog = new JDialog();
         confirmModificationDialog.setTitle("Confirm Modification");
@@ -1299,6 +1358,9 @@ public class HotelReservationGUI extends JFrame {
     }
 
     // will collect the guest's name, check-in date, and check-out date
+    /**
+     * Initialize the dialog for simulating a booking in the hotel. Collects guest name, check-in date, and check-out date. 
+     */
     public void simulateBookingDialog() {
         simulateBookingDialog = new JDialog();
         simulateBookingDialog.setTitle("Simulate Booking");
@@ -1358,6 +1420,9 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the dialog for simulating a booking in the hotel. Collects room to book and an optional discount code. Called after the simulateBookingDialog method.
+     */
     public void simulateBookingDialog2() {
         simulateBookingDialog2 = new JDialog();
         simulateBookingDialog2.setTitle("Simulate Booking");
@@ -1381,8 +1446,6 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingPanel2.add(roomCBox, gbc);
 
         JLabel discountLbl = new JLabel("Discount Code (optional):");
-        discountLbl.setMinimumSize(new Dimension(150, 30));
-        discountLbl.setPreferredSize(new Dimension(150, 30));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -1390,6 +1453,7 @@ public class HotelReservationGUI extends JFrame {
 
         discountCodeTf = new JTextField();
         discountCodeTf.setPreferredSize(new Dimension(200, 25));
+        discountCodeTf.setText("");
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         simulateBookingPanel2.add(discountCodeTf, gbc);
@@ -1406,6 +1470,9 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingDialog2.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialize the dialog for displaying the booking receipt containing reservation details
+     */
     public void bookingReceiptDialog() {
         bookingReceiptDialog = new JDialog();
         bookingReceiptDialog.setTitle("Booking Receipt");
@@ -1456,6 +1523,10 @@ public class HotelReservationGUI extends JFrame {
     }
 
     /* listeners */
+    /**
+     * Set the action listener for the buttons in the GUI
+     * @param listener the action listener
+     */
     public void setActionListener (ActionListener listener) {
         createHotelBtn.addActionListener(listener);
         manageHotelBtn.addActionListener(listener);
@@ -1494,6 +1565,10 @@ public class HotelReservationGUI extends JFrame {
         cancelModificationBtn.addActionListener(listener);
     }
 
+    /**
+     * Set a document listener for the text fields in the GUI
+     * @param listener the document listener
+     */
     public void setDocumentListener(DocumentListener listener) {
         // for creating a hotel
         hotelNameTf.getDocument().addDocumentListener(listener);
@@ -1525,128 +1600,236 @@ public class HotelReservationGUI extends JFrame {
 
 
     /* other display methods */
+
+    /**
+     * Display or hide the create hotel dialog
+     * @param show true to display, false to hide
+     */
     public void toggleCreateHotelDialog(boolean show) {
         roomTypeDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the hotel selection dialog
+     * @param show true to display, false to hide
+     */
     public void toggleHotelSelectionDialog(boolean show) {
         hotelSelectionDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the change hotel name dialog
+     * @param show true to display, false to hide
+     */
     public void toggleChangeHotelNameDialog(boolean show) {
         changeHotelNameDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the add rooms dialog
+     * @param show true to display, false to hide
+     */
     public void toggleAddRoomsDialog(boolean show) {
         addRoomsDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the remove rooms dialog
+     * @param show true to display, false to hide
+     */
     public void toggleRemoveRoomsFrame(boolean show) {
         removeRoomsFrame.setVisible(show);
     }
 
+    /**
+     * Display or hide the update room price dialog
+     * @param show true to display, false to hide
+     */
     public void toggleUpdateRoomPriceDialog(boolean show) {
         updRoomPriceDialog.setVisible(show);
     }
 
-    public void datePriceModifierFrame(boolean show) {
-        updRoomPriceDialog.setVisible(show);
-    }
-
+    /**
+     * Display or hide the remove reservation dialog
+     * @param show true to display, false to hide
+     */
     public void toggleRemoveReservationDialog(boolean show) {
         removeReservationDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the remove hotel dialog
+     * @param show true to display, false to hide
+     */
     public void toggleRemoveHotelDialog(boolean show) {
         removeHotelDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the view hotel frame
+     * @param show true to display, false to hide
+     */
     public void toggleViewHotelMenu(boolean show) {
         viewHotelFrame.setVisible(show);
     }
 
+    /**
+     * Display or hide the manage hotel frame
+     * @param show true to display, false to hide
+     */
     public void toggleManageHotelMenu(boolean show) {
         manageHotelFrame.setVisible(show);
     }
 
+    /**
+     * Display or hide the select room dialog
+     * @param show true to display, false to hide
+     */
     public void toggleSelectRoomDialog(boolean show){
         selectRoomDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the view date dialog
+     * @param show true to display, false to hide
+     */
     public void toggleViewDateDialog(boolean show) {
         viewDateDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the view rooms frame
+     * @param show true to display, false to hide
+     */
     public void toggleViewRoomsFrame(boolean show) {
         viewRoomFrame.setVisible(show);
     }
 
+    /**
+     * Display or hide the view reservation dialog
+     * @param show true to display, false to hide
+     */
     public void toggleViewReservationMenu(boolean show) {
         reservationMenuDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the view reservation dialog
+     * @param show true to display, false to hide
+     */
     public void toggleViewReservationDialog(boolean show) {
         viewReservationDialog.setVisible(show);
     }
-    
-    public void toggleSimulateBookingFrame(boolean show) {
-        simulateBookingFrame.setVisible(show);
-    }
 
+    /**
+     * Display or hide the first simulate booking dialog
+     * @param show true to display, false to hide
+     */
     public void toggleSimulateBookingDialog(boolean show) {
         simulateBookingDialog.setVisible(show);
     }
 
+    /**
+     * Display or hide the second simulate booking dialog
+     * @param show true to display, false to hide
+     */
     public void toggleSimulateBookingDialog2(boolean show) {
         simulateBookingDialog2.setVisible(show);
     }
 
+    /**
+     * Display or hide the confirm modification dialog
+     * @param show true to display, false to hide
+     */
     public void toggleConfirmModificationDialog(boolean show) {
         confirmModificationDialog.setVisible(show);
     }
 
+    /**
+     * Displays an error message given a string.
+     * @param message the error message to display
+     */
     public void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Displays a confirmation message given a string.
+     * @param message the confirmation message to display
+     */
     public void showConfirmationMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Retrieves the hotel name from the text field.
+     * @return the hotel name entered by the user
+     */
     public String getHotelName() {
         return hotelNameTf.getText();
     }
 
+    /**
+     * Retrieves the new hotel name entered when creating a hotel.
+     * @return the new hotel's name
+     */
     public String getNewHotelName() { // for changing hotel names
         return newHotelNameTf.getText();
     }
 
     // for hotel creation!!
+    /**
+     * Retrieves the number of standard rooms entered when creating a hotel.
+     * @return the number of standard roomsas a string
+     */
     public String getStdRooms() {
         return stdRoomsTf.getText(); // text fields get strings. convert to int in controller
     }
 
+    /**
+     * Retrieves the number of deluxe rooms entered when creating a hotel.
+     * @return the number of deluxe rooms as a string
+     */
     public String getDlxRooms() {
         return dlxRoomsTf.getText();
     }
 
+    /**
+     * Retrieves the number of executive rooms entered when creating a hotel.
+     * @return the number of executive rooms as a string
+     */
     public String getExecRooms() {
         return execRoomsTf.getText();
     }
 
     // for adding rooms!!!
+    /**
+     * Retrieves the number of standard rooms entered when adding rooms to a hotel.
+     * @return the number of standard rooms as a string
+     */
     public String getNewStdRooms() {
         return newStdRoomsTf.getText();
     }
 
+    /**
+     * Retrieves the number of deluxe rooms entered when adding rooms to a hotel.
+     * @return the number of deluxe rooms as a string
+     */
     public String getNewDlxRooms() {
         return newDlxRoomsTf.getText();
     }
 
+    /**
+     * Retrieves the number of executive rooms entered when adding rooms to a hotel.
+     * @return the number of executive rooms as a string
+     */
     public String getNewExecRooms() {
         return newExecRoomsTf.getText();
     }
 
+    /**
+     * Clears the text fields for creating a hotel.
+     */
     public void clearCreateHotelTF() {
         hotelNameTf.setText("");
         stdRoomsTf.setText("");
@@ -1654,94 +1837,178 @@ public class HotelReservationGUI extends JFrame {
         execRoomsTf.setText("");
     }
 
+    /**
+     * Clears the text fields for adding rooms to a hotel.
+     */
     public void clearAddRoomsTf() {
         newStdRoomsTf.setText("");
         newDlxRoomsTf.setText("");
         newExecRoomsTf.setText("");
     }
 
+    /**
+     * Clears the text field for changing a hotel's name.
+     */
     public void clearChangeHotelNameTF() {
         newHotelNameTf.setText("");
     }
 
     // for removing rooms
+    /**
+     * Sets the text area for removing rooms with the given string.
+     * @param roomInfo the string to set the text area with
+     */
     public void setRoomRemovalTextArea(String roomInfo) {
         System.out.println("Setting room removal text area with: " + roomInfo); // debug
         removeRoomsTA.setText(roomInfo);
     }
 
+    /**
+     * Retrieves the room name to remove from the combo box.
+     * @return the room to remove as a string
+     */
     public String getRoomToRemove() {
         return (String) removeRoomsCBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves the combo box for removing rooms.
+     * @return the combo box for removing rooms
+     */
     public JComboBox<String> getRemoveRoomsCBox() {
         return removeRoomsCBox;
     }
     
+    /**
+     * Retrieves the booking ID from the text field.
+     * @return the booking ID as a string
+     */
     public String getBookingID() {
         return removeReservationTf.getText();
     }
 
+    /**
+     * Retrieves the new room base price from the text field.
+     * @return the new room base price as a string
+     */
     public String getNewRoomBasePrice() {
         return newRoomPriceTf.getText();
     }
 
+    /**
+     * Sets the label indicating the room's current base price before the user enters a new one.
+     * @param roomPrice the room's current base price
+     */
     public void setRoomBasePriceLabel(double roomPrice) {
         subTitleLbl2.setText("Current room base price: " + roomPrice);
     }
 
+    /**
+     * Clears the text field for updating a room's base price.
+     */
     public void clearUpdateRoomPriceTf() {
         newRoomPriceTf.setText("");
     }
 
+    /**
+     * Retrieves the hotel name from the combo box.
+     * @return the hotel name
+     */
     public String getSelectedHotelFromComboBox() {
         return (String) hotelComboBox.getSelectedItem();
     }
 
+    /**
+     * Sets the text area for viewing the hotel's high-level information.
+     * @param hotelInfo the hotel's high-level information
+     */
     public void setViewHotelTA(String hotelInfo) {
         highLevelTextArea.setText(hotelInfo);
     }
 
+    /**
+     * Retrieves the date combo box itself.
+     * @return the date combo box
+     */
     public JComboBox<String> getDateComboBox() {
         return dateComboBox;
     }
 
+    /**
+     * Retrieves a date from the combo box.
+     * @return the selected date as a string
+     */
     public String getSelectedDate() { // for viewing date in "view hotel"
         return (String) dateComboBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves a room from the combo box to make a reservation.
+     * @return the selected room as a string
+     */
     public String getSelectedRoomToView() {
         return (String) roomCBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves a room from the combo box for viewing room information.
+     * @return the selected room as a string
+     */
     public String getSelectedRoom() {
         return (String) roomComboBox.getSelectedItem();
     }
 
+    /**
+     * Sets the text area for viewing a room's information.
+     * @param roomInfo the room's information
+     */
     public void setViewRoomInfoTA(String roomInfo) {
         viewRoomTextArea.setText(roomInfo);
     }
 
+    /**
+     * Sets the text area for viewing a room's availability.
+     * @param roomInfo the room's availability information
+     */
     public void setViewRoomAvailabilityTA(String roomInfo) {
         viewRoomTextArea2.setText(roomInfo);
     }
 
+    /**
+     * Sets the text area for viewing a reservation's details.
+     * @param reservationInfo the reservation information
+     */
     public void setViewReservationTA(String reservationInfo) {
         viewReservationTextArea.setText(reservationInfo);
     }
 
+    /**
+     * Retrieves the reservation combo box itself.
+     * @return the reservation combo box
+     */
     public JComboBox<String> getReservationComboBox() {
         return reservationComboBox;
     }
 
+    /**
+     * Retrieves the selected reservation from the combo box.
+     * @return the selected reservation as a string
+     */
     public String getSelectedReservation() {
         return (String) reservationComboBox.getSelectedItem();
     }
 
+    /**
+     * Clears the combo box for selecting a reservation.
+     */
     public void clearReservationComboBox() {
         reservationComboBox.removeAllItems();
     }
 
+    /**
+     * Updates the combo box with newly added hotels.
+     * @param hotelList the list of hotels to add to the combo box
+     */
     public void updateHotelComboBox(ArrayList<Hotel> hotelList) {
         hotelComboBox.removeAllItems();
         for (Hotel hotel : hotelList) {
@@ -1749,99 +2016,200 @@ public class HotelReservationGUI extends JFrame {
         }
     }
 
+    /**
+     * Adds a reservation element to the combo box.
+     * @param reservation the reservation to add
+     */
     public void addReservationToComboBox(String reservation) {
         reservationComboBox.addItem(reservation);
     }
 
     // combo box in view rooms
+    /**
+     * Adds a room to the combo box for viewing rooms.
+     * @param roomName the room to add
+     */
     public void addRoomToViewComboBox(String roomName) {
         roomComboBox.addItem(roomName);
     }
 
+    /**
+     * Clears the text fields for booking a room.
+     */
     public void clearSimulateBookingTF() {
         guestNameTf.setText("");
         discountCodeTf.setText("");
     }
 
+    /**
+     * Adds a room to the combo box for booking a room.
+     * @param roomName the room to add
+     */
     public void addRoomToBookingComboBox(String roomName) {
         roomToBookCBox.addItem(roomName);
     }
 
+    /**
+     * Retrieves the guest's name from the text field.
+     * @return
+     */
     public String getGuestName() {
         return guestsNameTf.getText();
     }
 
+    /**
+     * Retrieves the check-in date from the combo box.
+     * @return the check-in date
+     */
     public int getCheckInDate() {
         return (int) checkInDateCBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves the check-out date from the combo box.
+     * @return the check-out date
+     */
     public int getCheckOutDate() {
         return (int) checkOutDateCBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves the discount code from the text field.
+     * @return the discount code
+     */
     public String getDiscountCode() {
         return discountCodeTf.getText();
     }
 
+    /**
+     * Retrieves the combo box of rooms to book.
+     * @return the combo box of rooms to book
+     */
     public JComboBox<String> getRoomToBookCBox() {
         return roomCBox;
     }
 
+    /**
+     * Retrieves the room to book from the combo box.
+     * @return the room to book
+     */
     public String getRoomToBook() {
         return (String) roomCBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves the check-in date from the combo box.
+     * @return the check-in date
+     */
     public JComboBox<Integer> getCheckInComboBox() {
         return checkInDateCBox;
     }
 
+    /**
+     * Retrieves the check-out date from the combo box.
+     * @return the check-out date
+     */
     public JComboBox<Integer> getCheckOutComboBox() {
         return checkOutDateCBox;
     }
 
+    /**
+     * Sets the text area for the booking receipt with the given string.
+     * @param receiptInfo the booking receipt information
+     */
     public void setBookingReceiptTextArea(String receiptInfo) {
         bookingReceiptTA.setText(receiptInfo);
     }
 
+    /**
+     * Shows or hides the booking receipt dialog.
+     * @param show true to show, false to hide
+     */
     public void toggleBookingReceiptDialog(boolean show) {
         bookingReceiptDialog.setVisible(show);
     }
 
+    /**
+     * Clears the combo box for booking a room.
+     */
     public void clearRoomComboBox() {
         roomComboBox.removeAllItems();
     }
 
+    /**
+     * Clears the text fields for booking a room.
+     */
     public void clearSimBookingTextFields() {
         guestsNameTf.setText("");
         discountCodeTf.setText("");
     }
 
+    /**
+     * Shows or hides the frame for modifying the date price.
+     * @param show true to show, false to hide
+     */
     public void toggleModifyDatePriceFrame(boolean show) {
         datePriceModifierFrame.setVisible(show);
     }
 
+    /**
+     * Sets the text area for modifying the date price with the given string.
+     * @param datePriceInfo the date price information
+     */
     public void setModifyDatePriceTextArea(String datePriceInfo) {
         datePriceModifierTA.setText(datePriceInfo);
     }
 
+    /**
+     * Retrieves the percentage from the text field for modifying the date price.
+     * @return the percentage as a string
+     */
     public String getPercentageMDP() {
         return percentageTf.getText();
     }
 
+    /**
+     * Clears the text field for modifying the date price percentage.
+     */
     public void clearPercentageMDP() {
         percentageTf.setText("");
     }
 
+    /**
+     * Clears the text field for removing a reservation given through a booking ID.
+     */
+    public void clearRemoveReservationTf() {
+        removeReservationTf.setText("");
+    }
+
+    /**
+     * Retrieves the date selected from the combo box for modifying the date price.
+     * @return the selected starting date for the date price modification
+     */ 
     public int getSelectedDateMDP() {
         return (int) dateCBox.getSelectedItem();
     }
 
+    /**
+     * Retrieves the combo box for modifying the date price.
+     * @return the combo box for modifying the date price
+     */
     public JComboBox<Integer> getDateCBox() {
         return dateCBox;
     }
     
-
+    /**
+     * Sets the label for indicating the hotel name in the booking receipt.
+     * @param hotelName the hotel name
+     */
     public void setHotelNameBooked(String hotelName) {
         hotelNameBooked.setText(hotelName);
+    }
+
+    /**
+     * Clears the text area for date price modification.
+     */
+    public void clearDPMTextArea() {
+        datePriceModifierTA.setText("");
     }
 }
