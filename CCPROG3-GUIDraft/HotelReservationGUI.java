@@ -1452,6 +1452,7 @@ public class HotelReservationGUI extends JFrame {
         simulateBookingPanel2.add(discountLbl, gbc);
 
         discountCodeTf = new JTextField();
+        discountCodeTf.setMinimumSize(new Dimension(200, 25)); 
         discountCodeTf.setPreferredSize(new Dimension(200, 25));
         discountCodeTf.setText("");
         gbc.gridx = 1;
