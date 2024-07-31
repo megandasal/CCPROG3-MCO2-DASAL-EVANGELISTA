@@ -205,13 +205,11 @@ public class Hotel {
      * @param execRooms number of executive rooms to add
      */
     public void addHotelRooms(int totalRooms, int stdRooms, int dlxRooms, int execRooms) {
-        // Ensure the sum of room types matches the totalRooms
         if (stdRooms + dlxRooms + execRooms != totalRooms) {
             System.out.println("The total number of rooms does not match the sum of room types provided.");
             return;
         }
-    
-        // Check if adding these rooms would exceed the hotel's capacity
+
         if (this.nRooms + totalRooms > 50) {
             System.out.println("Adding these rooms would exceed the hotel's capacity of 50 rooms.");
             return;
@@ -456,7 +454,7 @@ public class Hotel {
      */
     public int isValidReservationGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, ArrayList<Room> availableRooms) {
 
-        if (checkInDate >= checkOutDate || checkInDate == 1 && checkOutDate == 31) {
+        if (checkInDate >= checkOutDate) {
             return -1; // invalid date range
         }
         else if (guestName == null || guestName.equals("")) {
