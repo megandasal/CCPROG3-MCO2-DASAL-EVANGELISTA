@@ -842,15 +842,49 @@ public class Hotel {
     public void datePriceModifier(){
 
         int userChoice, newRate;
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which day do you wish to modify?");
-        System.out.print("Enter the starting day number: ");
-        userChoice = scanner.nextInt();
 
-        System.out.print("Enter the percentage you wish to modify it to: ");
-        newRate = scanner.nextInt();
+        while(true){
 
-        multiplierDatabase[userChoice-1] = newRate;
+            System.out.print("Enter the starting day number: ");
+            userChoice = scanner.nextInt();
+
+             // Clear the newline character left by nextInt
+            scanner.nextLine();
+
+            if(userChoice >= 1 && userChoice <= 30){
+
+                System.out.print("Enter the percentage you wish to modify it to (within 50%-150%): ");
+                newRate = scanner.nextInt();
+
+                // Clear the newline character left by nextInt
+                scanner.nextLine();
+
+                //check for validity
+                if(newRate >= 50 && newRate <= 150){
+                    System.out.print("Would you like to proceed with this modification? [Y/N]: ");
+                    char mod = scanner.nextLine().charAt(0);
+                    if (mod == 'Y' || mod == 'y') {
+                        multiplierDatabase[userChoice-1] = newRate;
+                        System.out.println("\nThe new rate for day " + userChoice + " has been updated to " +
+                                newRate + "!");
+                        return;
+                    } else if (mod == 'N' || mod == 'n') {
+                        System.out.println("Modification cancelled.");
+                        return;
+                    } else {
+                        System.out.println("Invalid input.");
+                    }
+                }
+                else{
+                    System.out.println("Invalid. Input a rate between 50% and 150%");
+                }
+            }else
+                System.out.println("Invalid. Please try again.");
+
+        }
         
     }
 
