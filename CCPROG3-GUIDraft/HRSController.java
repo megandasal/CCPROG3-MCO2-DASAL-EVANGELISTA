@@ -156,13 +156,17 @@ public void actionPerformed(ActionEvent e) {
                 break;
 
             case "View Reservation":
-                if (hotelList.isEmpty()) {
-                    gui.showErrorMessage("No reservations available for viewing.");
-                } else {
-                    populateReservationCBox();
-                    gui.toggleViewHotelMenu(false);
-                    gui.toggleViewReservationMenu(true);
+                for (Hotel hotel : hotelList) {
+                    if (hotel.getHotelName().equals(gui.getSelectedHotelFromComboBox())) {
+                        if (hotel.getAllReservations().isEmpty()) {
+                            gui.showErrorMessage("No reservations available for viewing.");
+                            return;
+                        }
+                    }
                 }
+                populateReservationCBox();
+                gui.toggleViewHotelMenu(false);
+                gui.toggleViewReservationMenu(true);
                 break;
 
             case "Select Reservation":
@@ -321,10 +325,6 @@ public void actionPerformed(ActionEvent e) {
                 String newStdRooms = gui.getNewStdRooms().trim();
                 String newDlxRooms = gui.getNewDlxRooms().trim();
                 String newExecRooms = gui.getNewExecRooms().trim();
-                //debug
-                System.out.println("New std rooms: ^" + newStdRooms + "^");
-                System.out.println("New dlx rooms: " + newDlxRooms);
-                System.out.println("New exec rooms: " + newExecRooms);
                 if (newStdRooms.equals("") || newDlxRooms.equals("") || newExecRooms.equals("")) {
                     gui.showErrorMessage("Please fill in all fields for new rooms.");
                     validInput = false;
@@ -993,7 +993,7 @@ public void actionPerformed(ActionEvent e) {
                     if (selectedRoom.equals(room.getRoomName())) {
                         roomAvailable = true;
                         break;
-                    } // how do i know if selectedroom is in availablerooms??
+                    }
                 }
                 
                 if (!roomAvailable) {
@@ -1005,7 +1005,7 @@ public void actionPerformed(ActionEvent e) {
 
                     switch(result) {
                         case -1:
-                            gui.showErrorMessage("Invalid date range. Check-in date must be before check-out date.");
+                            gui.showErrorMessage("Invalid date range.");
                             break;
                             case -2:
                             gui.showErrorMessage("Please enter a guest name for the booking.");
