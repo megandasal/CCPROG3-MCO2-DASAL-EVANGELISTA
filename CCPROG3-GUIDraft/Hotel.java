@@ -162,7 +162,7 @@ public class Hotel {
             System.out.print("> Enter amount: ");
             newRooms = getIntInput();
 
-            if (newRooms < 0 && nRooms + newRooms > 50) {
+            if (newRooms < 0 || nRooms + newRooms > 50) {
                 System.out.println(
                         "\nInvalid number of rooms. There are currently " + nRooms + " rooms.");
             } else {
