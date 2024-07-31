@@ -122,10 +122,12 @@ public void actionPerformed(ActionEvent e) {
 
             case "Confirm Modification":
                 handleConfirmModification();
+                gui.toggleConfirmModificationDialog(false);
                 break;
 
             case "Cancel Modification":
                 handleCancelModification();
+                gui.toggleConfirmModificationDialog(false);
                 break;
 
             case "View Date":
@@ -156,17 +158,13 @@ public void actionPerformed(ActionEvent e) {
                 break;
 
             case "View Reservation":
-                for (Hotel hotel : hotelList) {
-                    if (hotel.getHotelName().equals(gui.getSelectedHotelFromComboBox())) {
-                        if (hotel.getAllReservations().isEmpty()) {
-                            gui.showErrorMessage("No reservations available for viewing.");
-                            return;
-                        }
-                    }
+                if (hotelList.isEmpty()) {
+                    gui.showErrorMessage("No reservations available for viewing.");
+                } else {
+                    populateReservationCBox();
+                    gui.toggleViewHotelMenu(false);
+                    gui.toggleViewReservationMenu(true);
                 }
-                populateReservationCBox();
-                gui.toggleViewHotelMenu(false);
-                gui.toggleViewReservationMenu(true);
                 break;
 
             case "Select Reservation":
@@ -325,6 +323,10 @@ public void actionPerformed(ActionEvent e) {
                 String newStdRooms = gui.getNewStdRooms().trim();
                 String newDlxRooms = gui.getNewDlxRooms().trim();
                 String newExecRooms = gui.getNewExecRooms().trim();
+                //debug
+                System.out.println("New std rooms: ^" + newStdRooms + "^");
+                System.out.println("New dlx rooms: " + newDlxRooms);
+                System.out.println("New exec rooms: " + newExecRooms);
                 if (newStdRooms.equals("") || newDlxRooms.equals("") || newExecRooms.equals("")) {
                     gui.showErrorMessage("Please fill in all fields for new rooms.");
                     validInput = false;
@@ -336,7 +338,9 @@ public void actionPerformed(ActionEvent e) {
                 break;
     
             case "Remove Selected Room":
+                gui.showErrorMessage("Please select a room to remove.");
                 validInput = false;
+
                 processRoomRemoval();
             
                 break;
@@ -388,6 +392,8 @@ public void actionPerformed(ActionEvent e) {
         if (validInput) {
             gui.toggleConfirmModificationDialog(true);
         }
+
+
     }
 
     /**
@@ -596,7 +602,7 @@ public void actionPerformed(ActionEvent e) {
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 int canBeRemoved = hotel.removeRoomFromHotel(selectedRoom);
-                if (canBeRemoved == -1 || canBeRemoved == 0) {
+                if (canBeRemoved == -1) {
                     gui.showErrorMessage("Room " + selectedRoom + " cannot be removed from this hotel.");
                     return;
                 }
@@ -1003,7 +1009,7 @@ public void actionPerformed(ActionEvent e) {
 
                     switch(result) {
                         case -1:
-                            gui.showErrorMessage("Invalid date range.");
+                            gui.showErrorMessage("Invalid date range. Check-in date must be before check-out date.");
                             break;
                             case -2:
                             gui.showErrorMessage("Please enter a guest name for the booking.");
