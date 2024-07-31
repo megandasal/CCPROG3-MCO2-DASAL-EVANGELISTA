@@ -161,39 +161,42 @@ public class Hotel {
             System.out.println("\nHow many rooms would you like to add?");
             System.out.print("> Enter amount: ");
             newRooms = getIntInput();
+
             if (newRooms < 0 && nRooms + newRooms > 50) {
                 System.out.println(
                         "\nInvalid number of rooms. There are currently " + nRooms + " rooms.");
             } else {
 
-                System.out.println(".------------------------------------------------------.");
-                System.out.println("|     STANDARD     |     DELUXE     |     EXECUTIVE    |");
-                System.out.println(".------------------------------------------------------.");
+                if(newRooms != 0){
+                    System.out.println(".------------------------------------------------------.");
+                    System.out.println("|     STANDARD     |     DELUXE     |     EXECUTIVE    |");
+                    System.out.println(".------------------------------------------------------.");
 
-                String roomTypeChoice;
-                System.out.print("\nWhat type of room would you like to add?: ");
-                roomTypeChoice = scanner.nextLine();
+                    String roomTypeChoice;
+                    System.out.print("\nWhat type of room would you like to add?: ");
+                    roomTypeChoice = scanner.nextLine();
 
-                for (int i = 0; i < newRooms; i++) {
-                    switch (roomTypeChoice.toLowerCase()) {
-                        case "standard":
-                            room = new StandardRoom(roomCtr, this.baseRate);
-                            rooms.add(room);
-                            break;
-                        case "deluxe":
-                            room = new DeluxeRoom(roomCtr, this.baseRate);
-                            rooms.add(room);
-                            break;
-                        case "executive":
-                            room = new ExecutiveRoom(roomCtr, this.baseRate);
-                            rooms.add(room);
-                            break;
-                        default:
-                            System.out.println("Invalid room type. Please try again.");
-                            return;
+                    for (int i = 0; i < newRooms; i++) {
+                        switch (roomTypeChoice.toLowerCase()) {
+                            case "standard":
+                                room = new StandardRoom(roomCtr, this.baseRate);
+                                rooms.add(room);
+                                break;
+                            case "deluxe":
+                                room = new DeluxeRoom(roomCtr, this.baseRate);
+                                rooms.add(room);
+                                break;
+                            case "executive":
+                                room = new ExecutiveRoom(roomCtr, this.baseRate);
+                                rooms.add(room);
+                                break;
+                            default:
+                                System.out.println("Invalid room type. Please try again.");
+                                return;
+                        }
+                        nRooms++;
+                        roomCtr++;
                     }
-                    nRooms++;
-                    roomCtr++;
                 }
             }
 
