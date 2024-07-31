@@ -336,9 +336,7 @@ public void actionPerformed(ActionEvent e) {
                 break;
     
             case "Remove Selected Room":
-                gui.showErrorMessage("Please select a room to remove.");
                 validInput = false;
-
                 processRoomRemoval();
             
                 break;
@@ -598,7 +596,7 @@ public void actionPerformed(ActionEvent e) {
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 int canBeRemoved = hotel.removeRoomFromHotel(selectedRoom);
-                if (canBeRemoved == -1) {
+                if (canBeRemoved == -1 || canBeRemoved == 0) {
                     gui.showErrorMessage("Room " + selectedRoom + " cannot be removed from this hotel.");
                     return;
                 }
@@ -993,7 +991,7 @@ public void actionPerformed(ActionEvent e) {
                     if (selectedRoom.equals(room.getRoomName())) {
                         roomAvailable = true;
                         break;
-                    }
+                    } // how do i know if selectedroom is in availablerooms??
                 }
                 
                 if (!roomAvailable) {
