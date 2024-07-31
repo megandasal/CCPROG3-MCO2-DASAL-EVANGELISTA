@@ -210,6 +210,7 @@ public class HRSController implements ActionListener, DocumentListener {
                     break;
         
                 case "Update Room Price":
+                    gui.setRoomBasePriceLabel(hotel.getBaseRate());
                     gui.toggleUpdateRoomPriceDialog(true);
                     break;
         
