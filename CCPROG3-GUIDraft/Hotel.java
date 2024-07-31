@@ -456,7 +456,7 @@ public class Hotel {
      */
     public int isValidReservationGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, ArrayList<Room> availableRooms) {
 
-        if (checkInDate >= checkOutDate) {
+        if (checkInDate >= checkOutDate || checkInDate == 1 && checkOutDate == 31) {
             return -1; // invalid date range
         }
         else if (guestName == null || guestName.equals("")) {
@@ -501,7 +501,7 @@ public class Hotel {
         if (roomToBookObject == null) {
             return ""; // room not found or not available
         }
-    
+
         // book the room
 
         if (roomToBookObject.isReservationStartingEndingOn(checkInDate, false) || checkInDate == 1) { // checks if it
@@ -617,6 +617,9 @@ public class Hotel {
      * @return 1 if room is removed successfully, -1 if room is not found or has an active reservation
      */
     public int removeRoomFromHotel (String roomName) {
+        if(getNRooms() == 1) {
+            return 0; // cannot remove the last room
+        }
         Iterator<Room> iterator = rooms.iterator();
         while (iterator.hasNext()) {
             Room room = iterator.next();
