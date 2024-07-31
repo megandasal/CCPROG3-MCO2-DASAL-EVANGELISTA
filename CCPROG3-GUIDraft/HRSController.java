@@ -37,12 +37,11 @@ public class HRSController implements ActionListener, DocumentListener {
      * Method to handle action events from the GUI
      */
     @Override
-public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
     String command = e.getActionCommand();
     System.out.println("Action Command: " + command); // Debugging
     
-    SwingUtilities.invokeLater(() -> { // Ensure GUI updates are on EDT
-        // Hide all frames/dialogs initially if needed
+    SwingUtilities.invokeLater(() -> {
         hideAllDialogs();
         
         switch (command) {
@@ -128,6 +127,7 @@ public void actionPerformed(ActionEvent e) {
             case "Cancel Modification":
                 handleCancelModification();
                 gui.toggleConfirmModificationDialog(false);
+                JOptionPane.showMessageDialog(null, "Modification cancelled.");
                 break;
 
             case "View Date":
@@ -158,13 +158,17 @@ public void actionPerformed(ActionEvent e) {
                 break;
 
             case "View Reservation":
-                if (hotelList.isEmpty()) {
-                    gui.showErrorMessage("No reservations available for viewing.");
-                } else {
-                    populateReservationCBox();
-                    gui.toggleViewHotelMenu(false);
-                    gui.toggleViewReservationMenu(true);
+                for (Hotel hotel : hotelList) {
+                    if (hotel.getHotelName().equals(gui.getSelectedHotelFromComboBox())) {
+                        if (hotel.getAllReservations().isEmpty()) {
+                            gui.showErrorMessage("No reservations available for viewing.");
+                            return;
+                        }
+                    }
                 }
+                populateReservationCBox();
+                gui.toggleViewHotelMenu(false);
+                gui.toggleViewReservationMenu(true);
                 break;
 
             case "Select Reservation":
@@ -306,12 +310,12 @@ public void actionPerformed(ActionEvent e) {
      * Handles the confirmation of a modification via Manage Hotel. The method processes the modification based on the current operation.
      */
     public void handleConfirmModification() {
-        boolean validInput = true;
+        boolean validInput = true; // Flag to determine if input is valid
     
         switch (currentModification) {
             case "Submit New Hotel Name":
-                String newHotelName = gui.getNewHotelName();
-                if (newHotelName.trim().isEmpty()) {
+                String newHotelName = gui.getNewHotelName().trim();
+                if (newHotelName.isEmpty()) {
                     gui.showErrorMessage("Please enter a new hotel name.");
                     validInput = false;
                 } else {
@@ -320,39 +324,33 @@ public void actionPerformed(ActionEvent e) {
                 break;
     
             case "Submit New Rooms":
+                currentModification = "Submit New Rooms";
                 String newStdRooms = gui.getNewStdRooms().trim();
                 String newDlxRooms = gui.getNewDlxRooms().trim();
                 String newExecRooms = gui.getNewExecRooms().trim();
-                //debug
-                System.out.println("New std rooms: ^" + newStdRooms + "^");
-                System.out.println("New dlx rooms: " + newDlxRooms);
-                System.out.println("New exec rooms: " + newExecRooms);
-                if (newStdRooms.equals("") || newDlxRooms.equals("") || newExecRooms.equals("")) {
+                if (newStdRooms.isEmpty() || newDlxRooms.isEmpty() || newExecRooms.isEmpty()) {
                     gui.showErrorMessage("Please fill in all fields for new rooms.");
                     validInput = false;
-                    return;
                 } else {
                     processNewRooms();
-                    gui.clearAddRoomsTf(); 
+                    gui.clearAddRoomsTf();
                 }
                 break;
     
             case "Remove Selected Room":
-                gui.showErrorMessage("Please select a room to remove.");
-                validInput = false;
-
+                currentModification = "Remove Selected Room";
                 processRoomRemoval();
-            
                 break;
     
             case "Submit New Room Price":
+                currentModification = "Submit New Room Price";
                 String newRoomBasePrice = gui.getNewRoomBasePrice().trim();
-                if (newRoomBasePrice.isEmpty()) {
+                if (newRoomBasePrice.isEmpty() || newRoomBasePrice.equals("")) {
                     gui.showErrorMessage("Please enter a new room price.");
                     validInput = false;
                 } else {
                     processRoomPriceUpdate();
-                    gui.clearUpdateRoomPriceTf();  
+                    gui.clearUpdateRoomPriceTf();
                 }
                 break;
     
@@ -363,7 +361,7 @@ public void actionPerformed(ActionEvent e) {
                     validInput = false;
                 } else {
                     processDPM();
-                    gui.clearPercentageMDP(); 
+                    gui.clearPercentageMDP();
                 }
                 break;
     
@@ -374,7 +372,7 @@ public void actionPerformed(ActionEvent e) {
                     validInput = false;
                 } else {
                     processRemoveReservation();
-                    gui.clearRemoveReservationTf();  
+                    gui.clearRemoveReservationTf();
                 }
                 break;
     
@@ -383,18 +381,17 @@ public void actionPerformed(ActionEvent e) {
                 break;
     
             default:
-                System.out.println("Unknown modification command: " + currentModification); // Debugging
+                System.out.println("Unknown modification command: " + currentModification);
                 validInput = false;
                 break;
         }
     
-        // Show confirmation dialog only if all inputs are valid
+        //show confirmation dialog if input is valid
         if (validInput) {
             gui.toggleConfirmModificationDialog(true);
         }
-
-
     }
+    
 
     /**
      * Handles the cancellation of a modification via Manage Hotel. The method toggles the visibility of the appropriate dialogs and frames and clears the appropriate input fields.
@@ -602,7 +599,7 @@ public void actionPerformed(ActionEvent e) {
         for (Hotel hotel : hotelList) {
             if (hotel.getHotelName().equals(selectedHotel)) {
                 int canBeRemoved = hotel.removeRoomFromHotel(selectedRoom);
-                if (canBeRemoved == -1) {
+                if (canBeRemoved == -1 || canBeRemoved == 0) {
                     gui.showErrorMessage("Room " + selectedRoom + " cannot be removed from this hotel.");
                     return;
                 }
@@ -1009,7 +1006,7 @@ public void actionPerformed(ActionEvent e) {
 
                     switch(result) {
                         case -1:
-                            gui.showErrorMessage("Invalid date range. Check-in date must be before check-out date.");
+                            gui.showErrorMessage("Invalid date range.");
                             break;
                             case -2:
                             gui.showErrorMessage("Please enter a guest name for the booking.");
