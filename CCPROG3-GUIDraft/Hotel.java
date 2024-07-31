@@ -39,12 +39,6 @@ public class Hotel {
         
     }
 
-    public void addRoomsToHotel(Room room) {
-        rooms.add(room);
-        nRooms++;
-    }
-
-
     /**
      * Displays the information of a hotel: name, number of rooms, price of rooms,
      * and estimated earnings.
@@ -161,42 +155,39 @@ public class Hotel {
             System.out.println("\nHow many rooms would you like to add?");
             System.out.print("> Enter amount: ");
             newRooms = getIntInput();
-
-            if (newRooms < 0 || nRooms + newRooms > 50) {
+            if (newRooms < 0 && nRooms + newRooms > 50) {
                 System.out.println(
                         "\nInvalid number of rooms. There are currently " + nRooms + " rooms.");
             } else {
 
-                if(newRooms != 0){
-                    System.out.println(".------------------------------------------------------.");
-                    System.out.println("|     STANDARD     |     DELUXE     |     EXECUTIVE    |");
-                    System.out.println(".------------------------------------------------------.");
+                System.out.println(".------------------------------------------------------.");
+                System.out.println("|     STANDARD     |     DELUXE     |     EXECUTIVE    |");
+                System.out.println(".------------------------------------------------------.");
 
-                    String roomTypeChoice;
-                    System.out.print("\nWhat type of room would you like to add?: ");
-                    roomTypeChoice = scanner.nextLine();
+                String roomTypeChoice;
+                System.out.print("\nWhat type of room would you like to add?: ");
+                roomTypeChoice = scanner.nextLine();
 
-                    for (int i = 0; i < newRooms; i++) {
-                        switch (roomTypeChoice.toLowerCase()) {
-                            case "standard":
-                                room = new StandardRoom(roomCtr, this.baseRate);
-                                rooms.add(room);
-                                break;
-                            case "deluxe":
-                                room = new DeluxeRoom(roomCtr, this.baseRate);
-                                rooms.add(room);
-                                break;
-                            case "executive":
-                                room = new ExecutiveRoom(roomCtr, this.baseRate);
-                                rooms.add(room);
-                                break;
-                            default:
-                                System.out.println("Invalid room type. Please try again.");
-                                return;
-                        }
-                        nRooms++;
-                        roomCtr++;
+                for (int i = 0; i < newRooms; i++) {
+                    switch (roomTypeChoice.toLowerCase()) {
+                        case "standard":
+                            room = new StandardRoom(roomCtr, this.baseRate);
+                            rooms.add(room);
+                            break;
+                        case "deluxe":
+                            room = new DeluxeRoom(roomCtr, this.baseRate);
+                            rooms.add(room);
+                            break;
+                        case "executive":
+                            room = new ExecutiveRoom(roomCtr, this.baseRate);
+                            rooms.add(room);
+                            break;
+                        default:
+                            System.out.println("Invalid room type. Please try again.");
+                            return;
                     }
+                    nRooms++;
+                    roomCtr++;
                 }
             }
 
@@ -206,36 +197,13 @@ public class Hotel {
 
     }
 
-    // controller implementation
-    public void addRoomToHotel(int totalRooms, int stdRooms, int dlxRooms, int execRooms) {
-        // Ensure the sum of room types matches the totalRooms
-        if (stdRooms + dlxRooms + execRooms != totalRooms) {
-            System.out.println("The total number of rooms does not match the sum of room types provided.");
-            return;
-        }
-        
-        // Check if adding these rooms would exceed the hotel's capacity
-        if (this.nRooms + totalRooms > 50) {
-            System.out.println("Adding these rooms would exceed the hotel's capacity of 50 rooms.");
-            return;
-        }
-        
-        for (int i = 0; i < totalRooms; i++) {
-            if (stdRooms > 0) {
-                rooms.add(new StandardRoom(roomCtr, this.baseRate));
-                stdRooms--;
-            } else if (dlxRooms > 0) {
-                rooms.add(new DeluxeRoom(roomCtr, this.baseRate));
-                dlxRooms--;
-            } else if (execRooms > 0) {
-                rooms.add(new ExecutiveRoom(roomCtr, this.baseRate));
-                execRooms--;
-            }
-            roomCtr++;
-        }
-        this.nRooms += totalRooms;
-    }
-
+    /**
+     * Adds rooms to a hotel. Called by the controller.
+     * @param totalRooms total number of rooms to add
+     * @param stdRooms number of standard rooms to add
+     * @param dlxRooms number of deluxe rooms to add
+     * @param execRooms number of executive rooms to add
+     */
     public void addHotelRooms(int totalRooms, int stdRooms, int dlxRooms, int execRooms) {
         // Ensure the sum of room types matches the totalRooms
         if (stdRooms + dlxRooms + execRooms != totalRooms) {
@@ -265,9 +233,6 @@ public class Hotel {
         this.nRooms += totalRooms;
         System.out.println("Updated nRooms to: " + this.nRooms); // Debugging
     }
-    
-
-
 
     /**
      * Checks the availability of a room for reservation given a check-in and
@@ -479,6 +444,16 @@ public class Hotel {
         }
     }
 
+    /**
+     * Determines the validity of a reservation given a guest name, check-in and check-out date, selected room for booking, and discount code.
+     * @param guestName guest name
+     * @param checkInDate check-in date
+     * @param checkOutDate check-out date
+     * @param roomToBook room name to book
+     * @param discountCode discount code
+     * @param availableRooms list of available rooms
+     * @return 1 if reservation is valid, -1 if date range is invalid, -2 guest name is invalid, -3 if no discount is code used, -4 if discount code is invalid, -5 if room is not found
+     */
     public int isValidReservationGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, ArrayList<Room> availableRooms) {
 
         if (checkInDate >= checkOutDate) {
@@ -499,8 +474,17 @@ public class Hotel {
         return 1; // valid reservation
     }
 
+    /**
+     * Books a room in a hotel given a guest name, check-in and check-out date, selected room for booking, and discount code. Used in coordination with the GUI.
+     * @param guestName guest name     
+     * @param checkInDate check-in date
+     * @param checkOutDate check-out date 
+     * @param roomToBook room name to book
+     * @param discountCode discount code
+     * @param isValidDiscount validity of discount code
+     * @return booking receipt for display after a successful reservation
+     */
     public String bookRoomGUI(String guestName, int checkInDate, int checkOutDate, String roomToBook, String discountCode, int isValidDiscount) {
-        
 
         // get available rooms for the specified date range
         ArrayList<Room> availableRooms = this.checkRoomAvailability(checkInDate, checkOutDate);
@@ -557,6 +541,10 @@ public class Hotel {
         }
     }
 
+    /**
+     * Returns the list of all reservations across a hotel.
+     * @return array list of all reservations
+     */
     public ArrayList<Reservation> getAllReservations() {
         return this.allReservations;
     }
@@ -590,14 +578,6 @@ public class Hotel {
         System.out.print("\n> Enter the room number to remove: ");
         roomName = scanner.nextLine();
 
-        /*
-         * if (roomNum == -1) {
-         * System.out.println("Invalid input. Please enter a valid room number.");
-         * } else {
-         * break;
-         * }
-         */
-
         for (Room room : rooms) {
             if (room.getRoomName().equals(roomName)) { // if room exists in hotel
 
@@ -625,23 +605,17 @@ public class Hotel {
             if (!roomRemoved) {
                 System.out.println("This room currently has a reservation and can't be removed.");
             }
-            /*
-             * else{//update room nums
-             *
-             * int roomCount = 1;
-             * for (Room room : rooms) {
-             * room.setRoomNum(100 + roomCount);
-             * roomCount++;
-             *
-             * }
-             * }
-             */
         } else {
             System.out.println("Room does not exist.");
         }
     }
 
     // gui implementation
+    /**
+     * Removes a room from the hotel given a room name. Used in coordination with the GUI.
+     * @param roomName
+     * @return 1 if room is removed successfully, -1 if room is not found or has an active reservation
+     */
     public int removeRoomFromHotel (String roomName) {
         Iterator<Room> iterator = rooms.iterator();
         while (iterator.hasNext()) {
@@ -718,6 +692,13 @@ public class Hotel {
         }
     }
 
+    /**
+     * Removes a reservation from the hotel given a booking ID and check-in and check-out dates. Used in coordination with the GUI.
+     * @param bookingID unique booking ID
+     * @param checkInDate check-in date
+     * @param checkOutDate check-out date
+     * @return 1 if reservation is removed successfully, -1 if reservation is not found
+     */
     public int removeReservationGUI(String bookingID, int checkInDate, int checkOutDate) {
         for (Room room : rooms) {
             for (int i = 0; i < room.getReservations().size(); i++) {
@@ -803,6 +784,9 @@ public class Hotel {
 
     }
 
+    /**
+     * Prints a multiplier database for the hotel. Graphically assists the user in selecting a date to modify the price.
+     */
     public void printMultiplierDatabase(){
 
         System.out.println(".------------------------------------------------------.");
@@ -818,6 +802,10 @@ public class Hotel {
         System.out.println(".------------------------------------------------------.");
     }
 
+    /**
+     * Retrieves the multiplier database for the hotel. Used in coordination with the GUI.
+     * @return multiplier database as a string
+     */
     public String getMultiplierDatabaseToString() {
         StringBuilder sb = new StringBuilder();
         sb.append(".------------------------------------------------------.");
@@ -841,123 +829,30 @@ public class Hotel {
         return sb.toString();
     }
 
-
+    /**
+     * Modifies the price of a room on a specific date. The user is prompted to enter the starting day number and the new rate.
+     */
     public void datePriceModifier(){
 
         int userChoice, newRate;
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which day do you wish to modify?");
+        System.out.print("Enter the starting day number: ");
+        userChoice = scanner.nextInt();
 
-        while(true){
+        System.out.print("Enter the percentage you wish to modify it to: ");
+        newRate = scanner.nextInt();
 
-            System.out.print("Enter the starting day number: ");
-            userChoice = scanner.nextInt();
-
-             // Clear the newline character left by nextInt
-            scanner.nextLine();
-
-            if(userChoice >= 1 && userChoice <= 30){
-
-                System.out.print("Enter the percentage you wish to modify it to (within 50%-150%): ");
-                newRate = scanner.nextInt();
-
-                // Clear the newline character left by nextInt
-                scanner.nextLine();
-
-                //check for validity
-                if(newRate >= 50 && newRate <= 150){
-                    System.out.print("Would you like to proceed with this modification? [Y/N]: ");
-                    char mod = scanner.nextLine().charAt(0);
-                    if (mod == 'Y' || mod == 'y') {
-                        multiplierDatabase[userChoice-1] = newRate;
-                        System.out.println("\nThe new rate for day " + userChoice + " has been updated to " +
-                                newRate + "!");
-                        return;
-                    } else if (mod == 'N' || mod == 'n') {
-                        System.out.println("Modification cancelled.");
-                        return;
-                    } else {
-                        System.out.println("Invalid input.");
-                    }
-                }
-                else{
-                    System.out.println("Invalid. Input a rate between 50% and 150%");
-                }
-            }else
-                System.out.println("Invalid. Please try again.");
-
-        }
+        multiplierDatabase[userChoice-1] = newRate;
         
     }
 
+    /**
+     * Modifies the price of a room on a specific date. Used in coordination with the GUI.
+     */
     public void datePriceModifierGUI(int startDay, int newRate){
         multiplierDatabase[startDay-1] = newRate;
     }
-
-    /*
-    public void updateMultiplierDatabase(int startDate, int endDate, int multiplier){
-        for (int i = startingDate; i < endingDate; i++) {
-            this.multiplierDatabase[i + 1] = multiplier;
-        }
-    }
-
-    public void modifyDatePrice(int startDate, int endDate) {
-      boolean isValidDateRange;
-        
-        System.out.println("The current base price for a room is: " + this.baseRate);
-        System.out.println("Please enter the start and end dates for price modification.");
-
-        // input dates
-        System.out.print("\nStart on: ");
-        int startingDate = getIntInput();
-        if (startingDate == -1){
-            System.out.println("Please enter a valid date.");
-            return;
-        }
-        else {
-            System.out.print("End on: ");
-            int endingDate = getIntInput();
-            if (endingDate == -1){
-                System.out.println("Please enter a valid date.");
-                return;
-            }
-            else {
-                // check for valid date range
-                if (startingDate > endingDate || startingDate == endingDate){
-                    isValidDateRange = false;
-                }
-                else {
-                    isValidDateRange = true;
-                }
-
-                if (isValidDateRange = true){
-                    System.out.println("\nEnter multiplier: "); // integer input
-                    int multiplier = getIntInput();
-                    if (multiplier == -1){
-                        System.out.println("Invalid value. Try again.");
-                        return;
-                    }
-                    else if (multiplier >= 50 && multiplier <= 150){
-                        // update database array to specified price modifier
-                        updateMultiplierDatabase(startDate, endDate, multiplier);
-                            
-                        // make separate method for calculating new price
-                        reservation.computeTotalPrice();
-                        }
-                    else {
-                        System.out.println("Please enter a value between 50 and 150.");
-                        return;
-                    }
-                }
-                else {
-                    System.out.println("Please enter a valid date range.");
-                    return;
-                }
-            }
-        }        
-    }
-    */
 
     /**
      * Updates the estimated earnings of a hotel by adding the total price
@@ -985,11 +880,6 @@ public class Hotel {
         return allReservations.size();
     }
 
-    /*
-        returns true when discount code is applied
-        @param  discountCode is the discount code entered by the user
-    */
-
     /**
      * Determines if a user's input is a valid integer.
      * Returns an integer if the input is valid.
@@ -1011,16 +901,9 @@ public class Hotel {
     }
 
     /**
-     * Retrieves the price of a room in a hotel.
-     *
-     * @return price of a room as a double
+     * Retrieves the base rate of a hotel.
+     * @return base rate as a double
      */
-    /*
-     * public double getRoomPrice() {
-     * return roomPrice;
-     * }
-     */
-
      public double getBaseRate(){
         return this.baseRate;
      }
@@ -1071,12 +954,10 @@ public class Hotel {
         this.hotelName = hotelName;
     }
 
-    /**
-     * Sets the price of a room in a hotel.
-     *
-     * @param roomPrice price of a room as a double
-     */
-
+     /**
+      * Sets the base rate of a hotel.
+      * @param baseRate base rate
+      */
     public void setBaseRate(double baseRate) {
 
         for (Room room : rooms) {
@@ -1086,25 +967,33 @@ public class Hotel {
         this.baseRate = baseRate;
     }
 
+    /**
+     * Adds a room to a hotel.
+     * @param room room to add
+     */
     public void addRoom(Room room) {
         rooms.add(room);
     }
 
+    /**
+     * Retrieves the information of a hotel. Used in coordination with the GUI as a display for viewing a hotel.
+     * @return hotel information as a string
+     */
     public String getHotelInformation() {
         String formattedBaseRate = String.format("%.2f", this.baseRate);
         StringBuilder info = new StringBuilder("\n     Hotel Name: " + hotelName +
                                                "\n     Number of Rooms: " + this.nRooms +
                                                "\n     Base Rate: " + formattedBaseRate +
                                                "\n     Estimate Earnings: " + this.estimateEarnings);
-        /*
-        for (Room room : rooms) {
-            info.append(room.getRoomInformation()).append("\n");
-        }
-        */
+
         return info.toString();
     }
 
     // will be used for remove rooms functionality
+    /**
+     * Retrieves the room information for removal. Used in coordination with the GUI as a display for when a user removes a room.
+     * @return room information as a string
+     */
     public String getRoomInfoForRemoval() {
         StringBuilder sb = new StringBuilder();
         
@@ -1131,6 +1020,11 @@ public class Hotel {
 
     // will be used in simulate booking gui
     // specifically, in the text area of the eastern part of the frame
+
+    /**
+     * Retrieves the available rooms to book. Used in coordination with the GUI as a display for when a user books a room.
+     * @return available rooms as a string
+     */
     public String printAvailableRoomsToBook() {
         StringBuilder sb = new StringBuilder();
         // Append header
@@ -1151,6 +1045,11 @@ public class Hotel {
     }
 
     // used in to simulate a booking - the booking receipt display
+    /**
+     * Prints a booking receipt for a reservation. Used in coordination with the GUI as a display for after a user books a room.
+     * @param reservation
+     * @return booking receipt as a string
+     */
     public String printBookingReceipt(Reservation reservation) {
         if (reservation == null) {
             return "No booking found.";
@@ -1176,6 +1075,10 @@ public class Hotel {
         return sb.toString();
     }
 
+    /**
+     * Retrieves the list of rooms in a hotel.
+     * @return list of rooms
+     */
     public ArrayList<Room> getRooms() {
         return this.rooms;
     }
