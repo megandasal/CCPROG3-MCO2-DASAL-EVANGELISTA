@@ -74,9 +74,7 @@ public abstract class Room {
      * Gets the availability of a room on a specified date.
      * 
      * @param day the day to check the availability of a room
-     * @return an element of a boolean array pertaining to the availability of a
-     *         room
-     *         given a date
+     * @return an element of a boolean array pertaining to the availability of a room given a date
      */
     public boolean isAvailable(int day) {
         return availability[day - 1];
@@ -86,7 +84,7 @@ public abstract class Room {
      * Checks if a guest has checked in or checked out on a specified date
      * 
      * @param date     the date to check if a guest has checked in/out of a room
-     * @param starting ???
+     * @param starting determines if a guest has checked in on a given date
      * @return true if a guest has checked in or checked out on a date
      */
     public boolean isReservationStartingEndingOn(int date, boolean starting) {
@@ -171,14 +169,26 @@ public abstract class Room {
         return this.roomReservations.size();
     }
 
+    /**
+     * Retrieves the price of a room.
+     * @return the price of a room
+     */
     public double getRoomPrice() {
         return this.roomPrice;
     }
 
+    /**
+     * Retrieves the room type.
+     * @return the room type
+     */
     public String getRoomType() {
         return this.roomType;
     }
 
+    /**
+     * Sets the price of a room.
+     * @param baseRate the base rate of a room
+     */
     public void setRoomPrice(double baseRate) {
         this.roomPrice = baseRate * this.multiplier;
     }
@@ -196,10 +206,18 @@ public abstract class Room {
 
     private boolean isAvailable;
 
+    /**
+     * Retrieves a room's information.
+     * @return a string containing a room's name, type, price, and availability status
+     */
     public String getRoomInformation() {
         return "Room Name: " + roomName + ", Room Type: " + roomType + ", Room Price: " + roomPrice + ", Availability: " + (isAvailable ? "Available" : "Not Available");
     }
 
+    /**
+     * Retrieves a room's information for viewing through the GUI.
+     * @return a string containing a room's name, type, price, and number of days available
+     */
     public String getRoomInfoForViewing() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nRoom Name: " + this.roomName + "\nRoom Type: " + this.roomType + "\nCost per Night: " + this.roomPrice + "\nNumber of Days Available: " + this.nDaysAvailable);
@@ -207,6 +225,10 @@ public abstract class Room {
     }
 
     // will be used for viewing room info - view hotel -> view room
+    /**
+     * Retrieves the availability of a room for viewing through the GUI.
+     * @return a string containing the availability of a room for each day
+     */
     public String getRoomAvailabilityForViewing() {
         StringBuilder sb = new StringBuilder();
         sb.append("                    .------------------------------------------------------.\n");
@@ -235,6 +257,4 @@ public abstract class Room {
         sb.append("                    .------------------------------------------------------.\n");
         return sb.toString();
     }
-    
-
 }
